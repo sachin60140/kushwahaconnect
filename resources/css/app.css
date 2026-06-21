@@ -1,0 +1,200 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        background: #fffaf0;
+        color: #0f172a;
+    }
+
+    input:not([type='checkbox']):not([type='radio']):not([type='file']),
+    select,
+    textarea {
+        border-radius: 0.9rem;
+        border-color: rgb(203 213 225);
+    }
+
+    input:not([type='checkbox']):not([type='radio']):not([type='file']):focus,
+    select:focus,
+    textarea:focus {
+        border-color: rgb(249 115 22);
+        --tw-ring-color: rgb(249 115 22 / 0.3);
+    }
+}
+
+@layer utilities {
+    @keyframes kc-fade-up {
+        from {
+            opacity: 0;
+            transform: translateY(14px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .kc-fade-up {
+        animation: kc-fade-up 0.6s ease-out both;
+    }
+}
+
+@layer components {
+    .kc-page {
+        @apply bg-[#fffaf0] px-4 py-12 sm:px-6 lg:px-8;
+    }
+
+    .kc-container {
+        @apply mx-auto max-w-7xl;
+    }
+
+    .kc-surface {
+        @apply rounded-3xl border border-slate-100 bg-white shadow-xl shadow-blue-950/10;
+    }
+
+    .kc-panel {
+        @apply rounded-2xl border border-slate-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-950/10;
+    }
+
+    .kc-hero {
+        @apply relative overflow-hidden bg-blue-950 px-4 py-14 text-white sm:px-6 lg:px-8;
+    }
+
+    .kc-hero-inner {
+        @apply relative mx-auto max-w-7xl;
+    }
+
+    .kc-eyebrow {
+        @apply text-sm font-black uppercase tracking-[0.22em] text-orange-500;
+    }
+
+    .kc-title {
+        @apply text-3xl font-black tracking-tight text-blue-950 sm:text-4xl;
+    }
+
+    .kc-copy {
+        @apply text-base leading-7 text-slate-600;
+    }
+
+    .kc-btn-primary {
+        @apply inline-flex min-h-12 items-center justify-center rounded-full bg-orange-500 px-6 text-sm font-black text-white shadow-sm transition hover:bg-orange-600 disabled:opacity-60;
+    }
+
+    .kc-btn-blue {
+        @apply inline-flex min-h-12 items-center justify-center rounded-full bg-blue-950 px-6 text-sm font-black text-white shadow-sm transition hover:bg-blue-900 disabled:opacity-60;
+    }
+
+    .kc-btn-green {
+        @apply inline-flex min-h-12 items-center justify-center rounded-full bg-green-700 px-6 text-sm font-black text-white shadow-sm transition hover:bg-green-800 disabled:opacity-60;
+    }
+
+    .kc-btn-secondary {
+        @apply inline-flex min-h-12 items-center justify-center rounded-full border border-blue-950/15 bg-white px-6 text-sm font-black text-blue-950 shadow-sm transition hover:border-blue-950 hover:bg-blue-50 disabled:opacity-60;
+    }
+
+    .kc-table {
+        @apply overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-xl shadow-blue-950/10;
+    }
+
+    .kc-legal h2 {
+        @apply mt-9 text-2xl font-black leading-tight text-blue-950;
+    }
+
+    .kc-legal h2:first-child {
+        @apply mt-0;
+    }
+
+    .kc-legal p {
+        @apply mt-4;
+    }
+
+    .kc-legal ul {
+        @apply mt-4 space-y-2 pl-6;
+    }
+
+    .kc-legal li {
+        @apply list-disc;
+    }
+
+    .kc-legal a {
+        @apply font-black text-orange-600 underline decoration-orange-300 underline-offset-4 hover:text-orange-700;
+    }
+}
+
+/* Compatibility pass for older pages that used the default indigo/pink scaffolding. */
+@layer utilities {
+    .bg-gray-50 {
+        background-color: #fffaf0;
+    }
+
+    .bg-indigo-50,
+    .bg-pink-50 {
+        background-color: #eff6ff;
+    }
+
+    .bg-indigo-100,
+    .bg-pink-100 {
+        background-color: #dbeafe;
+    }
+
+    .bg-indigo-600,
+    .hover\:bg-indigo-700:hover,
+    .focus\:bg-indigo-700:focus,
+    .bg-gray-800,
+    .hover\:bg-gray-700:hover,
+    .focus\:bg-gray-700:focus {
+        background-color: #071d49;
+    }
+
+    .bg-pink-600,
+    .hover\:bg-pink-700:hover,
+    .focus\:bg-pink-700:focus {
+        background-color: #166534;
+    }
+
+    .text-indigo-600,
+    .hover\:text-indigo-900:hover,
+    .text-pink-600,
+    .hover\:text-pink-600:hover {
+        color: #f97316;
+    }
+
+    .text-indigo-700,
+    .text-indigo-800,
+    .text-pink-700,
+    .text-pink-800 {
+        color: #071d49;
+    }
+
+    .border-indigo-400,
+    .border-indigo-500,
+    .focus\:border-indigo-500:focus,
+    .focus\:border-pink-500:focus {
+        border-color: #f97316;
+    }
+
+    .focus\:ring-indigo-500:focus,
+    .focus\:ring-pink-500:focus,
+    .ring-indigo-500 {
+        --tw-ring-color: rgb(249 115 22 / 0.35);
+    }
+
+    .file\:bg-indigo-50::file-selector-button {
+        background-color: #fff7ed;
+    }
+
+    .file\:text-indigo-700::file-selector-button {
+        color: #c2410c;
+    }
+
+    .hover\:file\:bg-indigo-100:hover::file-selector-button {
+        background-color: #ffedd5;
+    }
+}
