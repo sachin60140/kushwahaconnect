@@ -91,7 +91,7 @@ Route::get('/', function (Request $request) {
     ]);
 })->name('welcome');
 
-Route::get('/about', [PublicController::class, 'about']);
+Route::get('/about', [PublicController::class, 'about'])->name('about');
 
 Route::get('/contact', [PublicController::class, 'contact'])->name('contact');
 Route::post('/contact', [PublicController::class, 'storeContact'])->name('contact.store');

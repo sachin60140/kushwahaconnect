@@ -1,5 +1,6 @@
 <script setup>
-import { Head } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
 const props = defineProps({
     title: {
@@ -16,26 +17,51 @@ const props = defineProps({
     },
     image: {
         type: String,
-        default: '/images/og-image.jpg',
+        default: '/images/kushwahaconnect-social-preview.png',
+    },
+    url: {
+        type: String,
+        default: '',
     },
 });
+
+const page = usePage();
+
+const displayTitle = computed(() => {
+    return props.title.toLowerCase().includes('kushwahaconnect')
+        ? props.title
+        : `${props.title} - KushwahaConnect`;
+});
+
+const absoluteImage = computed(() => {
+    if (props.image.startsWith('http://') || props.image.startsWith('https://')) {
+        return props.image;
+    }
+
+    return `${window.location.origin}${props.image.startsWith('/') ? '' : '/'}${props.image}`;
+});
+
+const currentUrl = computed(() => props.url || page.props?.seo?.url || window.location.href);
 </script>
 
 <template>
     <Head :title="title">
-        <meta name="description" :content="description" />
-        <meta name="keywords" :content="keywords" />
+        <meta head-key="description" name="description" :content="description" />
+        <meta head-key="keywords" name="keywords" :content="keywords" />
         
         <!-- Open Graph / Facebook -->
-        <meta property="og:type" content="website" />
-        <meta property="og:title" :content="`${title} - KushwahaConnect`" />
-        <meta property="og:description" :content="description" />
-        <meta property="og:image" :content="image" />
+        <meta head-key="og:type" property="og:type" content="website" />
+        <meta head-key="og:title" property="og:title" :content="displayTitle" />
+        <meta head-key="og:description" property="og:description" :content="description" />
+        <meta head-key="og:url" property="og:url" :content="currentUrl" />
+        <meta head-key="og:image" property="og:image" :content="absoluteImage" />
+        <meta head-key="og:image:width" property="og:image:width" content="1200" />
+        <meta head-key="og:image:height" property="og:image:height" content="630" />
         
         <!-- Twitter -->
-        <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:title" :content="`${title} - KushwahaConnect`" />
-        <meta property="twitter:description" :content="description" />
-        <meta property="twitter:image" :content="image" />
+        <meta head-key="twitter:card" name="twitter:card" content="summary_large_image" />
+        <meta head-key="twitter:title" name="twitter:title" :content="displayTitle" />
+        <meta head-key="twitter:description" name="twitter:description" :content="description" />
+        <meta head-key="twitter:image" name="twitter:image" :content="absoluteImage" />
     </Head>
 </template>

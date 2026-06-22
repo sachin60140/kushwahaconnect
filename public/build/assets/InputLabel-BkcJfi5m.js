@@ -1,1 +1,0 @@
-import{c as e,t as o,J as l,o as t}from"./app-CoaBaw7K.js";const n={class:"block text-sm font-black text-blue-950"},c={key:0},r={key:1},u={__name:"InputLabel",props:{value:{type:String}},setup(s){return(a,_)=>(t(),e("label",n,[s.value?(t(),e("span",c,o(s.value),1)):(t(),e("span",r,[l(a.$slots,"default")]))]))}};export{u as _};
