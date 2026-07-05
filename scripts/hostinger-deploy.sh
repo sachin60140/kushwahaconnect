@@ -23,6 +23,13 @@ else
     fi
 fi
 
+PUBLIC_HTML_DIR="${PUBLIC_HTML_DIR:-../public_html}"
+if [ -d "$PUBLIC_HTML_DIR" ]; then
+    echo "Syncing public build assets to $PUBLIC_HTML_DIR/build..."
+    mkdir -p "$PUBLIC_HTML_DIR/build"
+    cp -R public/build/. "$PUBLIC_HTML_DIR/build/"
+fi
+
 if ! grep -q '^APP_KEY=base64:' .env; then
     echo "Generating Laravel app key..."
     php artisan key:generate --force

@@ -95,6 +95,12 @@ Steps:
 4. Keep the `.env`, `vendor`, `storage`, `bootstrap`, `app`, `routes`, and `config` folders outside `public_html`.
 5. Run the deploy script from the Laravel project folder.
 
+When using this fallback, browser assets must exist in `public_html/build`.
+The deploy script copies `kushwahaconnect/public/build` to `public_html/build`
+automatically when `public_html` is beside the project folder. If you deploy
+with Hostinger Git without running the script, manually copy the `public/build`
+folder to `public_html/build` after each frontend build.
+
 ## After Launch Checklist
 
 - Visit `/up`; it should return HTTP 200.
