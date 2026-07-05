@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Support\ImageUpload;
 use Illuminate\Http\Request;
 use App\Models\Gallery;
 use App\Models\GalleryImage;
@@ -41,7 +42,7 @@ class AdminGalleryController extends Controller
         if ($request->hasFile('images')) {
             $isFirst = true;
             foreach ($request->file('images') as $image) {
-                $path = $image->store('gallery', 'public');
+                $path = ImageUpload::storeGalleryImage($image, 'gallery');
                 
                 GalleryImage::create([
                     'gallery_id' => $gallery->id,

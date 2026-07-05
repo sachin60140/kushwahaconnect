@@ -33,6 +33,8 @@ const socialLinks = computed(() => [
 const navLinks = computed(() => [
     { label: __('menu_home'), href: route('welcome') },
     { label: __('menu_about'), href: '/about' },
+    { label: __('menu_pride'), href: route('pride.index') },
+    { label: __('menu_representatives'), href: route('representatives.index') },
     { label: __('menu_directory'), href: route('directory') },
     { label: __('menu_businesses'), href: route('businesses.index') },
     { label: __('menu_matrimonial'), href: route('matrimonial') },
@@ -201,6 +203,8 @@ const navLinks = computed(() => [
                     <h3 class="text-base font-black text-orange-300">{{ __('footer_quick_links') }}</h3>
                     <ul class="mt-4 space-y-3 text-sm text-blue-100">
                         <li><Link :href="route('join')" class="hover:text-white">{{ __('menu_join') }}</Link></li>
+                        <li><Link :href="route('pride.index')" class="hover:text-white">{{ __('menu_pride') }}</Link></li>
+                        <li><Link :href="route('representatives.index')" class="hover:text-white">{{ __('menu_representatives') }}</Link></li>
                         <li><Link :href="route('directory')" class="hover:text-white">{{ __('menu_directory') }}</Link></li>
                         <li><Link :href="route('businesses.index')" class="hover:text-white">{{ __('menu_businesses') }}</Link></li>
                         <li><Link :href="route('matrimonial')" class="hover:text-white">{{ __('menu_matrimonial') }}</Link></li>

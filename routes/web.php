@@ -4,9 +4,12 @@ use App\Http\Controllers\ProfileController;
 use App\Models\MemberProfile;
 use App\Models\MatrimonialProfile;
 use App\Models\NewsEvent;
+use App\Models\KushwahaPrideProfile;
+use App\Models\PublicRepresentative;
 use App\Models\Volunteer;
 use App\Models\WebsiteSetting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\LanguageController;
@@ -78,6 +81,48 @@ Route::get('/', function (Request $request) {
         return isset($settings[$key]) && $settings[$key] !== '' ? (int) $settings[$key] : $fallback;
     };
 
+    $prideHighlights = collect();
+    $representativeHighlights = collect();
+
+    if (Schema::hasTable('kushwaha_pride_profiles')) {
+        $prideHighlights = KushwahaPrideProfile::published()
+            ->where('is_featured', true)
+            ->orderBy('display_order')
+            ->latest()
+            ->take(5)
+            ->get();
+
+        if ($prideHighlights->count() < 5) {
+            $fallbackPride = KushwahaPrideProfile::published()
+                ->whereNotIn('id', $prideHighlights->pluck('id'))
+                ->orderBy('display_order')
+                ->latest()
+                ->take(5 - $prideHighlights->count())
+                ->get();
+
+            $prideHighlights = $prideHighlights->concat($fallbackPride)->values();
+        }
+    }
+
+    if (Schema::hasTable('public_representatives')) {
+        $representativeHighlights = PublicRepresentative::published()
+            ->where('representative_status', 'current')
+            ->where('is_featured', true)
+            ->orderBy('display_order')
+            ->latest()
+            ->take(4)
+            ->get();
+
+        if ($representativeHighlights->isEmpty()) {
+            $representativeHighlights = PublicRepresentative::published()
+                ->where('representative_status', 'current')
+                ->orderBy('display_order')
+                ->latest()
+                ->take(4)
+                ->get();
+        }
+    }
+
     return Inertia::render('Welcome', [
         'stats' => [
             'members' => $override('stat_members', MemberProfile::where('status', 'approved')->count()),
@@ -88,6 +133,11 @@ Route::get('/', function (Request $request) {
         'members' => $publicMembers,
         'upcomingEvents' => $upcomingEvents,
         'updates' => $updates,
+        'prideHighlight' => [
+            'featured' => $prideHighlights->first(),
+            'cards' => $prideHighlights->skip(1)->values(),
+        ],
+        'representativeHighlights' => $representativeHighlights,
     ]);
 })->name('welcome');
 
@@ -112,6 +162,11 @@ Route::get('/gallery/{id}', [\App\Http\Controllers\GalleryController::class, 'sh
 Route::get('/api/states/{state}/districts', [PublicController::class, 'getDistricts']);
 
 Route::get('/businesses', [\App\Http\Controllers\BusinessListingController::class, 'index'])->name('businesses.index');
+Route::get('/kushwaha-pride', [\App\Http\Controllers\PublicFigureController::class, 'pride'])->name('pride.index');
+Route::get('/public-representatives', [\App\Http\Controllers\PublicFigureController::class, 'representatives'])->name('representatives.index');
+Route::get('/nominate-inspiring-person', [\App\Http\Controllers\PublicFigureController::class, 'nominate'])->name('nominations.create');
+Route::post('/nominate-inspiring-person', [\App\Http\Controllers\PublicFigureController::class, 'storeNomination'])->name('nominations.store');
+Route::post('/profile-correction-requests', [\App\Http\Controllers\PublicFigureController::class, 'storeCorrection'])->name('corrections.store');
 
 Route::get('/privacy', [PublicController::class, 'privacy'])->name('privacy');
 Route::get('/terms', [PublicController::class, 'terms'])->name('terms');
@@ -120,6 +175,10 @@ Route::post('/data-deletion', [PublicController::class, 'storeDataDeletion'])->n
 
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Storage;
+
+Route::get('/public-uploads/{path}', fn (string $path) => \App\Support\PublicUpload::response($path))
+    ->where('path', '.*')
+    ->name('public.uploads.show');
 
 Route::redirect('/admin', '/dashboard');
 
@@ -228,6 +287,27 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/admin/settings', [\App\Http\Controllers\SettingsController::class, 'index'])->name('admin.settings.index');
     Route::post('/admin/settings', [\App\Http\Controllers\SettingsController::class, 'update'])->name('admin.settings.update');
+
+    Route::get('/admin/kushwaha-pride', [\App\Http\Controllers\Admin\KushwahaPrideProfileController::class, 'index'])->name('admin.pride.index');
+    Route::get('/admin/kushwaha-pride/create', [\App\Http\Controllers\Admin\KushwahaPrideProfileController::class, 'create'])->name('admin.pride.create');
+    Route::post('/admin/kushwaha-pride', [\App\Http\Controllers\Admin\KushwahaPrideProfileController::class, 'store'])->name('admin.pride.store');
+    Route::get('/admin/kushwaha-pride/{pride}/edit', [\App\Http\Controllers\Admin\KushwahaPrideProfileController::class, 'edit'])->name('admin.pride.edit');
+    Route::match(['put', 'patch'], '/admin/kushwaha-pride/{pride}', [\App\Http\Controllers\Admin\KushwahaPrideProfileController::class, 'update'])->name('admin.pride.update');
+    Route::patch('/admin/kushwaha-pride/{pride}/archive', [\App\Http\Controllers\Admin\KushwahaPrideProfileController::class, 'archive'])->name('admin.pride.archive');
+
+    Route::get('/admin/public-representatives', [\App\Http\Controllers\Admin\PublicRepresentativeController::class, 'index'])->name('admin.representatives.index');
+    Route::get('/admin/public-representatives/create', [\App\Http\Controllers\Admin\PublicRepresentativeController::class, 'create'])->name('admin.representatives.create');
+    Route::post('/admin/public-representatives', [\App\Http\Controllers\Admin\PublicRepresentativeController::class, 'store'])->name('admin.representatives.store');
+    Route::get('/admin/public-representatives/{representative}/edit', [\App\Http\Controllers\Admin\PublicRepresentativeController::class, 'edit'])->name('admin.representatives.edit');
+    Route::match(['put', 'patch'], '/admin/public-representatives/{representative}', [\App\Http\Controllers\Admin\PublicRepresentativeController::class, 'update'])->name('admin.representatives.update');
+    Route::patch('/admin/public-representatives/{representative}/archive', [\App\Http\Controllers\Admin\PublicRepresentativeController::class, 'archive'])->name('admin.representatives.archive');
+
+    Route::get('/admin/personality-nominations', [\App\Http\Controllers\Admin\PersonalityNominationController::class, 'index'])->name('admin.nominations.index');
+    Route::patch('/admin/personality-nominations/{nomination}', [\App\Http\Controllers\Admin\PersonalityNominationController::class, 'update'])->name('admin.nominations.update');
+    Route::delete('/admin/personality-nominations/{nomination}', [\App\Http\Controllers\Admin\PersonalityNominationController::class, 'destroy'])->name('admin.nominations.destroy');
+
+    Route::get('/admin/profile-corrections', [\App\Http\Controllers\Admin\ProfileCorrectionRequestController::class, 'index'])->name('admin.corrections.index');
+    Route::patch('/admin/profile-corrections/{correction}', [\App\Http\Controllers\Admin\ProfileCorrectionRequestController::class, 'update'])->name('admin.corrections.update');
 
     // Admin Business Listing Routes
     Route::get('/admin/businesses', [\App\Http\Controllers\Admin\BusinessListingAdminController::class, 'index'])->name('admin.business.index');

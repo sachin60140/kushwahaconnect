@@ -10,9 +10,12 @@ use App\Models\MemberProfile;
 use App\Models\ContactEnquiry;
 use App\Models\DataDeletionRequest;
 use App\Models\User;
+use App\Support\ImageUpload;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
 
 class PublicController extends Controller
@@ -71,9 +74,9 @@ class PublicController extends Controller
             'father_husband_name' => 'nullable|string|max:255',
             'gender' => 'required|string',
             'dob' => 'nullable|date',
-            'mobile' => 'required|string|max:20',
+            'mobile' => ['required', 'string', 'max:20', Rule::unique(User::class, 'mobile')],
             'whatsapp' => 'nullable|string|max:20',
-            'email' => 'nullable|email|max:255',
+            'email' => ['nullable', 'email', 'max:255', Rule::unique(User::class, 'email')],
             'state_id' => 'required|exists:states,id',
             'district_id' => 'required|exists:districts,id',
             'city_village' => 'required|string|max:255',
@@ -98,32 +101,34 @@ class PublicController extends Controller
             'show_mobile' => 'boolean',
             'allow_whatsapp' => 'boolean',
             'consent' => 'accepted',
-            'consent' => 'accepted',
             'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         if ($request->hasFile('profile_photo')) {
-            $validated['profile_photo'] = $request->file('profile_photo')->store('profile_photos', 'public');
+            $validated['profile_photo'] = ImageUpload::storeProfilePhoto($request->file('profile_photo'), 'profile_photos');
         }
 
-        // Create User account
-        $user = User::create([
-            'name' => $validated['full_name'],
-            'email' => $validated['email'],
-            'mobile' => $validated['mobile'],
-            'password' => Hash::make($validated['password']),
-            'status' => 'pending_approval'
-        ]);
+        $user = DB::transaction(function () use ($validated) {
+            $user = User::create([
+                'name' => $validated['full_name'],
+                'email' => $validated['email'] ?? null,
+                'mobile' => $validated['mobile'],
+                'password' => Hash::make($validated['password']),
+                'status' => 'pending_approval',
+            ]);
 
-        $validated['user_id'] = $user->id;
-        $validated['status'] = 'pending'; // Pending approval by default
+            $validated['user_id'] = $user->id;
+            $validated['status'] = 'pending'; // Pending approval by default
 
-        // Remove password fields before creating member profile
-        unset($validated['password']);
-        unset($validated['password_confirmation']);
+            // Remove password fields before creating member profile
+            unset($validated['password']);
+            unset($validated['password_confirmation']);
 
-        MemberProfile::create($validated);
+            MemberProfile::create($validated);
+
+            return $user;
+        });
 
         // Auto-login the user
         Auth::login($user);
@@ -157,7 +162,7 @@ class PublicController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            $validated['photo'] = $request->file('photo')->store('matrimonial_photos', 'local');
+            $validated['photo'] = ImageUpload::storeProfilePhoto($request->file('photo'), 'matrimonial_photos', 'local');
         }
 
         if ($request->hasFile('id_proof')) {

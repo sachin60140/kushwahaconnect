@@ -2,6 +2,8 @@ export const dictionary = {
     en: {
         menu_home: 'Home',
         menu_about: 'Kushwaha Samaj',
+        menu_pride: 'Kushwaha Pride',
+        menu_representatives: 'Public Representatives',
         menu_join: 'Join Community',
         menu_matrimonial: 'Matrimonial',
         menu_help: 'Help',
@@ -161,6 +163,8 @@ export const dictionary = {
     hi: {
         menu_home: 'होम',
         menu_about: 'कुशवाहा समाज',
+        menu_pride: 'कुशवाहा गौरव',
+        menu_representatives: 'जनप्रतिनिधि',
         menu_join: 'समाज से जुड़ें',
         menu_matrimonial: 'वैवाहिक',
         menu_help: 'सहयोग',

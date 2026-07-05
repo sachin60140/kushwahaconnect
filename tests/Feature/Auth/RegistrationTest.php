@@ -4,6 +4,7 @@ namespace Tests\Feature\Auth;
 
 use App\Models\District;
 use App\Models\State;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -71,6 +72,95 @@ class RegistrationTest extends TestCase
             'full_name' => 'Test User',
             'mobile' => '9876543210',
             'status' => 'pending',
+        ]);
+    }
+
+    public function test_new_users_can_join_without_an_email_address(): void
+    {
+        $state = State::create([
+            'name_en' => 'Bihar',
+            'name_hi' => 'Bihar',
+            'code' => 'BR',
+            'status' => true,
+        ]);
+
+        $district = District::create([
+            'state_id' => $state->id,
+            'name_en' => 'Patna',
+            'name_hi' => 'Patna',
+            'status' => true,
+        ]);
+
+        $response = $this->post('/join', [
+            'full_name' => 'No Email User',
+            'father_husband_name' => 'Test Parent',
+            'gender' => 'Male',
+            'mobile' => '9876543211',
+            'whatsapp' => '9876543211',
+            'email' => '',
+            'state_id' => $state->id,
+            'district_id' => $district->id,
+            'city_village' => 'Patna',
+            'pin_code' => '800001',
+            'current_address' => 'Patna, Bihar',
+            'consent' => '1',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ]);
+
+        $this->assertAuthenticated();
+        $response->assertRedirect(route('dashboard', absolute: false));
+
+        $this->assertDatabaseHas('users', [
+            'name' => 'No Email User',
+            'mobile' => '9876543211',
+            'email' => null,
+            'status' => 'pending_approval',
+        ]);
+    }
+
+    public function test_join_validation_rejects_duplicate_mobile_and_email(): void
+    {
+        $state = State::create([
+            'name_en' => 'Bihar',
+            'name_hi' => 'Bihar',
+            'code' => 'BR',
+            'status' => true,
+        ]);
+
+        $district = District::create([
+            'state_id' => $state->id,
+            'name_en' => 'Patna',
+            'name_hi' => 'Patna',
+            'status' => true,
+        ]);
+
+        User::factory()->create([
+            'mobile' => '9876543212',
+            'email' => 'existing@example.com',
+        ]);
+
+        $response = $this->post('/join', [
+            'full_name' => 'Duplicate User',
+            'father_husband_name' => 'Test Parent',
+            'gender' => 'Male',
+            'mobile' => '9876543212',
+            'whatsapp' => '9876543212',
+            'email' => 'existing@example.com',
+            'state_id' => $state->id,
+            'district_id' => $district->id,
+            'city_village' => 'Patna',
+            'pin_code' => '800001',
+            'current_address' => 'Patna, Bihar',
+            'consent' => '1',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ]);
+
+        $this->assertGuest();
+        $response->assertSessionHasErrors(['mobile', 'email']);
+        $this->assertDatabaseMissing('member_profiles', [
+            'full_name' => 'Duplicate User',
         ]);
     }
 }

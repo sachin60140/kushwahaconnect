@@ -29,6 +29,10 @@ const userLinks = [
 const adminLinks = [
     { name: 'Dashboard', route: 'dashboard', active: 'dashboard', icon: 'M3 12 12 3l9 9M5 10v10h5v-6h4v6h5V10' },
     { name: 'News & Events', route: 'admin.news.index', active: 'admin.news.*', icon: 'M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1m2 13a2 2 0 0 1-2-2V7m2 13a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2M7 8h6v4H7V8Z' },
+    { name: 'Kushwaha Pride', route: 'admin.pride.index', active: 'admin.pride.*', icon: 'M12 3l2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 16.4 6.7 19.1l1-5.8L3.5 9.2l5.9-.9L12 3Z' },
+    { name: 'Representatives', route: 'admin.representatives.index', active: 'admin.representatives.*', icon: 'M12 3 4 7v6c0 4.4 3.4 8 8 8s8-3.6 8-8V7l-8-4Zm0 4v10m-4-5h8' },
+    { name: 'Nominations', route: 'admin.nominations.index', active: 'admin.nominations.*', icon: 'M12 6v12m6-6H6M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Z' },
+    { name: 'Corrections', route: 'admin.corrections.index', active: 'admin.corrections.*', icon: 'M16.9 3.6a2 2 0 0 1 2.8 2.8L8.6 17.5 4 19l1.5-4.6L16.9 3.6ZM4 21h16' },
     { name: 'Members Directory', route: 'admin.members', active: 'admin.members.*', icon: 'M17 20h5v-2a4 4 0 0 0-7.6-1.7M9 20H4v-2a4 4 0 0 1 7.6-1.7M12 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0Zm8 0a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z' },
     { name: 'Matrimonial', route: 'admin.matrimonial', active: 'admin.matrimonial.*', icon: 'M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z' },
     { name: 'Jobs', route: 'admin.jobs.index', active: 'admin.jobs.*', icon: 'M21 13.2A24 24 0 0 1 12 15a24 24 0 0 1-9-1.8M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2M5 20h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2Z' },

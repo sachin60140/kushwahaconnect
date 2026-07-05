@@ -6,6 +6,8 @@ import SeoMeta from '@/Components/SeoMeta.vue';
 import HomeHero from '@/Components/Home/HomeHero.vue';
 import TrustStats from '@/Components/Home/TrustStats.vue';
 import AboutCommunity from '@/Components/Home/AboutCommunity.vue';
+import KushwahaPrideSection from '@/Components/Home/KushwahaPrideSection.vue';
+import PublicRepresentativesSection from '@/Components/Home/PublicRepresentativesSection.vue';
 import WhyJoin from '@/Components/Home/WhyJoin.vue';
 import JoinCommunityCta from '@/Components/Home/JoinCommunityCta.vue';
 import CommunityDirectoryPreview from '@/Components/Home/CommunityDirectoryPreview.vue';
@@ -34,6 +36,14 @@ defineProps({
         type: Object,
         default: () => ({}),
     },
+    prideHighlight: {
+        type: Object,
+        default: () => ({ featured: null, cards: [] }),
+    },
+    representativeHighlights: {
+        type: Array,
+        default: () => [],
+    },
 });
 
 const page = usePage();
@@ -58,6 +68,8 @@ const socialHref = computed(() => {
         <HomeHero :settings="settings" :social-href="socialHref" class="kc-fade-up" />
         <TrustStats :stats="stats" class="kc-fade-up" />
         <AboutCommunity :settings="settings" class="kc-fade-up" />
+        <KushwahaPrideSection :highlight="prideHighlight" class="kc-fade-up" />
+        <PublicRepresentativesSection :representatives="representativeHighlights" class="kc-fade-up" />
         <WhyJoin class="kc-fade-up" />
         <JoinCommunityCta class="kc-fade-up" />
         <CommunityDirectoryPreview :members="members" class="kc-fade-up" />

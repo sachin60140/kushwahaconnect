@@ -11,11 +11,17 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\MembersExport;
 use App\Exports\MatrimonialExport;
 use App\Exports\ContactExport;
+use Illuminate\Support\Facades\Schema;
 
 class AdminController extends Controller
 {
     public function dashboard()
     {
+        $hasPrideProfiles = Schema::hasTable('kushwaha_pride_profiles');
+        $hasRepresentatives = Schema::hasTable('public_representatives');
+        $hasNominations = Schema::hasTable('personality_nominations');
+        $hasCorrections = Schema::hasTable('profile_correction_requests');
+
         $stats = [
             // Overall Counts
             'total_members' => MemberProfile::count(),
@@ -27,6 +33,9 @@ class AdminController extends Controller
             'total_education' => \App\Models\EducationResource::count(),
             'total_medical' => \App\Models\MedicalResource::count(),
             'total_gallery' => \App\Models\Gallery::count(),
+            'total_pride_profiles' => $hasPrideProfiles ? \App\Models\KushwahaPrideProfile::count() : 0,
+            'total_public_representatives' => $hasRepresentatives ? \App\Models\PublicRepresentative::count() : 0,
+            'total_personality_nominations' => $hasNominations ? \App\Models\PersonalityNomination::count() : 0,
             
             // Pending Approvals (Requires Action)
             'pending_members' => MemberProfile::where('status', 'pending')->count(),
@@ -34,6 +43,8 @@ class AdminController extends Controller
             'pending_jobs' => \App\Models\JobPosting::where('status', 'pending')->count(),
             'pending_volunteers' => \App\Models\Volunteer::where('status', 'Pending')->count(),
             'pending_help' => \App\Models\HelpRequest::where('status', 'Pending')->count(),
+            'pending_personality_nominations' => $hasNominations ? \App\Models\PersonalityNomination::whereIn('status', ['submitted', 'under_review', 'more_information_required'])->count() : 0,
+            'pending_corrections' => $hasCorrections ? \App\Models\ProfileCorrectionRequest::whereIn('status', ['submitted', 'under_review'])->count() : 0,
             
             // New this month
             'new_members_this_month' => MemberProfile::whereMonth('created_at', now()->month)->count(),

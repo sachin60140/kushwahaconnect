@@ -176,8 +176,8 @@ class AdminFlowsTest extends TestCase
         $founderPhotoUrl = WebsiteSetting::where('key', 'founder_photo_url')->value('value');
 
         $this->assertNotEmpty($founderPhotoUrl);
-        $this->assertStringStartsWith('/storage/founder/', $founderPhotoUrl);
-        Storage::disk('public')->assertExists(Str::after($founderPhotoUrl, '/storage/'));
+        $this->assertStringStartsWith('/public-uploads/founder/', $founderPhotoUrl);
+        Storage::disk('public')->assertExists(Str::after($founderPhotoUrl, '/public-uploads/'));
     }
 
     public function test_admin_delete_actions_work(): void

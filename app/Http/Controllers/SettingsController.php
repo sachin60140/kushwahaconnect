@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Support\ImageUpload;
+use App\Support\PublicUpload;
 use Illuminate\Http\Request;
 use App\Models\WebsiteSetting;
 use Inertia\Inertia;
@@ -29,14 +31,16 @@ class SettingsController extends Controller
 
         if ($request->hasFile('founder_photo_upload')) {
             $previousPhoto = WebsiteSetting::where('key', 'founder_photo_url')->value('value');
-            $path = $request->file('founder_photo_upload')->store('founder', 'public');
+            $path = ImageUpload::storeSquare($request->file('founder_photo_upload'), 'founder');
 
-            if ($previousPhoto && Str::startsWith($previousPhoto, ['/storage/founder/', asset('storage/founder')])) {
-                $previousPath = Str::after($previousPhoto, '/storage/');
+            if ($previousPhoto && Str::contains($previousPhoto, ['/public-uploads/founder/', '/storage/founder/'])) {
+                $previousPath = Str::contains($previousPhoto, '/public-uploads/')
+                    ? Str::after($previousPhoto, '/public-uploads/')
+                    : Str::after($previousPhoto, '/storage/');
                 Storage::disk('public')->delete($previousPath);
             }
 
-            $data['founder_photo_url'] = Storage::disk('public')->url($path);
+            $data['founder_photo_url'] = PublicUpload::url($path);
         }
 
         foreach ($data as $key => $value) {

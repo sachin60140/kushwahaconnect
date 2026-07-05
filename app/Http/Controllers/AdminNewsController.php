@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Support\ImageUpload;
 use Illuminate\Http\Request;
 use App\Models\NewsEvent;
 use Inertia\Inertia;
@@ -48,7 +49,7 @@ class AdminNewsController extends Controller
         }
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('news_events', 'public');
+            $validated['image'] = ImageUpload::storeCover($request->file('image'), 'news_events');
         }
 
         NewsEvent::create($validated);
@@ -92,7 +93,7 @@ class AdminNewsController extends Controller
             if ($item->image) {
                 Storage::disk('public')->delete($item->image);
             }
-            $validated['image'] = $request->file('image')->store('news_events', 'public');
+            $validated['image'] = ImageUpload::storeCover($request->file('image'), 'news_events');
         }
 
         $item->update($validated);

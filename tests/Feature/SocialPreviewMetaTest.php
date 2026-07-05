@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Gallery;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -47,5 +48,27 @@ class SocialPreviewMetaTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('name="robots" content="noindex, nofollow"', false);
+    }
+
+    public function test_google_analytics_tag_renders_only_on_public_pages(): void
+    {
+        $this->get(route('welcome'))
+            ->assertOk()
+            ->assertSee('https://www.googletagmanager.com/gtag/js?id=G-SXSLYEZHM7', false)
+            ->assertSee('window.KUSHWAHA_CONNECT_GA_ID', false);
+
+        $this->get(route('login'))
+            ->assertOk()
+            ->assertDontSee('https://www.googletagmanager.com/gtag/js?id=G-SXSLYEZHM7', false);
+
+        $user = User::factory()->create([
+            'role' => 'user',
+            'status' => 'approved',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('dashboard'))
+            ->assertOk()
+            ->assertDontSee('https://www.googletagmanager.com/gtag/js?id=G-SXSLYEZHM7', false);
     }
 }

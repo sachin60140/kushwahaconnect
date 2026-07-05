@@ -80,6 +80,18 @@ class Seo
                 'title' => 'Kushwaha Business Directory',
                 'description' => 'Discover and support verified businesses owned by Kushwaha community members.',
             ],
+            'pride.index' => [
+                'title' => 'Kushwaha Pride - Verified Community Personalities',
+                'description' => 'Explore verified inspiring personalities from the Kushwaha community across education, civil services, business, healthcare, sports, social service and more.',
+            ],
+            'representatives.index' => [
+                'title' => 'Prominent Public Representatives from Kushwaha Community',
+                'description' => 'View neutral, source-backed public profiles of current and former Kushwaha community representatives across India.',
+            ],
+            'nominations.create' => [
+                'title' => 'Nominate an Inspiring Kushwaha Personality',
+                'description' => 'Suggest an inspiring person from Kushwaha Samaj for admin-reviewed verification and possible publication on Kushwaha Pride.',
+            ],
             'businesses.create' => [
                 'title' => 'Submit Your Business',
                 'description' => 'List your business on KushwahaConnect and reach community members looking for trusted services and products.',

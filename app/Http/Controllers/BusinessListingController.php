@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Support\ImageUpload;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\BusinessListing;
 use App\Models\State;
-use Illuminate\Support\Facades\Storage;
 
 class BusinessListingController extends Controller
 {
@@ -89,11 +89,11 @@ class BusinessListingController extends Controller
         ]);
 
         if ($request->hasFile('logo')) {
-            $validated['logo_path'] = $request->file('logo')->store('business_logos', 'public');
+            $validated['logo_path'] = ImageUpload::storeSquare($request->file('logo'), 'business_logos');
         }
         
         if ($request->hasFile('cover_image')) {
-            $validated['cover_image_path'] = $request->file('cover_image')->store('business_covers', 'public');
+            $validated['cover_image_path'] = ImageUpload::storeCover($request->file('cover_image'), 'business_covers');
         }
 
         unset($validated['logo']);

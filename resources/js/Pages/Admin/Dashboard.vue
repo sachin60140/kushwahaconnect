@@ -18,6 +18,8 @@ const statCards = [
     { name: 'Medical Resources', stat: props.stats.total_medical, icon: 'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z', color: 'text-red-600', bg: 'bg-red-100', route: route('admin.medical.index') },
     { name: 'Total Volunteers', stat: props.stats.total_volunteers, icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0z', color: 'text-orange-600', bg: 'bg-orange-100', route: route('admin.volunteers.index') },
     { name: 'Gallery Albums', stat: props.stats.total_gallery, icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z', color: 'text-purple-600', bg: 'bg-purple-100', route: route('admin.gallery.index') },
+    { name: 'Kushwaha Pride', stat: props.stats.total_pride_profiles, icon: 'M12 3l2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 16.4 6.7 19.1l1-5.8L3.5 9.2l5.9-.9L12 3Z', color: 'text-blue-600', bg: 'bg-blue-100', route: route('admin.pride.index') },
+    { name: 'Representatives', stat: props.stats.total_public_representatives, icon: 'M12 3 4 7v6c0 4.4 3.4 8 8 8s8-3.6 8-8V7l-8-4Zm0 4v10m-4-5h8', color: 'text-green-700', bg: 'bg-green-100', route: route('admin.representatives.index') },
 ];
 
 const pendingItems = [
@@ -26,6 +28,8 @@ const pendingItems = [
     { name: 'Pending Job Posts', count: props.stats.pending_jobs, route: route('admin.jobs.index') },
     { name: 'Pending Volunteers', count: props.stats.pending_volunteers, route: route('admin.volunteers.index') },
     { name: 'Pending Help Requests', count: props.stats.pending_help, route: route('admin.help-requests.index') },
+    { name: 'Pending Personality Nominations', count: props.stats.pending_personality_nominations, route: route('admin.nominations.index') },
+    { name: 'Pending Corrections', count: props.stats.pending_corrections, route: route('admin.corrections.index') },
 ];
 
 // Growth Chart Options
