@@ -1,7 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Modal from '@/Components/Modal.vue';
-import { Head, Link, useForm, router } from '@inertiajs/vue3';
+import { Head, Link, useForm, router, usePage } from '@inertiajs/vue3';
 import { ref, computed, watch } from 'vue';
 
 const props = defineProps({
@@ -10,18 +10,41 @@ const props = defineProps({
     filters: Object
 });
 
-const form = useForm({});
+const page = usePage();
+const statusMessage = ref('');
+const statusError = ref('');
+const processingMemberId = ref(null);
+const processingStatus = ref('');
+const deleteForm = useForm({});
 
 const updateStatus = (id, status) => {
-    form.patch(route('admin.members.status', id), {
-        data: { status: status },
-        preserveScroll: true
+    if (processingMemberId.value) return;
+
+    statusMessage.value = '';
+    statusError.value = '';
+    processingMemberId.value = id;
+    processingStatus.value = status;
+
+    router.patch(route('admin.members.status', id), { status }, {
+        preserveScroll: true,
+        onSuccess: () => {
+            statusMessage.value = status === 'approved'
+                ? 'Member approved successfully.'
+                : 'Member rejected successfully.';
+        },
+        onError: (errors) => {
+            statusError.value = errors.status || 'Unable to update member status. Please try again.';
+        },
+        onFinish: () => {
+            processingMemberId.value = null;
+            processingStatus.value = '';
+        }
     });
 };
 
 const destroy = (id) => {
     if (confirm('Are you sure you want to delete this member?')) {
-        form.delete(route('admin.members.destroy', id), {
+        deleteForm.delete(route('admin.members.destroy', id), {
             preserveScroll: true
         });
     }
@@ -94,6 +117,20 @@ const closeModal = () => {
 
         <div class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8 space-y-6">
+                <div
+                    v-if="page.props.flash?.success || statusMessage"
+                    class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-bold text-green-800"
+                >
+                    {{ statusMessage || page.props.flash.success }}
+                </div>
+
+                <div
+                    v-if="page.props.flash?.error || statusError"
+                    class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-800"
+                >
+                    {{ statusError || page.props.flash.error }}
+                </div>
+
                 <!-- Filters -->
                 <div class="bg-white p-6 shadow-sm sm:rounded-xl border border-gray-100">
                     <form @submit.prevent="applyFilters" class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
@@ -175,10 +212,22 @@ const closeModal = () => {
                                     <td class="px-6 py-4 text-right space-x-4">
                                         <button @click="openViewModal(member)" class="text-indigo-600 hover:text-indigo-900 font-bold transition-colors">View Details</button>
                                         <template v-if="member.status !== 'approved'">
-                                            <button @click="updateStatus(member.id, 'approved')" class="text-green-600 hover:text-green-900 font-bold transition-colors">Approve</button>
+                                            <button
+                                                @click="updateStatus(member.id, 'approved')"
+                                                :disabled="processingMemberId === member.id"
+                                                class="text-green-600 hover:text-green-900 font-bold transition-colors disabled:cursor-not-allowed disabled:text-gray-400"
+                                            >
+                                                {{ processingMemberId === member.id && processingStatus === 'approved' ? 'Approving...' : 'Approve' }}
+                                            </button>
                                         </template>
                                         <template v-if="member.status !== 'rejected'">
-                                            <button @click="updateStatus(member.id, 'rejected')" class="text-red-600 hover:text-red-900 font-bold transition-colors">Reject</button>
+                                            <button
+                                                @click="updateStatus(member.id, 'rejected')"
+                                                :disabled="processingMemberId === member.id"
+                                                class="text-red-600 hover:text-red-900 font-bold transition-colors disabled:cursor-not-allowed disabled:text-gray-400"
+                                            >
+                                                {{ processingMemberId === member.id && processingStatus === 'rejected' ? 'Rejecting...' : 'Reject' }}
+                                            </button>
                                         </template>
                                     </td>
                                 </tr>
@@ -278,9 +327,23 @@ const closeModal = () => {
                     </div>
 
                     <div class="md:col-span-2 pt-6 flex justify-end space-x-3 mt-2 border-t border-gray-100">
-                        <button v-if="selectedMember.status !== 'approved'" @click="updateStatus(selectedMember.id, 'approved'); closeModal()" class="px-5 py-2.5 bg-green-600 text-white font-bold rounded-lg shadow-sm hover:bg-green-700 transition-colors">Approve Profile</button>
-                        <button v-if="selectedMember.status !== 'rejected'" @click="updateStatus(selectedMember.id, 'rejected'); closeModal()" class="px-5 py-2.5 bg-red-600 text-white font-bold rounded-lg shadow-sm hover:bg-red-700 transition-colors">Reject Profile</button>
-                        <button @click="destroy(selectedMember.id); closeModal()" class="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 font-bold rounded-lg hover:bg-gray-50 transition-colors">Delete Member</button>
+                        <button
+                            v-if="selectedMember.status !== 'approved'"
+                            @click="updateStatus(selectedMember.id, 'approved'); closeModal()"
+                            :disabled="processingMemberId === selectedMember.id"
+                            class="px-5 py-2.5 bg-green-600 text-white font-bold rounded-lg shadow-sm hover:bg-green-700 transition-colors disabled:cursor-not-allowed disabled:bg-gray-300"
+                        >
+                            {{ processingMemberId === selectedMember.id && processingStatus === 'approved' ? 'Approving...' : 'Approve Profile' }}
+                        </button>
+                        <button
+                            v-if="selectedMember.status !== 'rejected'"
+                            @click="updateStatus(selectedMember.id, 'rejected'); closeModal()"
+                            :disabled="processingMemberId === selectedMember.id"
+                            class="px-5 py-2.5 bg-red-600 text-white font-bold rounded-lg shadow-sm hover:bg-red-700 transition-colors disabled:cursor-not-allowed disabled:bg-gray-300"
+                        >
+                            {{ processingMemberId === selectedMember.id && processingStatus === 'rejected' ? 'Rejecting...' : 'Reject Profile' }}
+                        </button>
+                        <button @click="destroy(selectedMember.id); closeModal()" :disabled="deleteForm.processing" class="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 font-bold rounded-lg hover:bg-gray-50 transition-colors disabled:cursor-not-allowed disabled:bg-gray-100">Delete Member</button>
                     </div>
                 </div>
             </div>

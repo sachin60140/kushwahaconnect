@@ -11,7 +11,11 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\MembersExport;
 use App\Exports\MatrimonialExport;
 use App\Exports\ContactExport;
+use App\Notifications\ProfileApprovedNotification;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
+use Throwable;
 
 class AdminController extends Controller
 {
@@ -213,15 +217,29 @@ class AdminController extends Controller
 
     public function updateMemberStatus(Request $request, $id)
     {
-        $member = MemberProfile::findOrFail($id);
-        $request->validate(['status' => 'required|in:approved,rejected']);
-        $member->update(['status' => $request->status]);
-        
-        if ($request->status === 'approved' && $member->user) {
-            $member->user->notify(new \App\Notifications\ProfileApprovedNotification());
-            // Keep the dashboard account status in sync with the reviewed profile.
-            if (in_array($member->user->status, ['pending', 'pending_approval', 'profile_incomplete'], true)) {
-                $member->user->update(['status' => 'approved']);
+        $validated = $request->validate(['status' => 'required|in:approved,rejected']);
+        $member = MemberProfile::with('user')->findOrFail($id);
+
+        DB::transaction(function () use ($member, $validated) {
+            $member->update(['status' => $validated['status']]);
+
+            if ($validated['status'] === 'approved' && $member->user) {
+                // Keep the dashboard account status in sync with the reviewed profile.
+                if (in_array($member->user->status, ['pending', 'pending_approval', 'profile_incomplete'], true)) {
+                    $member->user->update(['status' => 'approved']);
+                }
+            }
+        });
+
+        if ($validated['status'] === 'approved' && $member->user) {
+            try {
+                $member->user->notify(new ProfileApprovedNotification());
+            } catch (Throwable $exception) {
+                Log::warning('Profile approval notification failed.', [
+                    'member_profile_id' => $member->id,
+                    'user_id' => $member->user->id,
+                    'error' => $exception->getMessage(),
+                ]);
             }
         }
         
