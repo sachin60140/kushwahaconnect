@@ -65,13 +65,13 @@ class RegistrationTest extends TestCase
         $this->assertDatabaseHas('users', [
             'name' => 'Test User',
             'mobile' => '9876543210',
-            'status' => 'pending_approval',
+            'status' => 'approved',
         ]);
 
         $this->assertDatabaseHas('member_profiles', [
             'full_name' => 'Test User',
             'mobile' => '9876543210',
-            'status' => 'pending',
+            'status' => 'approved',
         ]);
     }
 
@@ -115,7 +115,7 @@ class RegistrationTest extends TestCase
             'name' => 'No Email User',
             'mobile' => '9876543211',
             'email' => null,
-            'status' => 'pending_approval',
+            'status' => 'approved',
         ]);
     }
 

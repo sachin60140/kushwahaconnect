@@ -115,11 +115,11 @@ class PublicController extends Controller
                 'email' => $validated['email'] ?? null,
                 'mobile' => $validated['mobile'],
                 'password' => Hash::make($validated['password']),
-                'status' => 'pending_approval',
+                'status' => 'approved',
             ]);
 
             $validated['user_id'] = $user->id;
-            $validated['status'] = 'pending'; // Pending approval by default
+            $validated['status'] = 'approved';
 
             // Remove password fields before creating member profile
             unset($validated['password']);
@@ -133,7 +133,7 @@ class PublicController extends Controller
         // Auto-login the user
         Auth::login($user);
 
-        return redirect()->route('dashboard')->with('success', 'Registration submitted successfully. Your profile is pending approval.');
+        return redirect()->route('dashboard')->with('success', 'Registration completed successfully. Your profile is approved.');
     }
 
     public function matrimonial()
@@ -312,7 +312,7 @@ class PublicController extends Controller
 <p>We use submitted information to run community services, verify profiles, enable member discovery, support matrimonial and help workflows, publish approved public content, respond to enquiries, prevent misuse, and improve KushwahaConnect.</p>
 
 <h2>Public Visibility</h2>
-<p>Only approved and permitted details may appear publicly. Community directory previews do not show full mobile numbers, email addresses, or exact addresses. Matrimonial and member visibility may depend on profile approval, privacy settings, and platform rules.</p>
+<p>Only permitted details may appear publicly. Community directory previews do not show full mobile numbers, email addresses, or exact addresses. Matrimonial visibility may depend on profile approval, privacy settings, and platform rules.</p>
 
 <h2>Sharing of Information</h2>
 <p>We do not sell personal data. Information may be shared only where needed for platform features, legal compliance, safety, verification, dispute handling, or with your consent. Publicly submitted listings, news, events, help requests, volunteer information, and approved profiles may be visible according to their settings.</p>
@@ -353,7 +353,7 @@ HTML;
 </ul>
 
 <h2>Profile Review and Approval</h2>
-<p>Community profiles, matrimonial profiles, business listings, news, events, help requests, volunteer registrations, and gallery content may require admin approval. KushwahaConnect may approve, reject, edit, hide, suspend, or remove content that violates platform rules or community safety expectations.</p>
+<p>Community member registrations are active after submission. Matrimonial profiles, business listings, news, events, help requests, volunteer registrations, and gallery content may require admin approval. KushwahaConnect may approve, reject, edit, hide, suspend, or remove content that violates platform rules or community safety expectations.</p>
 
 <h2>Matrimonial Service</h2>
 <p>The matrimonial section is intended to help families discover suitable profiles within the community. Users are responsible for verifying identity, family details, documents, compatibility, and any other information before making personal decisions. KushwahaConnect does not guarantee any match, marriage, relationship outcome, or background verification beyond platform review.</p>
