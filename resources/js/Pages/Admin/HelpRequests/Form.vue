@@ -1,28 +1,53 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { computed } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import InputError from '@/Components/InputError.vue';
+import HelpExtraFields from '@/Components/HelpExtraFields.vue';
 
 const props = defineProps({
+    // null when creating; the existing request when editing.
+    helpRequest: {
+        type: Object,
+        default: null,
+    },
     categories: Array,
     urgencies: Array,
     statuses: Array,
+    maxDocuments: {
+        type: Number,
+        default: 5,
+    },
 });
 
-// Admin creates the request on behalf of the person who needs help.
+const editing = computed(() => !!props.helpRequest);
+const existing = props.helpRequest || {};
+
+// Admin creates/edits the request on behalf of the person who needs help.
 const form = useForm({
-    name: '',
-    mobile: '',
-    whatsapp: '',
-    state: '',
-    district: '',
-    city: '',
-    category: props.categories[0] ?? 'Other',
-    title: '',
-    description: '',
-    urgency: 'Normal',
-    status: 'Approved',
-    is_public: true,
+    name: existing.name ?? '',
+    mobile: existing.mobile ?? '',
+    whatsapp: existing.whatsapp ?? '',
+    state: existing.state ?? '',
+    district: existing.district ?? '',
+    city: existing.city ?? '',
+    category: existing.category ?? props.categories[0] ?? 'Other',
+    title: existing.title ?? '',
+    description: existing.description ?? '',
+    urgency: existing.urgency ?? 'Normal',
+    status: existing.status ?? 'Approved',
+    is_public: existing.is_public ?? true,
+    // Documents & donation details
+    documents: [],
+    account_holder_name: existing.account_holder_name ?? '',
+    bank_account_number: existing.bank_account_number ?? '',
+    bank_ifsc: existing.bank_ifsc ?? '',
+    bank_name: existing.bank_name ?? '',
+    bank_branch: existing.bank_branch ?? '',
+    upi_id: existing.upi_id ?? '',
+    upi_qr: null,
+    remove_documents: [],
+    remove_upi_qr: false,
 });
 
 const sameAsMobile = () => {
@@ -30,21 +55,27 @@ const sameAsMobile = () => {
 };
 
 const submit = () => {
-    form.post(route('admin.help-requests.store'), { preserveScroll: true });
+    const url = editing.value
+        ? route('admin.help-requests.update', props.helpRequest.id)
+        : route('admin.help-requests.store');
+
+    form.post(url, { preserveScroll: true, forceFormData: true });
 };
 
 const inputClass = 'mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-orange-500 focus:ring-orange-500 sm:text-sm';
 </script>
 
 <template>
-    <Head title="Create Help Request" />
+    <Head :title="editing ? 'Edit Help Request' : 'Create Help Request'" />
 
     <AuthenticatedLayout>
         <template #header>
             <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
                 <div>
-                    <h2 class="font-semibold text-xl text-gray-800 leading-tight">Create Help Request</h2>
-                    <p class="mt-1 text-sm text-gray-500">Record a request on behalf of anyone who needs help, member or not.</p>
+                    <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ editing ? 'Edit Help Request' : 'Create Help Request' }}</h2>
+                    <p class="mt-1 text-sm text-gray-500">
+                        {{ editing ? 'Update details, documents and donation information.' : 'Record a request on behalf of anyone who needs help, member or not.' }}
+                    </p>
                 </div>
                 <Link :href="route('admin.help-requests.index')" class="text-sm font-bold text-gray-600 hover:text-gray-900">← Back to Help Requests</Link>
             </div>
@@ -123,6 +154,13 @@ const inputClass = 'mt-1 block w-full rounded-md border-gray-300 shadow-xs focus
                         </div>
                     </section>
 
+                    <HelpExtraFields
+                        :form="form"
+                        :existing-documents="helpRequest?.documents || []"
+                        :existing-upi-qr-url="helpRequest?.upi_qr_url || null"
+                        :max-documents="maxDocuments"
+                    />
+
                     <section>
                         <h3 class="text-xs font-bold uppercase tracking-widest text-orange-600 mb-4">Publishing</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 items-start">
@@ -146,7 +184,7 @@ const inputClass = 'mt-1 block w-full rounded-md border-gray-300 shadow-xs focus
                     <div class="flex justify-end gap-3 border-t border-gray-100 pt-6">
                         <Link :href="route('admin.help-requests.index')" class="px-5 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors">Cancel</Link>
                         <button type="submit" :disabled="form.processing" class="px-5 py-2.5 bg-orange-600 text-white font-bold rounded-lg shadow-xs hover:bg-orange-700 transition-colors disabled:cursor-not-allowed disabled:opacity-60">
-                            {{ form.processing ? 'Creating…' : 'Create Help Request' }}
+                            {{ form.processing ? 'Saving…' : (editing ? 'Save Changes' : 'Create Help Request') }}
                         </button>
                     </div>
                 </form>

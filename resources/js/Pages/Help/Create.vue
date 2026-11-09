@@ -1,6 +1,7 @@
 <script setup>
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
+import HelpExtraFields from '@/Components/HelpExtraFields.vue';
 
 const user = usePage().props.auth.user;
 
@@ -15,11 +16,20 @@ const form = useForm({
     title: '',
     description: '',
     urgency: 'Normal',
-    is_public: true
+    is_public: true,
+    // Optional supporting documents & donation details (shown after admin approval).
+    documents: [],
+    account_holder_name: '',
+    bank_account_number: '',
+    bank_ifsc: '',
+    bank_name: '',
+    bank_branch: '',
+    upi_id: '',
+    upi_qr: null,
 });
 
 const submit = () => {
-    form.post(route('help.store'));
+    form.post(route('help.store'), { forceFormData: true, preserveScroll: true });
 };
 </script>
 
@@ -116,6 +126,8 @@ const submit = () => {
                                 <textarea v-model="form.description" rows="5" required placeholder="Please describe exactly what kind of help you need..." class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
                                 <div v-if="form.errors.description" class="text-red-500 text-xs mt-1">{{ form.errors.description }}</div>
                             </div>
+
+                            <HelpExtraFields :form="form" class="border-t pt-6" />
 
                             <div class="bg-gray-50 p-4 rounded-md">
                                 <div class="flex items-start">

@@ -18,7 +18,7 @@ class AdminHelpRequestCreateTest extends TestCase
             ->get(route('admin.help-requests.create'))
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
-                ->component('Admin/HelpRequests/Create')
+                ->component('Admin/HelpRequests/Form')
                 ->where('categories', HelpRequest::CATEGORIES)
                 ->where('statuses', HelpRequest::STATUSES));
     }
