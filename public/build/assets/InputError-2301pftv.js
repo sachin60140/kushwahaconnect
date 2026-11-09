@@ -1,1 +1,0 @@
-import{G as e,R as t,_ as n,j as r,l as i,m as a}from"./app-CNG74Iwg.js";var o={class:`text-sm text-red-600`},s={__name:`InputError`,props:{message:{type:String}},setup(s){return(c,l)=>t((r(),n(`div`,null,[a(`p`,o,e(s.message),1)],512)),[[i,s.message]])}};export{s as t};
