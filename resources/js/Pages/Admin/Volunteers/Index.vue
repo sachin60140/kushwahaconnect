@@ -1,6 +1,10 @@
 <script setup>
 import { Head, Link, useForm, router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import WhatsAppWelcomeLink from '@/Components/WhatsAppWelcomeLink.vue';
+import { useWhatsAppWelcome } from '@/composables/useWhatsAppWelcome';
+
+const { volunteerLink } = useWhatsAppWelcome();
 
 const props = defineProps({
     volunteers: Object,
@@ -105,7 +109,8 @@ const filterByStatus = () => {
                                             <option value="Rejected">Rejected</option>
                                         </select>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-3">
+                                        <WhatsAppWelcomeLink :href="volunteerLink(volunteer)" />
                                         <button @click="destroy(volunteer.id)" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-sm">Delete</button>
                                     </td>
                                 </tr>
