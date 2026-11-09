@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -19,7 +20,11 @@ class HelpRequestDocument extends Model
 
     protected static function booted(): void
     {
-        static::deleting(fn (HelpRequestDocument $document) => Storage::disk('local')->delete($document->path));
+        // Delete the file only once the removal is committed (immediately outside a transaction).
+        static::deleted(function (HelpRequestDocument $document) {
+            $path = $document->path;
+            DB::afterCommit(fn () => Storage::disk('local')->delete($path));
+        });
     }
 
     public function helpRequest()

@@ -29,7 +29,7 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post(route('help.store'), { forceFormData: true, preserveScroll: true });
+    form.post(route('help.store'), { forceFormData: true, preserveScroll: 'errors' });
 };
 </script>
 
@@ -123,7 +123,7 @@ const submit = () => {
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Detailed Description <span class="text-red-500">*</span></label>
-                                <textarea v-model="form.description" rows="5" required placeholder="Please describe exactly what kind of help you need..." class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
+                                <textarea v-model="form.description" rows="5" required maxlength="10000" placeholder="Please describe exactly what kind of help you need..." class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
                                 <div v-if="form.errors.description" class="text-red-500 text-xs mt-1">{{ form.errors.description }}</div>
                             </div>
 

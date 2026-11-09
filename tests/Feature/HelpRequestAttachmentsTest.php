@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\HelpRequest;
+use App\Models\HelpRequestDocument;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -105,7 +106,7 @@ class HelpRequestAttachmentsTest extends TestCase
                 ->component('Help/Show')
                 ->where('helpRequest.bank_ifsc', 'SBIN0001234')
                 ->where('helpRequest.upi_id', 'komal@oksbi')
-                ->where('helpRequest.upi_qr_url', route('help.upi-qr', $help->id))
+                ->where('helpRequest.upi_qr_url', $help->upi_qr_url)
                 ->has('helpRequest.documents', 2)
                 ->where('helpRequest.documents.0.is_image', false)
                 ->where('helpRequest.documents.1.is_image', true)
@@ -121,7 +122,7 @@ class HelpRequestAttachmentsTest extends TestCase
             ->assertInertia(fn (Assert $page) => $page
                 ->where('requests.data.0.documents_count', 2)
                 ->missing('requests.data.0.upi_qr')
-                ->where('requests.data.0.upi_qr_url', route('help.upi-qr', $help->id)));
+                ->where('requests.data.0.upi_qr_url', $help->upi_qr_url));
 
         // A document id from another request never resolves.
         $other = HelpRequest::create($this->base(['status' => 'Approved', 'is_public' => true]));
@@ -197,6 +198,101 @@ class HelpRequestAttachmentsTest extends TestCase
             Storage::disk('local')->assertMissing($path);
         }
         $this->assertDatabaseCount('help_request_documents', 0);
+    }
+
+    // --- Regressions from the PR #8 review -------------------------------------------
+
+    public function test_replacing_the_upi_qr_changes_its_url_so_caches_never_show_the_old_one(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $this->actingAs($admin)->post(route('admin.help-requests.store'), $this->base([
+            'status' => 'Approved',
+            'upi_qr' => UploadedFile::fake()->image('qr.png', 300, 300),
+        ]));
+        $help = HelpRequest::firstOrFail();
+        $firstUrl = $help->upi_qr_url;
+
+        $this->actingAs($admin)->post(route('admin.help-requests.update', $help->id), $this->base([
+            'status' => 'Approved',
+            'upi_qr' => UploadedFile::fake()->image('new-qr.png', 300, 300),
+        ]))->assertSessionHasNoErrors();
+
+        $this->assertNotSame($firstUrl, $help->fresh()->upi_qr_url);
+        $this->get($help->fresh()->upi_qr_url)->assertOk();
+    }
+
+    public function test_upi_qr_is_re_saved_as_png_so_photo_metadata_is_not_published(): void
+    {
+        $this->post(route('help.store'), $this->base([
+            'upi_qr' => UploadedFile::fake()->image('qr-photo.jpg', 2400, 2400),
+        ]))->assertSessionHasNoErrors();
+
+        $path = HelpRequest::firstOrFail()->upi_qr;
+        $this->assertStringEndsWith('.png', $path);
+
+        $bytes = Storage::disk('local')->get($path);
+        $this->assertStringStartsWith("\x89PNG", $bytes, 'Re-encoded by GD (no EXIF/GPS carried over).');
+        $size = getimagesizefromstring($bytes);
+        $this->assertLessThanOrEqual(1200, max($size[0], $size[1]), 'Large photos are scaled down.');
+    }
+
+    public function test_images_with_huge_pixel_dimensions_are_rejected_before_processing(): void
+    {
+        // A tiny file whose header claims 10000 x 10000 pixels (would exhaust memory in GD).
+        $bomb = UploadedFile::fake()->createWithContent('bomb.png', $this->pngHeader(10000, 10000));
+
+        $this->post(route('help.store'), $this->base(['documents' => [$bomb]]))
+            ->assertSessionHasErrors('documents.0');
+        $this->post(route('help.store'), $this->base([
+            'upi_qr' => UploadedFile::fake()->createWithContent('qr.png', $this->pngHeader(10000, 10000)),
+        ]))->assertSessionHasErrors('upi_qr');
+
+        $this->assertSame(0, HelpRequest::count());
+    }
+
+    public function test_array_values_in_bank_fields_get_validation_errors_not_a_server_error(): void
+    {
+        $this->post(route('help.store'), $this->base([
+            'bank_account_number' => ['123'],
+            'bank_ifsc' => ['SBIN0001234'],
+            'upi_id' => ['a@b'],
+        ]))->assertRedirect()->assertSessionHasErrors(['bank_account_number', 'bank_ifsc', 'upi_id']);
+    }
+
+    public function test_a_failed_upload_leaves_no_half_saved_request_or_files(): void
+    {
+        HelpRequestDocument::creating(fn () => throw new \RuntimeException('disk full'));
+
+        $this->post(route('help.store'), $this->base([
+            'documents' => [UploadedFile::fake()->create('report.pdf', 50, 'application/pdf')],
+        ]))->assertStatus(500);
+
+        $this->assertSame(0, HelpRequest::count(), 'Request row rolled back.');
+        $this->assertSame([], Storage::disk('local')->allFiles('help_documents'), 'Stored file removed again.');
+    }
+
+    public function test_description_limit_is_shared_and_old_long_descriptions_stay_editable(): void
+    {
+        $tooLong = str_repeat('a', HelpRequest::MAX_DESCRIPTION + 1);
+
+        $this->post(route('help.store'), $this->base(['description' => $tooLong]))
+            ->assertSessionHasErrors('description');
+
+        // A pre-existing longer description can still be saved unchanged by an admin.
+        $help = HelpRequest::create($this->base(['description' => $tooLong, 'status' => 'Approved']));
+        $admin = User::factory()->create(['role' => 'admin']);
+        $this->actingAs($admin)->post(route('admin.help-requests.update', $help->id), $this->base([
+            'description' => $tooLong,
+            'status' => 'Approved',
+        ]))->assertSessionHasNoErrors();
+    }
+
+    /** Minimal PNG (signature + IHDR) claiming the given size; getimagesize() reads only this. */
+    private function pngHeader(int $width, int $height): string
+    {
+        $ihdr = 'IHDR'.pack('NNCCCCC', $width, $height, 8, 2, 0, 0, 0);
+
+        return "\x89PNG\r\n\x1a\n".pack('N', 13).$ihdr.pack('N', crc32($ihdr));
     }
 
     private function base(array $overrides = []): array

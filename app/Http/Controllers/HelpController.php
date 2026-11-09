@@ -7,6 +7,7 @@ use App\Models\HelpRequest;
 use App\Models\HelpRequestDocument;
 use App\Support\HelpPreviewImage;
 use App\Support\HelpRequestExtras;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -163,7 +164,7 @@ class HelpController extends Controller
             'city' => 'required|string|max:255',
             'category' => 'required|string|max:255',
             'title' => 'required|string|max:255',
-            'description' => 'required|string',
+            'description' => 'required|string|max:'.HelpRequest::MAX_DESCRIPTION,
             'urgency' => 'required|in:Normal,Urgent,Emergency',
             'is_public' => 'boolean',
             ...collect(HelpRequestExtras::rules())->except(['remove_documents', 'remove_documents.*', 'remove_upi_qr'])->all(),
@@ -179,8 +180,11 @@ class HelpController extends Controller
         }
 
         // Public submissions stay Pending (hidden) until an admin approves them.
-        $help = HelpRequest::create($data);
-        HelpRequestExtras::saveFiles($help, $request);
+        // One transaction: a failed upload leaves no half-saved request behind.
+        DB::transaction(function () use ($data, $request) {
+            $help = HelpRequest::create($data);
+            HelpRequestExtras::saveFiles($help, $request);
+        });
 
         return redirect()->route('help.index')->with('success', 'Your help request has been submitted successfully. Our team will review it shortly.');
     }

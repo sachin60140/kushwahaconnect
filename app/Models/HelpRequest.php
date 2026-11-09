@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class HelpRequest extends Model
@@ -29,6 +30,9 @@ class HelpRequest extends Model
     /** Max supporting documents / photos per request. */
     public const MAX_DOCUMENTS = 5;
 
+    /** Max description length, shared by the public and admin forms. */
+    public const MAX_DESCRIPTION = 10000;
+
     protected $guarded = ['id'];
 
     // Storage paths stay server-side; browsers get access-checked URLs.
@@ -43,15 +47,12 @@ class HelpRequest extends Model
     protected static function booted(): void
     {
         // Remove stored files with the request (document rows cascade in the database).
+        // Paths are collected before the rows go; files are deleted once committed.
         static::deleting(function (HelpRequest $help) {
-            $disk = Storage::disk('local');
+            $paths = $help->documents()->pluck('path')->push($help->upi_qr)->filter()->values()->all();
 
-            foreach ($help->documents()->pluck('path') as $path) {
-                $disk->delete($path);
-            }
-
-            if ($help->upi_qr) {
-                $disk->delete($help->upi_qr);
+            if ($paths) {
+                DB::afterCommit(fn () => Storage::disk('local')->delete($paths));
             }
         });
     }
@@ -90,6 +91,10 @@ class HelpRequest extends Model
 
     public function getUpiQrUrlAttribute(): ?string
     {
-        return $this->upi_qr && $this->id ? route('help.upi-qr', $this->id) : null;
+        // Versioned by the stored file (a new random name per upload), so a replaced QR
+        // gets a new URL and browsers never keep showing a cached old payee QR.
+        return $this->upi_qr && $this->id
+            ? route('help.upi-qr', ['id' => $this->id, 'v' => substr(sha1($this->upi_qr), 0, 10)])
+            : null;
     }
 }

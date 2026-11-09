@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\HelpRequest;
 use App\Support\HelpRequestExtras;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
@@ -39,8 +40,13 @@ class AdminHelpController extends Controller
         $validated = $this->validateRequest($request, 0);
 
         // Created by an admin on someone's behalf: not tied to the admin's own account.
-        $helpRequest = HelpRequest::create($this->requestData($validated) + ['is_public' => false]);
-        HelpRequestExtras::saveFiles($helpRequest, $request);
+        // One transaction: a failed upload leaves no half-saved request behind.
+        $helpRequest = DB::transaction(function () use ($validated, $request) {
+            $helpRequest = HelpRequest::create($this->requestData($validated) + ['is_public' => false]);
+            HelpRequestExtras::saveFiles($helpRequest, $request);
+
+            return $helpRequest;
+        });
 
         return redirect()->route('admin.help-requests.index')->with(
             'success',
@@ -65,10 +71,12 @@ class AdminHelpController extends Controller
         $removing = $helpRequest->documents()
             ->whereIn('id', array_map('intval', (array) $request->input('remove_documents', [])))
             ->count();
-        $validated = $this->validateRequest($request, $helpRequest->documents_count - $removing);
+        $validated = $this->validateRequest($request, $helpRequest->documents_count - $removing, $helpRequest);
 
-        $helpRequest->update($this->requestData($validated));
-        HelpRequestExtras::saveFiles($helpRequest, $request);
+        DB::transaction(function () use ($helpRequest, $validated, $request) {
+            $helpRequest->update($this->requestData($validated));
+            HelpRequestExtras::saveFiles($helpRequest, $request);
+        });
 
         return redirect()->route('admin.help-requests.index')->with(
             'success',
@@ -78,9 +86,12 @@ class AdminHelpController extends Controller
         );
     }
 
-    private function validateRequest(Request $request, int $keptDocuments): array
+    private function validateRequest(Request $request, int $keptDocuments, ?HelpRequest $existing = null): array
     {
         HelpRequestExtras::normalize($request);
+
+        // Same limit as the public form; an older, longer description can still be saved unchanged.
+        $descriptionLimit = max(HelpRequest::MAX_DESCRIPTION, mb_strlen((string) $existing?->description));
 
         return $request->validate([
             'name' => 'required|string|max:255',
@@ -91,7 +102,7 @@ class AdminHelpController extends Controller
             'city' => 'required|string|max:255',
             'category' => ['required', 'string', Rule::in(HelpRequest::CATEGORIES)],
             'title' => 'required|string|max:255',
-            'description' => 'required|string|max:10000',
+            'description' => 'required|string|max:'.$descriptionLimit,
             'urgency' => ['required', Rule::in(HelpRequest::URGENCIES)],
             'status' => ['required', Rule::in(HelpRequest::STATUSES)],
             'is_public' => 'boolean',

@@ -59,7 +59,7 @@ const submit = () => {
         ? route('admin.help-requests.update', props.helpRequest.id)
         : route('admin.help-requests.store');
 
-    form.post(url, { preserveScroll: true, forceFormData: true });
+    form.post(url, { preserveScroll: 'errors', forceFormData: true });
 };
 
 const inputClass = 'mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-orange-500 focus:ring-orange-500 sm:text-sm';
@@ -148,7 +148,7 @@ const inputClass = 'mt-1 block w-full rounded-md border-gray-300 shadow-xs focus
                             </div>
                             <div class="sm:col-span-2">
                                 <label class="block text-sm font-medium text-gray-700">Detailed Description <span class="text-red-500">*</span></label>
-                                <textarea v-model="form.description" rows="6" required placeholder="What help is needed, for whom, and how people can help" :class="inputClass"></textarea>
+                                <textarea v-model="form.description" rows="6" required maxlength="10000" placeholder="What help is needed, for whom, and how people can help" :class="inputClass"></textarea>
                                 <InputError class="mt-1" :message="form.errors.description" />
                             </div>
                         </div>
