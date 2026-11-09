@@ -152,6 +152,7 @@ Route::get('/education', [\App\Http\Controllers\EducationController::class, 'ind
 Route::get('/medical', [\App\Http\Controllers\MedicalController::class, 'index'])->name('medical.index');
 Route::get('/help-each-other', [\App\Http\Controllers\HelpController::class, 'index'])->name('help.index');
 Route::get('/help-each-other/request', [\App\Http\Controllers\HelpController::class, 'create'])->name('help.create');
+Route::get('/help-each-other/{id}', [\App\Http\Controllers\HelpController::class, 'show'])->whereNumber('id')->name('help.show');
 Route::post('/help-each-other', [\App\Http\Controllers\HelpController::class, 'store'])->name('help.store');
 
 Route::get('/volunteer-directory', [\App\Http\Controllers\VolunteerController::class, 'index'])->name('volunteer.index');

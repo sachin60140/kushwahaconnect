@@ -1,8 +1,13 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Modal from '@/Components/Modal.vue';
+import WhatsAppWelcomeLink from '@/Components/WhatsAppWelcomeLink.vue';
+import { useWhatsAppWelcome } from '@/composables/useWhatsAppWelcome';
 import { Head, Link, useForm, router, usePage } from '@inertiajs/vue3';
 import { ref, computed, watch } from 'vue';
+
+const { memberLink } = useWhatsAppWelcome();
+const whatsappOptOut = (member) => (member.allow_whatsapp === false ? 'Member has turned off WhatsApp contact' : '');
 
 const props = defineProps({
     members: Object,
@@ -209,7 +214,8 @@ const closeModal = () => {
                                             {{ member.status }}
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 text-right space-x-4">
+                                    <td class="px-6 py-4 text-right space-x-4 whitespace-nowrap">
+                                        <WhatsAppWelcomeLink :href="memberLink(member)" :disabled-reason="whatsappOptOut(member)" />
                                         <button @click="openViewModal(member)" class="text-indigo-600 hover:text-indigo-900 font-bold transition-colors">View Details</button>
                                         <template v-if="member.status !== 'approved'">
                                             <button
@@ -326,7 +332,12 @@ const closeModal = () => {
                         </dl>
                     </div>
 
-                    <div class="md:col-span-2 pt-6 flex justify-end space-x-3 mt-2 border-t border-gray-100">
+                    <div class="md:col-span-2 pt-6 flex flex-wrap justify-end gap-3 mt-2 border-t border-gray-100">
+                        <WhatsAppWelcomeLink
+                            variant="button"
+                            :href="memberLink(selectedMember)"
+                            :disabled-reason="whatsappOptOut(selectedMember)"
+                        />
                         <button
                             v-if="selectedMember.status !== 'approved'"
                             @click="updateStatus(selectedMember.id, 'approved'); closeModal()"

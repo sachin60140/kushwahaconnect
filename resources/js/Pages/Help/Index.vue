@@ -3,6 +3,8 @@ import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import HelpShareButtons from '@/Components/HelpShareButtons.vue';
+import { toWhatsAppNumber } from '@/composables/useWhatsAppWelcome';
 
 const props = defineProps({
     requests: Object,
@@ -121,7 +123,9 @@ const submitSearch = () => {
                                     {{ req.urgency }}
                                 </span>
                             </div>
-                            <h3 class="text-xl font-bold text-gray-900 mb-1">{{ req.title }}</h3>
+                            <h3 class="text-xl font-bold text-gray-900 mb-1">
+                                <Link :href="route('help.show', req.id)" class="hover:text-green-700 hover:underline">{{ req.title }}</Link>
+                            </h3>
                             <p class="text-sm font-medium text-gray-500 mb-4">{{ req.city }}, {{ req.state }}</p>
                             
                             <p class="text-gray-700 text-sm mb-4 flex-1 whitespace-pre-line leading-relaxed">{{ req.description }}</p>
@@ -136,11 +140,12 @@ const submitSearch = () => {
                                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
                                         Call
                                     </a>
-                                    <a v-if="req.whatsapp" :href="`https://wa.me/${req.whatsapp.replace(/[^0-9]/g, '')}`" target="_blank" class="flex-1 text-center bg-green-500 text-white hover:bg-green-600 text-sm font-bold py-2 px-4 rounded-lg flex items-center justify-center shadow-xs transition-colors duration-200">
+                                    <a v-if="toWhatsAppNumber(req.whatsapp)" :href="`https://wa.me/${toWhatsAppNumber(req.whatsapp)}`" target="_blank" rel="noopener noreferrer" class="flex-1 text-center bg-green-500 text-white hover:bg-green-600 text-sm font-bold py-2 px-4 rounded-lg flex items-center justify-center shadow-xs transition-colors duration-200">
                                         <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12.016 1.996C6.486 1.996 2 6.481 2 12.012c0 1.945.541 3.753 1.464 5.289l-1.572 5.733 5.854-1.536A9.972 9.972 0 0012.016 22.02c5.53 0 10.016-4.485 10.016-10.008 0-5.53-4.486-10.016-10.016-10.016zm5.836 14.215c-.244.693-1.42 1.328-1.993 1.408-.415.059-1.02.136-2.912-.646-2.235-.92-3.666-3.19-3.774-3.333-.108-.144-.902-1.2-1.002-2.316-.08-1.116.516-1.637.7-1.84.183-.203.468-.26.653-.26.185 0 .37.004.536.012.185.008.435-.068.68.536.257.632.846 2.065.92 2.215.074.15.122.327.025.518-.097.19-.148.308-.295.48-.147.17-.308.384-.442.52-.147.15-.3.313-.122.62.178.307.794 1.314 1.708 2.13.194.347.534.613.916.748.382.135.608.113.84-.047.23-.16.994-1.162 1.264-1.562.27-.4.542-.332.906-.195.364.137 2.3 1.085 2.694 1.282.394.197.656.295.753.46.098.165.098.96-.146 1.653z" clip-rule="evenodd"></path></svg>
                                         WhatsApp
                                     </a>
                                 </div>
+                                <HelpShareButtons :help-request="req" compact class="mt-4 pt-3 border-t border-gray-100" />
                             </div>
                         </div>
                     </div>
