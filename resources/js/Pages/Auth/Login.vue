@@ -49,7 +49,7 @@ const submit = () => {
                 <TextInput
                     id="email"
                     type="text"
-                    class="mt-1 block w-full border-gray-300 focus:border-orange-500 focus:ring-orange-500 rounded-lg shadow-sm px-4 py-3"
+                    class="mt-1 block w-full border-gray-300 focus:border-orange-500 focus:ring-orange-500 rounded-lg shadow-xs px-4 py-3"
                     v-model="form.email"
                     required
                     autofocus
@@ -66,7 +66,7 @@ const submit = () => {
                 <TextInput
                     id="password"
                     type="password"
-                    class="mt-1 block w-full border-gray-300 focus:border-orange-500 focus:ring-orange-500 rounded-lg shadow-sm px-4 py-3"
+                    class="mt-1 block w-full border-gray-300 focus:border-orange-500 focus:ring-orange-500 rounded-lg shadow-xs px-4 py-3"
                     v-model="form.password"
                     required
                     autocomplete="current-password"
@@ -78,7 +78,7 @@ const submit = () => {
 
             <div class="flex items-center justify-between mt-2">
                 <label class="flex items-center">
-                    <Checkbox name="remember" v-model:checked="form.remember" class="text-orange-600 focus:ring-orange-500 rounded border-gray-300" />
+                    <Checkbox name="remember" v-model:checked="form.remember" class="text-orange-600 focus:ring-orange-500 rounded-sm border-gray-300" />
                     <span class="ms-2 text-sm text-gray-600 font-medium">Remember me</span>
                 </label>
                 
@@ -93,7 +93,7 @@ const submit = () => {
 
             <div class="pt-4">
                 <button
-                    class="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-md text-sm font-bold text-white bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all transform hover:-translate-y-0.5"
+                    class="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-md text-sm font-bold text-white bg-linear-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all transform hover:-translate-y-0.5"
                     :class="{ 'opacity-50 cursor-not-allowed': form.processing }"
                     :disabled="form.processing"
                 >

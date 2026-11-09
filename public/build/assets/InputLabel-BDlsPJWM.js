@@ -1,0 +1,1 @@
+import{G as e,N as t,_ as n,j as r}from"./app-CNG74Iwg.js";var i={class:`block text-sm font-black text-blue-950`},a={key:0},o={key:1},s={__name:`InputLabel`,props:{value:{type:String}},setup(s){return(c,l)=>(r(),n(`label`,i,[s.value?(r(),n(`span`,a,e(s.value),1)):(r(),n(`span`,o,[t(c.$slots,`default`)]))]))}};export{s as t};

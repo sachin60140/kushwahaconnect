@@ -130,7 +130,7 @@ const statusClass = (status) => ({
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
                     Matrimonial Profiles
                 </h2>
-                <a :href="route('admin.matrimonial.export')" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded shadow transition-colors">
+                <a :href="route('admin.matrimonial.export')" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-sm shadow-sm transition-colors">
                     Export Excel
                 </a>
             </div>
@@ -153,15 +153,15 @@ const statusClass = (status) => ({
                 </div>
 
                 <!-- Filters -->
-                <div class="bg-white p-6 shadow-sm sm:rounded-xl border border-gray-100">
+                <div class="bg-white p-6 shadow-xs sm:rounded-xl border border-gray-100">
                     <form @submit.prevent="applyFilters" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                         <div class="md:col-span-2">
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Search</label>
-                            <input v-model="filterForm.search" type="text" placeholder="Name, Mobile, Email, City" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-pink-500 focus:border-pink-500 py-2.5 px-3">
+                            <input v-model="filterForm.search" type="text" placeholder="Name, Mobile, Email, City" class="w-full border-gray-300 rounded-lg shadow-xs focus:ring-pink-500 focus:border-pink-500 py-2.5 px-3">
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Status</label>
-                            <select v-model="filterForm.status" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-pink-500 focus:border-pink-500 py-2.5 px-3">
+                            <select v-model="filterForm.status" class="w-full border-gray-300 rounded-lg shadow-xs focus:ring-pink-500 focus:border-pink-500 py-2.5 px-3">
                                 <option value="">All</option>
                                 <option value="pending">Pending</option>
                                 <option value="approved">Approved</option>
@@ -170,13 +170,13 @@ const statusClass = (status) => ({
                         </div>
                         <div class="flex justify-end space-x-3">
                             <button type="button" @click="resetFilters" class="px-5 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors">Reset</button>
-                            <button type="submit" class="px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors shadow-sm">Apply</button>
+                            <button type="submit" class="px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors shadow-xs">Apply</button>
                         </div>
                     </form>
                 </div>
 
                 <!-- Table -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-xl border border-gray-100">
+                <div class="bg-white overflow-hidden shadow-xs sm:rounded-xl border border-gray-100">
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm text-left text-gray-500">
                             <thead class="text-xs text-gray-700 uppercase bg-gray-50 border-b border-gray-200">
@@ -213,7 +213,7 @@ const statusClass = (status) => ({
                                         <div class="text-xs text-gray-500">{{ profile.email || 'N/A' }}</div>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <span class="px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider shadow-sm" :class="statusClass(profile.status)">
+                                        <span class="px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider shadow-xs" :class="statusClass(profile.status)">
                                             {{ profile.status }}
                                         </span>
                                     </td>
@@ -248,7 +248,7 @@ const statusClass = (status) => ({
                 </div>
 
                 <!-- Pagination -->
-                <div class="flex items-center justify-between mt-4 bg-white p-4 rounded-xl shadow-sm border border-gray-100" v-if="profiles.links && profiles.links.length > 3">
+                <div class="flex items-center justify-between mt-4 bg-white p-4 rounded-xl shadow-xs border border-gray-100" v-if="profiles.links && profiles.links.length > 3">
                     <div class="flex-1 flex justify-between sm:hidden">
                         <Link v-if="profiles.prev_page_url" :href="profiles.prev_page_url" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">Previous</Link>
                         <Link v-if="profiles.next_page_url" :href="profiles.next_page_url" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">Next</Link>
@@ -257,7 +257,7 @@ const statusClass = (status) => ({
                         <p class="text-sm text-gray-700">
                             Showing <span class="font-bold text-gray-900">{{ profiles.from }}</span> to <span class="font-bold text-gray-900">{{ profiles.to }}</span> of <span class="font-bold text-gray-900">{{ profiles.total }}</span> results
                         </p>
-                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                        <nav class="relative z-0 inline-flex rounded-md shadow-xs -space-x-px" aria-label="Pagination">
                             <template v-for="(link, p) in profiles.links" :key="p">
                                 <div v-if="link.url === null" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-gray-50 text-sm font-medium text-gray-400" v-html="link.label" />
                                 <Link v-else :href="link.url" :class="[link.active ? 'z-10 bg-pink-50 border-pink-500 text-pink-600 font-bold' : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50', 'relative inline-flex items-center px-4 py-2 border text-sm font-medium transition-colors']" v-html="link.label" />
@@ -372,7 +372,7 @@ const statusClass = (status) => ({
                             v-if="selectedProfile.status !== 'approved'"
                             @click="updateStatus(selectedProfile.id, 'approved')"
                             :disabled="processingId === selectedProfile.id"
-                            class="px-5 py-2.5 bg-green-600 text-white font-bold rounded-lg shadow-sm hover:bg-green-700 transition-colors disabled:cursor-not-allowed disabled:bg-gray-300"
+                            class="px-5 py-2.5 bg-green-600 text-white font-bold rounded-lg shadow-xs hover:bg-green-700 transition-colors disabled:cursor-not-allowed disabled:bg-gray-300"
                         >
                             {{ processingId === selectedProfile.id && processingStatus === 'approved' ? 'Approving...' : 'Approve Profile' }}
                         </button>
@@ -380,7 +380,7 @@ const statusClass = (status) => ({
                             v-if="selectedProfile.status !== 'rejected'"
                             @click="updateStatus(selectedProfile.id, 'rejected')"
                             :disabled="processingId === selectedProfile.id"
-                            class="px-5 py-2.5 bg-red-600 text-white font-bold rounded-lg shadow-sm hover:bg-red-700 transition-colors disabled:cursor-not-allowed disabled:bg-gray-300"
+                            class="px-5 py-2.5 bg-red-600 text-white font-bold rounded-lg shadow-xs hover:bg-red-700 transition-colors disabled:cursor-not-allowed disabled:bg-gray-300"
                         >
                             {{ processingId === selectedProfile.id && processingStatus === 'rejected' ? 'Rejecting...' : 'Reject Profile' }}
                         </button>

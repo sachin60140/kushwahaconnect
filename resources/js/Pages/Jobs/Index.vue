@@ -43,18 +43,18 @@ const submitSearch = () => {
         <div class="py-12 bg-gray-50 min-h-screen">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <!-- Search -->
-                <div class="bg-white overflow-hidden shadow sm:rounded-xl mb-8 p-6">
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-xl mb-8 p-6">
                     <form @submit.prevent="submitSearch" class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div class="md:col-span-1">
                             <label class="block text-sm font-medium text-gray-700 mb-1">Keywords</label>
-                            <input type="text" v-model="form.search" class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-base py-3" placeholder="Job title, company...">
+                            <input type="text" v-model="form.search" class="block w-full rounded-lg border-gray-300 shadow-xs focus:border-green-500 focus:ring-green-500 sm:text-base py-3" placeholder="Job title, company...">
                         </div>
                         <div class="md:col-span-1">
                             <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
-                            <input type="text" v-model="form.location" class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-base py-3" placeholder="City, state, or zip...">
+                            <input type="text" v-model="form.location" class="block w-full rounded-lg border-gray-300 shadow-xs focus:border-green-500 focus:ring-green-500 sm:text-base py-3" placeholder="City, state, or zip...">
                         </div>
                         <div class="md:col-span-1 flex items-end">
-                            <button type="submit" class="w-full inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-base font-medium rounded-lg text-white bg-green-600 hover:bg-green-700 focus:outline-none transition-colors duration-200">
+                            <button type="submit" class="w-full inline-flex justify-center py-3 px-6 border border-transparent shadow-xs text-base font-medium rounded-lg text-white bg-green-600 hover:bg-green-700 focus:outline-hidden transition-colors duration-200">
                                 Search Jobs
                             </button>
                         </div>
@@ -92,7 +92,7 @@ const submitSearch = () => {
 
                 <!-- Pagination -->
                 <div v-if="jobs.links.length > 3" class="mt-8 flex justify-center">
-                    <div class="flex shadow-sm rounded-lg bg-white overflow-hidden border border-gray-200">
+                    <div class="flex shadow-xs rounded-lg bg-white overflow-hidden border border-gray-200">
                         <template v-for="(link, p) in jobs.links" :key="p">
                             <div v-if="link.url === null" class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400" v-html="link.label" />
                             <Link v-else class="mr-1 mb-1 px-4 py-3 text-sm leading-4 hover:bg-gray-50 focus:text-green-600 transition-colors duration-200" :class="{ 'bg-green-50 font-bold text-green-700 border-b-2 border-green-600': link.active }" :href="link.url" v-html="link.label" />
@@ -100,7 +100,7 @@ const submitSearch = () => {
                     </div>
                 </div>
                 
-                <div v-if="jobs.data.length === 0" class="text-center py-12 bg-white rounded-lg shadow-sm">
+                <div v-if="jobs.data.length === 0" class="text-center py-12 bg-white rounded-lg shadow-xs">
                     <p class="text-gray-500">No jobs found matching your criteria.</p>
                 </div>
             </div>

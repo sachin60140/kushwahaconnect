@@ -223,6 +223,26 @@ class BugFixRegressionTest extends TestCase
         $this->assertSame('The message', $contactRow['Message']);
     }
 
+    public function test_admin_excel_exports_download(): void
+    {
+        [$state, $district] = $this->location();
+        MemberProfile::create($this->memberData($state, $district));
+        MatrimonialProfile::create($this->matrimonialData());
+        ContactEnquiry::create(['name' => 'Asker', 'mobile' => '9000000010', 'message' => 'Hello']);
+
+        $admin = $this->admin();
+
+        foreach (['admin.members.export', 'admin.matrimonial.export', 'admin.enquiries.export'] as $route) {
+            $response = $this->actingAs($admin)->get(route($route));
+            $response->assertOk();
+            $this->assertStringContainsString(
+                'spreadsheetml',
+                (string) $response->headers->get('Content-Type'),
+                $route.' should download an .xlsx file'
+            );
+        }
+    }
+
     public function test_every_page_shares_version_and_last_updated_info(): void
     {
         config(['app.version' => '2.4.1', 'app.updated_at' => '2026-11-09 18:30']);

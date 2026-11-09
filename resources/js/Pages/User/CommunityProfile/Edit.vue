@@ -66,7 +66,7 @@ const submit = () => {
 
         <div class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white overflow-hidden shadow-xs sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <div class="mb-6">
                             <h3 class="text-lg font-medium text-gray-900">Update Community Profile</h3>
@@ -91,7 +91,7 @@ const submit = () => {
                                     </div>
                                     <div>
                                         <InputLabel for="gender" value="Gender *" />
-                                        <select id="gender" class="mt-1 block w-full border-gray-300 focus:border-orange-500 focus:ring-orange-500 rounded-md shadow-sm" v-model="form.gender" required>
+                                        <select id="gender" class="mt-1 block w-full border-gray-300 focus:border-orange-500 focus:ring-orange-500 rounded-md shadow-xs" v-model="form.gender" required>
                                             <option value="Male">Male</option>
                                             <option value="Female">Female</option>
                                             <option value="Other">Other</option>
@@ -139,7 +139,7 @@ const submit = () => {
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <InputLabel for="state_id" value="State" />
-                                        <select id="state_id" class="mt-1 block w-full border-gray-300 focus:border-orange-500 focus:ring-orange-500 rounded-md shadow-sm" v-model="form.state_id">
+                                        <select id="state_id" class="mt-1 block w-full border-gray-300 focus:border-orange-500 focus:ring-orange-500 rounded-md shadow-xs" v-model="form.state_id">
                                             <option value="">Select State</option>
                                             <option v-for="state in states" :key="state.id" :value="state.id">{{ state.name_en }}</option>
                                         </select>
@@ -147,7 +147,7 @@ const submit = () => {
                                     </div>
                                     <div>
                                         <InputLabel for="district_id" value="District" />
-                                        <select id="district_id" class="mt-1 block w-full border-gray-300 focus:border-orange-500 focus:ring-orange-500 rounded-md shadow-sm" v-model="form.district_id" :disabled="!form.state_id">
+                                        <select id="district_id" class="mt-1 block w-full border-gray-300 focus:border-orange-500 focus:ring-orange-500 rounded-md shadow-xs" v-model="form.district_id" :disabled="!form.state_id">
                                             <option value="">Select District</option>
                                             <option v-for="district in availableDistricts" :key="district.id" :value="district.id">{{ district.name_en }}</option>
                                         </select>
@@ -165,7 +165,7 @@ const submit = () => {
                                     </div>
                                     <div class="md:col-span-2">
                                         <InputLabel for="current_address" value="Current Full Address" />
-                                        <textarea id="current_address" class="mt-1 block w-full border-gray-300 focus:border-orange-500 focus:ring-orange-500 rounded-md shadow-sm" v-model="form.current_address" rows="2"></textarea>
+                                        <textarea id="current_address" class="mt-1 block w-full border-gray-300 focus:border-orange-500 focus:ring-orange-500 rounded-md shadow-xs" v-model="form.current_address" rows="2"></textarea>
                                         <InputError class="mt-2" :message="form.errors.current_address" />
                                     </div>
                                     <div class="md:col-span-2">
@@ -187,7 +187,7 @@ const submit = () => {
                                     </div>
                                     <div>
                                         <InputLabel for="employment_type" value="Employment Type" />
-                                        <select id="employment_type" class="mt-1 block w-full border-gray-300 focus:border-orange-500 focus:ring-orange-500 rounded-md shadow-sm" v-model="form.employment_type">
+                                        <select id="employment_type" class="mt-1 block w-full border-gray-300 focus:border-orange-500 focus:ring-orange-500 rounded-md shadow-xs" v-model="form.employment_type">
                                             <option value="">Select</option>
                                             <option value="private">Private Job</option>
                                             <option value="government">Government Job</option>
@@ -215,11 +215,11 @@ const submit = () => {
                                 <h4 class="font-semibold text-orange-800 mb-4 border-b border-orange-200 pb-2">Community Engagement</h4>
                                 <div class="space-y-4">
                                     <label class="flex items-start">
-                                        <input type="checkbox" class="mt-1 rounded border-gray-300 text-orange-600 shadow-sm focus:ring-orange-500" v-model="form.volunteer_interest">
+                                        <input type="checkbox" class="mt-1 rounded-sm border-gray-300 text-orange-600 shadow-xs focus:ring-orange-500" v-model="form.volunteer_interest">
                                         <span class="ml-2 text-sm text-gray-700">I am interested in volunteering for community events and social work.</span>
                                     </label>
                                     <label class="flex items-start">
-                                        <input type="checkbox" class="mt-1 rounded border-gray-300 text-orange-600 shadow-sm focus:ring-orange-500" v-model="form.join_district_team">
+                                        <input type="checkbox" class="mt-1 rounded-sm border-gray-300 text-orange-600 shadow-xs focus:ring-orange-500" v-model="form.join_district_team">
                                         <span class="ml-2 text-sm text-gray-700">I want to join the District Coordination Team to help build the community in my area.</span>
                                     </label>
                                 </div>

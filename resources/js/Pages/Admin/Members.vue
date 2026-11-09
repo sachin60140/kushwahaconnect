@@ -109,7 +109,7 @@ const closeModal = () => {
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
                     Community Members
                 </h2>
-                <a :href="route('admin.members.export')" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded shadow transition-colors">
+                <a :href="route('admin.members.export')" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-sm shadow-sm transition-colors">
                     Export Excel
                 </a>
             </div>
@@ -132,15 +132,15 @@ const closeModal = () => {
                 </div>
 
                 <!-- Filters -->
-                <div class="bg-white p-6 shadow-sm sm:rounded-xl border border-gray-100">
+                <div class="bg-white p-6 shadow-xs sm:rounded-xl border border-gray-100">
                     <form @submit.prevent="applyFilters" class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
                         <div class="md:col-span-2">
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Search</label>
-                            <input v-model="filterForm.search" type="text" placeholder="Name, Email, Mobile" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500 py-2.5 px-3">
+                            <input v-model="filterForm.search" type="text" placeholder="Name, Email, Mobile" class="w-full border-gray-300 rounded-lg shadow-xs focus:ring-green-500 focus:border-green-500 py-2.5 px-3">
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Status</label>
-                            <select v-model="filterForm.status" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500 py-2.5 px-3">
+                            <select v-model="filterForm.status" class="w-full border-gray-300 rounded-lg shadow-xs focus:ring-green-500 focus:border-green-500 py-2.5 px-3">
                                 <option value="">All</option>
                                 <option value="pending">Pending</option>
                                 <option value="approved">Approved</option>
@@ -149,7 +149,7 @@ const closeModal = () => {
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">State</label>
-                            <select v-model="filterForm.state_id" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500 py-2.5 px-3">
+                            <select v-model="filterForm.state_id" class="w-full border-gray-300 rounded-lg shadow-xs focus:ring-green-500 focus:border-green-500 py-2.5 px-3">
                                 <option value="">All States</option>
                                 <option v-for="state in states" :key="state.id" :value="state.id">
                                     {{ state.name_en }}
@@ -158,7 +158,7 @@ const closeModal = () => {
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">District</label>
-                            <select v-model="filterForm.district_id" :disabled="!filterForm.state_id" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500 py-2.5 px-3 disabled:bg-gray-100 disabled:text-gray-400">
+                            <select v-model="filterForm.district_id" :disabled="!filterForm.state_id" class="w-full border-gray-300 rounded-lg shadow-xs focus:ring-green-500 focus:border-green-500 py-2.5 px-3 disabled:bg-gray-100 disabled:text-gray-400">
                                 <option value="">All Districts</option>
                                 <option v-for="district in availableDistricts" :key="district.id" :value="district.id">
                                     {{ district.name_en }}
@@ -167,13 +167,13 @@ const closeModal = () => {
                         </div>
                         <div class="md:col-span-5 flex justify-end space-x-3 mt-4">
                             <button type="button" @click="resetFilters" class="px-5 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors">Reset</button>
-                            <button type="submit" class="px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors shadow-sm">Apply Filters</button>
+                            <button type="submit" class="px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors shadow-xs">Apply Filters</button>
                         </div>
                     </form>
                 </div>
 
                 <!-- Table -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-xl border border-gray-100">
+                <div class="bg-white overflow-hidden shadow-xs sm:rounded-xl border border-gray-100">
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm text-left text-gray-500">
                             <thead class="text-xs text-gray-700 uppercase bg-gray-50 border-b border-gray-200">
@@ -200,7 +200,7 @@ const closeModal = () => {
                                         <div v-else class="text-xs text-gray-400 italic">Not provided</div>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <span class="px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider shadow-sm"
+                                        <span class="px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider shadow-xs"
                                             :class="{
                                                 'bg-yellow-100 text-yellow-800 border border-yellow-200': member.status === 'pending',
                                                 'bg-green-100 text-green-800 border border-green-200': member.status === 'approved',
@@ -242,7 +242,7 @@ const closeModal = () => {
                 </div>
                 
                 <!-- Pagination -->
-                <div class="flex items-center justify-between mt-4 bg-white p-4 rounded-xl shadow-sm border border-gray-100" v-if="members.links && members.links.length > 3">
+                <div class="flex items-center justify-between mt-4 bg-white p-4 rounded-xl shadow-xs border border-gray-100" v-if="members.links && members.links.length > 3">
                     <div class="flex-1 flex justify-between sm:hidden">
                         <Link v-if="members.prev_page_url" :href="members.prev_page_url" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">Previous</Link>
                         <Link v-if="members.next_page_url" :href="members.next_page_url" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">Next</Link>
@@ -254,7 +254,7 @@ const closeModal = () => {
                             </p>
                         </div>
                         <div>
-                            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                            <nav class="relative z-0 inline-flex rounded-md shadow-xs -space-x-px" aria-label="Pagination">
                                 <template v-for="(link, p) in members.links" :key="p">
                                     <div v-if="link.url === null" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-gray-50 text-sm font-medium text-gray-400" v-html="link.label" />
                                     <Link v-else :href="link.url" :class="[link.active ? 'z-10 bg-green-50 border-green-500 text-green-600 font-bold' : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50', 'relative inline-flex items-center px-4 py-2 border text-sm font-medium transition-colors']" v-html="link.label" />
@@ -307,7 +307,7 @@ const closeModal = () => {
 
                     <div class="md:col-span-2">
                         <h4 class="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-4 border-b border-gray-100 pb-2">Location & Address</h4>
-                        <dl class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm bg-white border border-gray-200 p-4 rounded-xl shadow-sm">
+                        <dl class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm bg-white border border-gray-200 p-4 rounded-xl shadow-xs">
                             <div v-if="selectedMember.state"><dt class="text-gray-500 block mb-1">State</dt> <dd class="font-bold text-gray-900">{{ selectedMember.state?.name_en }}</dd></div>
                             <div v-if="selectedMember.district"><dt class="text-gray-500 block mb-1">District</dt> <dd class="font-bold text-gray-900">{{ selectedMember.district?.name_en }}</dd></div>
                             <div v-if="selectedMember.city_village"><dt class="text-gray-500 block mb-1">City/Village</dt> <dd class="font-bold text-gray-900">{{ selectedMember.city_village }}</dd></div>
@@ -318,7 +318,7 @@ const closeModal = () => {
 
                     <div class="md:col-span-2" v-if="selectedMember.education || selectedMember.occupation || selectedMember.skills">
                         <h4 class="text-xs font-bold text-blue-600 uppercase tracking-widest mb-4 border-b border-gray-100 pb-2">Education & Profession</h4>
-                        <dl class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm bg-white border border-gray-200 p-4 rounded-xl shadow-sm">
+                        <dl class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm bg-white border border-gray-200 p-4 rounded-xl shadow-xs">
                             <div v-if="selectedMember.education"><dt class="text-gray-500 block mb-1">Education</dt> <dd class="font-bold text-gray-900">{{ selectedMember.education }}</dd></div>
                             <div v-if="selectedMember.occupation"><dt class="text-gray-500 block mb-1">Occupation</dt> <dd class="font-bold text-gray-900">{{ selectedMember.occupation }}</dd></div>
                             <div v-if="selectedMember.company_name"><dt class="text-gray-500 block mb-1">Company</dt> <dd class="font-bold text-gray-900">{{ selectedMember.company_name }}</dd></div>
@@ -331,7 +331,7 @@ const closeModal = () => {
                             v-if="selectedMember.status !== 'approved'"
                             @click="updateStatus(selectedMember.id, 'approved'); closeModal()"
                             :disabled="processingMemberId === selectedMember.id"
-                            class="px-5 py-2.5 bg-green-600 text-white font-bold rounded-lg shadow-sm hover:bg-green-700 transition-colors disabled:cursor-not-allowed disabled:bg-gray-300"
+                            class="px-5 py-2.5 bg-green-600 text-white font-bold rounded-lg shadow-xs hover:bg-green-700 transition-colors disabled:cursor-not-allowed disabled:bg-gray-300"
                         >
                             {{ processingMemberId === selectedMember.id && processingStatus === 'approved' ? 'Approving...' : 'Approve Profile' }}
                         </button>
@@ -339,7 +339,7 @@ const closeModal = () => {
                             v-if="selectedMember.status !== 'rejected'"
                             @click="updateStatus(selectedMember.id, 'rejected'); closeModal()"
                             :disabled="processingMemberId === selectedMember.id"
-                            class="px-5 py-2.5 bg-red-600 text-white font-bold rounded-lg shadow-sm hover:bg-red-700 transition-colors disabled:cursor-not-allowed disabled:bg-gray-300"
+                            class="px-5 py-2.5 bg-red-600 text-white font-bold rounded-lg shadow-xs hover:bg-red-700 transition-colors disabled:cursor-not-allowed disabled:bg-gray-300"
                         >
                             {{ processingMemberId === selectedMember.id && processingStatus === 'rejected' ? 'Rejecting...' : 'Reject Profile' }}
                         </button>

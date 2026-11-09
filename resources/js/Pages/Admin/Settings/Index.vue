@@ -77,7 +77,7 @@ const submit = () => {
 
         <div class="py-12">
             <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white overflow-hidden shadow-xs sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <form @submit.prevent="submit" class="space-y-8">
                             
@@ -87,11 +87,11 @@ const submit = () => {
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Official Email</label>
-                                        <input type="email" v-model="form.contact_email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                        <input type="email" v-model="form.contact_email" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Official Mobile/WhatsApp Number</label>
-                                        <input type="text" v-model="form.contact_mobile" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                        <input type="text" v-model="form.contact_mobile" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     </div>
                                 </div>
                             </div>
@@ -102,39 +102,39 @@ const submit = () => {
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Announcement (English)</label>
-                                        <textarea v-model="form.announcement_en" rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
+                                        <textarea v-model="form.announcement_en" rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Announcement (Hindi)</label>
-                                        <textarea v-model="form.announcement_hi" rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
+                                        <textarea v-model="form.announcement_hi" rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Hero Introduction (English)</label>
-                                        <textarea v-model="form.hero_intro_en" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
+                                        <textarea v-model="form.hero_intro_en" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Hero Introduction (Hindi)</label>
-                                        <textarea v-model="form.hero_intro_hi" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
+                                        <textarea v-model="form.hero_intro_hi" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
                                     </div>
                                     <div class="md:col-span-2">
                                         <label class="block text-sm font-medium text-gray-700">About Section Image URL</label>
-                                        <input type="url" v-model="form.about_image_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                        <input type="url" v-model="form.about_image_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">About Intro (English)</label>
-                                        <textarea v-model="form.about_intro_en" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
+                                        <textarea v-model="form.about_intro_en" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">About Intro (Hindi)</label>
-                                        <textarea v-model="form.about_intro_hi" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
+                                        <textarea v-model="form.about_intro_hi" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">About Body (English)</label>
-                                        <textarea v-model="form.about_body_en" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
+                                        <textarea v-model="form.about_body_en" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">About Body (Hindi)</label>
-                                        <textarea v-model="form.about_body_hi" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
+                                        <textarea v-model="form.about_body_hi" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -145,31 +145,31 @@ const submit = () => {
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Facebook Page URL</label>
-                                        <input type="url" v-model="form.facebook_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                        <input type="url" v-model="form.facebook_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Instagram URL</label>
-                                        <input type="url" v-model="form.instagram_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                        <input type="url" v-model="form.instagram_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">YouTube Channel URL</label>
-                                        <input type="url" v-model="form.youtube_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                        <input type="url" v-model="form.youtube_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">WhatsApp Group Invite Link</label>
-                                        <input type="url" v-model="form.whatsapp_group_link" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                        <input type="url" v-model="form.whatsapp_group_link" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Telegram URL</label>
-                                        <input type="url" v-model="form.telegram_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                        <input type="url" v-model="form.telegram_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">X (Twitter) URL</label>
-                                        <input type="url" v-model="form.x_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                        <input type="url" v-model="form.x_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">LinkedIn URL</label>
-                                        <input type="url" v-model="form.linkedin_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                        <input type="url" v-model="form.linkedin_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     </div>
                                 </div>
                             </div>
@@ -180,19 +180,19 @@ const submit = () => {
                                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Members Connected</label>
-                                        <input type="number" v-model="form.stat_members" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                        <input type="number" v-model="form.stat_members" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Districts Covered</label>
-                                        <input type="number" v-model="form.stat_districts" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                        <input type="number" v-model="form.stat_districts" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Volunteers</label>
-                                        <input type="number" v-model="form.stat_volunteers" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                        <input type="number" v-model="form.stat_volunteers" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Matrimonial Profiles</label>
-                                        <input type="number" v-model="form.stat_matrimonial" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                        <input type="number" v-model="form.stat_matrimonial" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     </div>
                                 </div>
                                 <p class="text-sm text-gray-500 mt-2">These numbers are displayed on the trust cards on the main homepage. Leave a field blank to show the live count.</p>
@@ -204,12 +204,12 @@ const submit = () => {
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Founder Name</label>
-                                        <input type="text" v-model="form.founder_name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                        <input type="text" v-model="form.founder_name" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     </div>
                                     <div class="md:col-span-2 rounded-2xl border border-orange-100 bg-orange-50/60 p-4">
                                         <label class="block text-sm font-bold text-blue-950">Founder Photo</label>
                                         <div class="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center">
-                                            <div class="flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-3xl border-4 border-orange-400 bg-white text-2xl font-black text-blue-950 shadow-sm">
+                                            <div class="flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-3xl border-4 border-orange-400 bg-white text-2xl font-black text-blue-950 shadow-xs">
                                                 <img v-if="founderPhotoPreview" :src="founderPhotoPreview" alt="Founder photo preview" class="h-full w-full object-cover">
                                                 <span v-else>KC</span>
                                             </div>
@@ -226,55 +226,55 @@ const submit = () => {
                                         </div>
                                         <div class="mt-4">
                                             <label class="block text-sm font-medium text-gray-700">Founder Photo URL fallback</label>
-                                            <input type="url" v-model="form.founder_photo_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                            <input type="url" v-model="form.founder_photo_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                             <p class="mt-1 text-xs font-medium text-slate-500">Use this only when the image is hosted somewhere else.</p>
                                         </div>
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Founder Intro (English)</label>
-                                        <textarea v-model="form.founder_intro_en" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
+                                        <textarea v-model="form.founder_intro_en" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Founder Intro (Hindi)</label>
-                                        <textarea v-model="form.founder_intro_hi" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
+                                        <textarea v-model="form.founder_intro_hi" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Founder Message (English)</label>
-                                        <textarea v-model="form.founder_message_en" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
+                                        <textarea v-model="form.founder_message_en" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Founder Message (Hindi)</label>
-                                        <textarea v-model="form.founder_message_hi" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
+                                        <textarea v-model="form.founder_message_hi" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Founder Closing Note (English)</label>
-                                        <textarea v-model="form.founder_note_en" rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
+                                        <textarea v-model="form.founder_note_en" rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Founder Closing Note (Hindi)</label>
-                                        <textarea v-model="form.founder_note_hi" rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
+                                        <textarea v-model="form.founder_note_hi" rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Founder WhatsApp URL</label>
-                                        <input type="url" v-model="form.founder_whatsapp_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                        <input type="url" v-model="form.founder_whatsapp_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Founder Facebook URL</label>
-                                        <input type="url" v-model="form.founder_facebook_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                        <input type="url" v-model="form.founder_facebook_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Founder Instagram URL</label>
-                                        <input type="url" v-model="form.founder_instagram_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                        <input type="url" v-model="form.founder_instagram_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Founder Profile URL</label>
-                                        <input type="url" v-model="form.founder_profile_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                        <input type="url" v-model="form.founder_profile_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     </div>
                                 </div>
                             </div>
 
                             <div class="flex justify-end pt-4">
-                                <button type="submit" :disabled="form.processing" class="bg-indigo-600 text-white px-6 py-2 rounded shadow hover:bg-indigo-700 disabled:opacity-50">
+                                <button type="submit" :disabled="form.processing" class="bg-indigo-600 text-white px-6 py-2 rounded-sm shadow-sm hover:bg-indigo-700 disabled:opacity-50">
                                     Save Settings
                                 </button>
                             </div>

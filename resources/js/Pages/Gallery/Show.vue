@@ -24,14 +24,14 @@ defineProps({
         <div class="py-12 bg-gray-50 min-h-screen">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-                    <div v-for="image in gallery.images" :key="image.id" class="group relative aspect-w-1 aspect-h-1 overflow-hidden rounded-3xl bg-gray-100 shadow-sm border border-gray-200">
+                    <div v-for="image in gallery.images" :key="image.id" class="group relative aspect-w-1 aspect-h-1 overflow-hidden rounded-3xl bg-gray-100 shadow-xs border border-gray-200">
                         <a :href="`/storage/${image.image_path}`" target="_blank" class="block h-full w-full h-48 sm:h-64">
                             <img :src="`/storage/${image.image_path}`" :alt="gallery.title" class="object-cover w-full h-full group-hover:opacity-75 transition-opacity">
                         </a>
                     </div>
                 </div>
 
-                <div v-if="gallery.images.length === 0" class="rounded-3xl bg-white py-12 text-center text-gray-500 shadow-sm">
+                <div v-if="gallery.images.length === 0" class="rounded-3xl bg-white py-12 text-center text-gray-500 shadow-xs">
                     No images available in this gallery.
                 </div>
             </div>

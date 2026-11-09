@@ -25,7 +25,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title inertia>{{ $seo['title'] }}</title>
+        <title data-inertia>{{ $seo['title'] }}</title>
         <meta name="description" content="{{ $seo['description'] }}">
         <meta name="keywords" content="{{ $seo['keywords'] }}">
         <meta name="robots" content="{{ $seo['robots'] }}">

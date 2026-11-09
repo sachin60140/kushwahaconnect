@@ -84,7 +84,7 @@ const isActive = (link) => route().current(link.active);
                         :key="link.name"
                         :href="route(link.route)"
                         class="group flex items-center rounded-2xl px-3 py-3 text-sm font-bold transition"
-                        :class="isActive(link) ? 'bg-white text-blue-950 shadow-sm' : 'text-blue-100 hover:bg-white/10 hover:text-white'"
+                        :class="isActive(link) ? 'bg-white text-blue-950 shadow-xs' : 'text-blue-100 hover:bg-white/10 hover:text-white'"
                     >
                         <svg
                             class="mr-3 h-5 w-5 shrink-0 transition"
@@ -114,7 +114,7 @@ const isActive = (link) => route().current(link.active);
         </aside>
 
         <div class="min-h-screen md:pl-72">
-            <header class="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur">
+            <header class="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur-sm">
                 <div class="flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
                     <div class="flex items-center gap-3 md:hidden">
                         <button
@@ -157,7 +157,7 @@ const isActive = (link) => route().current(link.active);
 
                         <Dropdown align="right" width="48">
                             <template #trigger>
-                                <button class="flex items-center rounded-full bg-blue-950 px-2 py-2 text-sm font-bold text-white transition hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2">
+                                <button class="flex items-center rounded-full bg-blue-950 px-2 py-2 text-sm font-bold text-white transition hover:bg-blue-900 focus:outline-hidden focus:ring-2 focus:ring-orange-400 focus:ring-offset-2">
                                     <span class="flex h-8 w-8 items-center justify-center rounded-full bg-orange-400 text-xs font-black uppercase text-blue-950">
                                         {{ userInitial }}
                                     </span>

@@ -52,7 +52,7 @@ const formatDate = (date) => {
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8 space-y-6">
                 
                 <!-- Welcome & Status Banner -->
-                <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
+                <div class="overflow-hidden bg-white shadow-xs sm:rounded-lg">
                     <div class="p-6 text-gray-900 flex flex-col md:flex-row justify-between items-center">
                         <div>
                             <h3 class="text-2xl font-bold mb-2">Welcome back, {{ user.name }}!</h3>
@@ -61,7 +61,7 @@ const formatDate = (date) => {
                         <div class="mt-4 md:mt-0 flex items-center space-x-4">
                             <div class="text-right">
                                 <p class="text-sm text-gray-500 mb-1">Account Status</p>
-                                <span :class="statusColor" class="px-3 py-1 rounded-full text-sm font-bold shadow-sm">
+                                <span :class="statusColor" class="px-3 py-1 rounded-full text-sm font-bold shadow-xs">
                                     {{ formatStatus(user.status) }}
                                 </span>
                             </div>
@@ -75,9 +75,9 @@ const formatDate = (date) => {
                     <div class="md:col-span-2 space-y-6">
                         
                         <!-- Profile Completion Alert -->
-                        <div v-if="profileCompletion < 100" class="bg-orange-50 border-l-4 border-orange-500 p-4 shadow-sm rounded-r-lg">
+                        <div v-if="profileCompletion < 100" class="bg-orange-50 border-l-4 border-orange-500 p-4 shadow-xs rounded-r-lg">
                             <div class="flex items-center">
-                                <div class="flex-shrink-0">
+                                <div class="shrink-0">
                                     <svg class="h-5 w-5 text-orange-400" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
                                     </svg>
@@ -101,7 +101,7 @@ const formatDate = (date) => {
 
                         <!-- Hub Widgets -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div class="bg-white p-5 shadow-sm rounded-lg border border-gray-100 hover:shadow-md transition relative overflow-hidden group">
+                            <div class="bg-white p-5 shadow-xs rounded-lg border border-gray-100 hover:shadow-md transition relative overflow-hidden group">
                                 <div class="absolute -right-4 -top-4 w-24 h-24 bg-green-50 rounded-full group-hover:bg-green-100 transition duration-300 z-0"></div>
                                 <div class="relative z-10">
                                     <div class="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-3">
@@ -113,7 +113,7 @@ const formatDate = (date) => {
                                 </div>
                             </div>
 
-                            <div class="bg-white p-5 shadow-sm rounded-lg border border-gray-100 hover:shadow-md transition relative overflow-hidden group">
+                            <div class="bg-white p-5 shadow-xs rounded-lg border border-gray-100 hover:shadow-md transition relative overflow-hidden group">
                                 <div class="absolute -right-4 -top-4 w-24 h-24 bg-pink-50 rounded-full group-hover:bg-pink-100 transition duration-300 z-0"></div>
                                 <div class="relative z-10">
                                     <div class="w-10 h-10 bg-pink-100 text-pink-600 rounded-full flex items-center justify-center mb-3">
@@ -125,7 +125,7 @@ const formatDate = (date) => {
                                 </div>
                             </div>
 
-                            <div class="bg-white p-5 shadow-sm rounded-lg border border-gray-100 hover:shadow-md transition relative overflow-hidden group">
+                            <div class="bg-white p-5 shadow-xs rounded-lg border border-gray-100 hover:shadow-md transition relative overflow-hidden group">
                                 <div class="absolute -right-4 -top-4 w-24 h-24 bg-blue-50 rounded-full group-hover:bg-blue-100 transition duration-300 z-0"></div>
                                 <div class="relative z-10">
                                     <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-3">
@@ -137,7 +137,7 @@ const formatDate = (date) => {
                                 </div>
                             </div>
 
-                            <div class="bg-white p-5 shadow-sm rounded-lg border border-gray-100 hover:shadow-md transition relative overflow-hidden group sm:col-span-2">
+                            <div class="bg-white p-5 shadow-xs rounded-lg border border-gray-100 hover:shadow-md transition relative overflow-hidden group sm:col-span-2">
                                 <div class="absolute -right-4 -top-4 w-24 h-24 bg-purple-50 rounded-full group-hover:bg-purple-100 transition duration-300 z-0"></div>
                                 <div class="relative z-10">
                                     <div class="flex items-start justify-between gap-4">
@@ -148,7 +148,7 @@ const formatDate = (date) => {
                                             <h4 class="text-lg font-bold text-gray-800 mb-1">My Business</h4>
                                             <p class="text-sm text-gray-500">Track submitted business listing approval status.</p>
                                         </div>
-                                        <Link :href="route('businesses.create')" class="shrink-0 rounded-full bg-orange-500 px-4 py-2 text-xs font-black text-white shadow-sm transition hover:bg-orange-600">
+                                        <Link :href="route('businesses.create')" class="shrink-0 rounded-full bg-orange-500 px-4 py-2 text-xs font-black text-white shadow-xs transition hover:bg-orange-600">
                                             Add Business
                                         </Link>
                                     </div>
@@ -195,10 +195,10 @@ const formatDate = (date) => {
                     <!-- Right Column: Sidebar info -->
                     <div class="space-y-6">
                         <!-- Recent Activity / Notifications -->
-                        <div class="bg-white p-5 shadow-sm rounded-lg border border-gray-100">
+                        <div class="bg-white p-5 shadow-xs rounded-lg border border-gray-100">
                             <div class="flex items-center justify-between mb-4 border-b pb-2">
                                 <h4 class="text-lg font-bold text-gray-800">Recent Activity</h4>
-                                <span class="text-xs text-orange-600 font-bold bg-orange-100 px-2 py-1 rounded">New</span>
+                                <span class="text-xs text-orange-600 font-bold bg-orange-100 px-2 py-1 rounded-sm">New</span>
                             </div>
                             <div class="rounded-lg bg-gray-50 border border-gray-100 px-4 py-6 text-center">
                                 <div class="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-orange-100 text-orange-600">
@@ -213,7 +213,7 @@ const formatDate = (date) => {
                         </div>
 
                         <!-- Connections Snippet -->
-                        <div class="bg-white p-5 shadow-sm rounded-lg border border-gray-100">
+                        <div class="bg-white p-5 shadow-xs rounded-lg border border-gray-100">
                             <h4 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">My Connections</h4>
                             <div class="text-center py-6">
                                 <div class="mx-auto w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 mb-3">

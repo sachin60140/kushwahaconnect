@@ -91,9 +91,9 @@ const links = computed(() => [
                     :href="link.href"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="group rounded-3xl bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-950/10"
+                    class="group rounded-3xl bg-white p-5 shadow-xs transition hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-950/10"
                 >
-                    <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br text-white shadow-sm transition group-hover:scale-105" :class="link.color">
+                    <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br text-white shadow-xs transition group-hover:scale-105" :class="link.color">
                         <svg
                             class="h-7 w-7"
                             :viewBox="link.icon.viewBox"

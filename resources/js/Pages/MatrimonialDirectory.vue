@@ -77,7 +77,7 @@ const toggleShortlist = async (profile) => {
                     <form @submit.prevent="submitSearch" class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Gender</label>
-                            <select v-model="form.gender" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                            <select v-model="form.gender" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                 <option value="">All</option>
                                 <option value="Male">Male</option>
                                 <option value="Female">Female</option>
@@ -85,7 +85,7 @@ const toggleShortlist = async (profile) => {
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Marital Status</label>
-                            <select v-model="form.marital_status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                            <select v-model="form.marital_status" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                 <option value="">All</option>
                                 <option value="Never Married">Never Married</option>
                                 <option value="Divorced">Divorced</option>
@@ -95,17 +95,17 @@ const toggleShortlist = async (profile) => {
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Education</label>
-                            <input type="text" v-model="form.education" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="e.g. B.Tech">
+                            <input type="text" v-model="form.education" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="e.g. B.Tech">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">City</label>
-                            <input type="text" v-model="form.city" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="e.g. Delhi">
+                            <input type="text" v-model="form.city" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="e.g. Delhi">
                         </div>
                         <div class="flex space-x-2">
-                            <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 Search
                             </button>
-                            <button type="button" @click="clearSearch" class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <button type="button" @click="clearSearch" class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-xs text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 Clear
                             </button>
                         </div>
@@ -122,15 +122,15 @@ const toggleShortlist = async (profile) => {
                         <div v-show="showAdvancedFilters" class="mt-4 grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Min Age</label>
-                                <input type="number" min="18" v-model="form.min_age" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="e.g. 21">
+                                <input type="number" min="18" v-model="form.min_age" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="e.g. 21">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Max Age</label>
-                                <input type="number" min="18" v-model="form.max_age" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="e.g. 35">
+                                <input type="number" min="18" v-model="form.max_age" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="e.g. 35">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Manglik Status</label>
-                                <select v-model="form.manglik" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                <select v-model="form.manglik" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     <option value="">All</option>
                                     <option value="Yes">Yes</option>
                                     <option value="No">No</option>
@@ -140,7 +140,7 @@ const toggleShortlist = async (profile) => {
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Occupation</label>
-                                <input type="text" v-model="form.occupation" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="e.g. Engineer">
+                                <input type="text" v-model="form.occupation" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="e.g. Engineer">
                             </div>
                         </div>
                     </div>
@@ -148,7 +148,7 @@ const toggleShortlist = async (profile) => {
 
                 <!-- Directory Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div v-for="profile in profiles.data" :key="profile.id" class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div v-for="profile in profiles.data" :key="profile.id" class="bg-white overflow-hidden shadow-xs sm:rounded-lg">
                         <div class="p-6">
                             <div class="flex items-center justify-between mb-4">
                                 <div class="w-20 h-20 bg-gray-200 rounded-full overflow-hidden">
@@ -171,7 +171,7 @@ const toggleShortlist = async (profile) => {
                         </div>
                         <div class="bg-gray-50 px-6 py-3 border-t border-gray-200 flex justify-between items-center">
                             <button class="text-green-600 hover:text-green-800 font-medium text-sm">View Full Profile</button>
-                            <button @click="toggleShortlist(profile)" class="flex items-center gap-1 focus:outline-none transition-colors duration-200" :class="profile.is_shortlisted ? 'text-red-500 hover:text-red-600' : 'text-gray-400 hover:text-red-500'">
+                            <button @click="toggleShortlist(profile)" class="flex items-center gap-1 focus:outline-hidden transition-colors duration-200" :class="profile.is_shortlisted ? 'text-red-500 hover:text-red-600' : 'text-gray-400 hover:text-red-500'">
                                 <svg v-if="profile.is_shortlisted" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                                 <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
                                 <span class="text-sm font-medium">{{ profile.is_shortlisted ? 'Saved' : 'Shortlist' }}</span>
@@ -182,15 +182,15 @@ const toggleShortlist = async (profile) => {
 
                 <!-- Pagination -->
                 <div v-if="profiles.links.length > 3" class="mt-6 flex justify-center">
-                    <div class="flex shadow-sm rounded-md">
+                    <div class="flex shadow-xs rounded-md">
                         <template v-for="(link, p) in profiles.links" :key="p">
-                            <div v-if="link.url === null" class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded" v-html="link.label" />
-                            <Link v-else class="mr-1 mb-1 px-4 py-3 text-sm leading-4 border rounded hover:bg-white focus:border-indigo-500 focus:text-indigo-500" :class="{ 'bg-white font-bold text-indigo-600': link.active }" :href="link.url" v-html="link.label" />
+                            <div v-if="link.url === null" class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded-sm" v-html="link.label" />
+                            <Link v-else class="mr-1 mb-1 px-4 py-3 text-sm leading-4 border rounded-sm hover:bg-white focus:border-indigo-500 focus:text-indigo-500" :class="{ 'bg-white font-bold text-indigo-600': link.active }" :href="link.url" v-html="link.label" />
                         </template>
                     </div>
                 </div>
                 
-                <div v-if="profiles.data.length === 0" class="text-center py-12 bg-white rounded-lg shadow-sm">
+                <div v-if="profiles.data.length === 0" class="text-center py-12 bg-white rounded-lg shadow-xs">
                     <p class="text-gray-500">No profiles found matching your criteria.</p>
                 </div>
             </div>

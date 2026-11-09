@@ -31,21 +31,21 @@ const aboutImage = computed(() => props.settings.about_image_url || '');
                     class="h-full min-h-[360px] w-full object-cover"
                     loading="lazy"
                 >
-                <div v-else class="min-h-[360px] bg-[radial-gradient(circle_at_25%_20%,_rgba(249,115,22,0.45),_transparent_28%),linear-gradient(135deg,_#071d49,_#166534)] p-8 text-white">
+                <div v-else class="min-h-[360px] bg-[radial-gradient(circle_at_25%_20%,rgba(249,115,22,0.45),transparent_28%),linear-gradient(135deg,#071d49,#166534)] p-8 text-white">
                     <div class="grid h-full grid-cols-2 gap-4">
-                        <div class="rounded-3xl bg-white/15 p-5 backdrop-blur">
+                        <div class="rounded-3xl bg-white/15 p-5 backdrop-blur-sm">
                             <p class="text-sm font-bold text-orange-100">{{ __('why_education_title') }}</p>
                             <div class="mt-8 h-16 rounded-2xl bg-white/20"></div>
                         </div>
-                        <div class="mt-12 rounded-3xl bg-white/15 p-5 backdrop-blur">
+                        <div class="mt-12 rounded-3xl bg-white/15 p-5 backdrop-blur-sm">
                             <p class="text-sm font-bold text-green-100">{{ __('why_business_title') }}</p>
                             <div class="mt-8 h-16 rounded-2xl bg-white/20"></div>
                         </div>
-                        <div class="rounded-3xl bg-white/15 p-5 backdrop-blur">
+                        <div class="rounded-3xl bg-white/15 p-5 backdrop-blur-sm">
                             <p class="text-sm font-bold text-blue-100">{{ __('why_connections_title') }}</p>
                             <div class="mt-8 h-16 rounded-2xl bg-white/20"></div>
                         </div>
-                        <div class="mt-12 rounded-3xl bg-white/15 p-5 backdrop-blur">
+                        <div class="mt-12 rounded-3xl bg-white/15 p-5 backdrop-blur-sm">
                             <p class="text-sm font-bold text-orange-100">{{ __('why_help_title') }}</p>
                             <div class="mt-8 h-16 rounded-2xl bg-white/20"></div>
                         </div>
@@ -80,7 +80,7 @@ const aboutImage = computed(() => props.settings.about_image_url || '');
                     <Link href="/about" class="inline-flex min-h-12 items-center justify-center rounded-full border border-blue-950/15 px-6 text-sm font-black text-blue-950 transition hover:border-blue-950 hover:bg-blue-50">
                         {{ __('btn_learn_more') }}
                     </Link>
-                    <Link :href="route('join')" class="inline-flex min-h-12 items-center justify-center rounded-full bg-orange-500 px-6 text-sm font-black text-white shadow-sm transition hover:bg-orange-600">
+                    <Link :href="route('join')" class="inline-flex min-h-12 items-center justify-center rounded-full bg-orange-500 px-6 text-sm font-black text-white shadow-xs transition hover:bg-orange-600">
                         {{ __('btn_join') }}
                     </Link>
                 </div>

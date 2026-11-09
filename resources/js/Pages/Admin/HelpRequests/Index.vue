@@ -49,10 +49,10 @@ const filterByStatus = () => {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 
                 <!-- Filter -->
-                <div class="mb-6 bg-white p-4 shadow-sm sm:rounded-lg flex gap-4 items-end">
+                <div class="mb-6 bg-white p-4 shadow-xs sm:rounded-lg flex gap-4 items-end">
                     <div class="w-64">
                         <label class="block text-sm font-medium text-gray-700">Filter by Status</label>
-                        <select v-model="searchForm.status" @change="filterByStatus" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                        <select v-model="searchForm.status" @change="filterByStatus" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                             <option value="">All Statuses</option>
                             <option value="Pending">Pending</option>
                             <option value="Approved">Approved</option>
@@ -64,7 +64,7 @@ const filterByStatus = () => {
                     </div>
                 </div>
 
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white overflow-hidden shadow-xs sm:rounded-lg">
                     <div class="p-6 text-gray-900 overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
@@ -91,7 +91,7 @@ const filterByStatus = () => {
                                         <div v-if="req.whatsapp" class="text-green-600 text-xs">WA: {{ req.whatsapp }}</div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                        <select :value="req.status" @change="updateStatus(req.id, $event.target.value)" class="text-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 font-semibold"
+                                        <select :value="req.status" @change="updateStatus(req.id, $event.target.value)" class="text-sm rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 font-semibold"
                                                 :class="{
                                                     'bg-yellow-100 text-yellow-800': req.status === 'Pending',
                                                     'bg-green-100 text-green-800': req.status === 'Approved',
@@ -109,7 +109,7 @@ const filterByStatus = () => {
                                         </select>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <button @click="destroy(req.id)" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded">Delete</button>
+                                        <button @click="destroy(req.id)" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-sm">Delete</button>
                                     </td>
                                 </tr>
                                 <tr v-if="requests.data.length === 0">
@@ -120,10 +120,10 @@ const filterByStatus = () => {
                         
                         <!-- Pagination -->
                         <div v-if="requests.links.length > 3" class="mt-6 flex justify-center">
-                            <div class="flex shadow-sm rounded-md">
+                            <div class="flex shadow-xs rounded-md">
                                 <template v-for="(link, p) in requests.links" :key="p">
-                                    <div v-if="link.url === null" class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded" v-html="link.label" />
-                                    <Link v-else class="mr-1 mb-1 px-4 py-3 text-sm leading-4 border rounded hover:bg-white focus:border-indigo-500 focus:text-indigo-500" :class="{ 'bg-white font-bold text-indigo-600': link.active }" :href="link.url" v-html="link.label" />
+                                    <div v-if="link.url === null" class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded-sm" v-html="link.label" />
+                                    <Link v-else class="mr-1 mb-1 px-4 py-3 text-sm leading-4 border rounded-sm hover:bg-white focus:border-indigo-500 focus:text-indigo-500" :class="{ 'bg-white font-bold text-indigo-600': link.active }" :href="link.url" v-html="link.label" />
                                 </template>
                             </div>
                         </div>

@@ -42,9 +42,9 @@ const text = computed(() => ({
                 <article
                     v-for="representative in representatives"
                     :key="representative.id"
-                    class="group overflow-hidden rounded-[1.5rem] border border-blue-950/10 bg-white shadow-sm shadow-blue-950/5 transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-950/10"
+                    class="group overflow-hidden rounded-3xl border border-blue-950/10 bg-white shadow-xs shadow-blue-950/5 transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-950/10"
                 >
-                    <div class="relative overflow-hidden bg-gradient-to-br from-blue-950 via-blue-900 to-green-800 p-4 text-white">
+                    <div class="relative overflow-hidden bg-linear-to-br from-blue-950 via-blue-900 to-green-800 p-4 text-white">
                         <div class="absolute -right-12 -top-14 h-32 w-32 rounded-full bg-white/10"></div>
                         <div class="relative flex items-start gap-4">
                             <div class="flex h-32 w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/35 bg-white p-1 shadow-lg shadow-blue-950/30">

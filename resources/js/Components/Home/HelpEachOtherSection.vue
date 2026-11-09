@@ -23,7 +23,7 @@ const categories = [
                     <h2 class="mt-3 text-3xl font-black tracking-tight sm:text-4xl">{{ __('help_title') }}</h2>
                     <p class="mt-4 text-lg leading-8 text-green-50">{{ __('help_desc') }}</p>
                     <div class="mt-8 grid gap-3 sm:flex">
-                        <Link :href="route('help.create')" class="inline-flex min-h-12 items-center justify-center rounded-full bg-orange-500 px-6 text-sm font-black text-white shadow-sm transition hover:bg-orange-600">
+                        <Link :href="route('help.create')" class="inline-flex min-h-12 items-center justify-center rounded-full bg-orange-500 px-6 text-sm font-black text-white shadow-xs transition hover:bg-orange-600">
                             {{ __('btn_request_help') }}
                         </Link>
                         <Link :href="route('volunteer.create')" class="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-black text-green-900 transition hover:bg-green-50">
@@ -36,7 +36,7 @@ const categories = [
                     <div
                         v-for="category in categories"
                         :key="category.label"
-                        class="rounded-2xl bg-white p-5 shadow-sm transition hover:-translate-y-1"
+                        class="rounded-2xl bg-white p-5 shadow-xs transition hover:-translate-y-1"
                     >
                         <span class="inline-flex rounded-full px-3 py-1 text-xs font-black" :class="category.color">
                             {{ __(category.label) }}

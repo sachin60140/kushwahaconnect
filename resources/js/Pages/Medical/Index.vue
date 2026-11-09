@@ -35,11 +35,11 @@ const submitSearch = () => {
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <!-- Filters -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6 p-6">
+                <div class="bg-white overflow-hidden shadow-xs sm:rounded-lg mb-6 p-6">
                     <form @submit.prevent="submitSearch" class="flex gap-4 items-end">
                         <div class="flex-1">
                             <label class="block text-sm font-medium text-gray-700">Filter by Resource Type</label>
-                            <select v-model="form.type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                            <select v-model="form.type" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                 <option value="">All Types</option>
                                 <option value="blood_request">Blood Request</option>
                                 <option value="doctor">Doctor</option>
@@ -47,7 +47,7 @@ const submitSearch = () => {
                                 <option value="other">Other</option>
                             </select>
                         </div>
-                        <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none">
+                        <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-hidden">
                             Filter
                         </button>
                     </form>
@@ -55,7 +55,7 @@ const submitSearch = () => {
 
                 <!-- Resources Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div v-for="resource in resources.data" :key="resource.id" class="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-4"
+                    <div v-for="resource in resources.data" :key="resource.id" class="bg-white overflow-hidden shadow-xs sm:rounded-lg border-l-4"
                          :class="{
                              'border-red-500': resource.type === 'blood_request',
                              'border-blue-500': resource.type === 'doctor',
@@ -90,15 +90,15 @@ const submitSearch = () => {
 
                 <!-- Pagination -->
                 <div v-if="resources.links.length > 3" class="mt-6 flex justify-center">
-                    <div class="flex shadow-sm rounded-md">
+                    <div class="flex shadow-xs rounded-md">
                         <template v-for="(link, p) in resources.links" :key="p">
-                            <div v-if="link.url === null" class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded" v-html="link.label" />
-                            <Link v-else class="mr-1 mb-1 px-4 py-3 text-sm leading-4 border rounded hover:bg-white focus:border-red-500 focus:text-red-500" :class="{ 'bg-white font-bold text-red-600': link.active }" :href="link.url" v-html="link.label" />
+                            <div v-if="link.url === null" class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded-sm" v-html="link.label" />
+                            <Link v-else class="mr-1 mb-1 px-4 py-3 text-sm leading-4 border rounded-sm hover:bg-white focus:border-red-500 focus:text-red-500" :class="{ 'bg-white font-bold text-red-600': link.active }" :href="link.url" v-html="link.label" />
                         </template>
                     </div>
                 </div>
                 
-                <div v-if="resources.data.length === 0" class="text-center py-12 bg-white rounded-lg shadow-sm">
+                <div v-if="resources.data.length === 0" class="text-center py-12 bg-white rounded-lg shadow-xs">
                     <p class="text-gray-500">No resources found matching your criteria.</p>
                 </div>
             </div>

@@ -32,7 +32,7 @@ const toggleShortlist = async (profile) => {
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 
-                <div class="mb-6 flex justify-between items-center bg-white p-4 shadow-sm rounded-lg">
+                <div class="mb-6 flex justify-between items-center bg-white p-4 shadow-xs rounded-lg">
                     <h3 class="text-lg font-medium text-gray-700">Profiles you have saved</h3>
                     <Link :href="route('matrimonial-directory.index')" class="text-indigo-600 hover:text-indigo-900 text-sm font-semibold">
                         &larr; Back to Directory
@@ -41,7 +41,7 @@ const toggleShortlist = async (profile) => {
 
                 <!-- Directory Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div v-for="profile in profiles.data" :key="profile.id" class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div v-for="profile in profiles.data" :key="profile.id" class="bg-white overflow-hidden shadow-xs sm:rounded-lg">
                         <div class="p-6">
                             <div class="flex items-center justify-between mb-4">
                                 <div class="w-20 h-20 bg-gray-200 rounded-full overflow-hidden border-2 border-indigo-100">
@@ -64,7 +64,7 @@ const toggleShortlist = async (profile) => {
                         </div>
                         <div class="bg-gray-50 px-6 py-3 border-t border-gray-200 flex justify-between items-center">
                             <button class="text-green-600 hover:text-green-800 font-medium text-sm">View Full Profile</button>
-                            <button @click="toggleShortlist(profile)" class="flex items-center gap-1 focus:outline-none transition-colors duration-200" :class="profile.is_shortlisted ? 'text-red-500 hover:text-red-600' : 'text-gray-400 hover:text-red-500'">
+                            <button @click="toggleShortlist(profile)" class="flex items-center gap-1 focus:outline-hidden transition-colors duration-200" :class="profile.is_shortlisted ? 'text-red-500 hover:text-red-600' : 'text-gray-400 hover:text-red-500'">
                                 <svg v-if="profile.is_shortlisted" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                                 <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
                                 <span class="text-sm font-medium">{{ profile.is_shortlisted ? 'Saved' : 'Shortlist' }}</span>
@@ -75,22 +75,22 @@ const toggleShortlist = async (profile) => {
 
                 <!-- Pagination -->
                 <div v-if="profiles.links.length > 3" class="mt-6 flex justify-center">
-                    <div class="flex shadow-sm rounded-md">
+                    <div class="flex shadow-xs rounded-md">
                         <template v-for="(link, p) in profiles.links" :key="p">
-                            <div v-if="link.url === null" class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded" v-html="link.label" />
-                            <Link v-else class="mr-1 mb-1 px-4 py-3 text-sm leading-4 border rounded hover:bg-white focus:border-indigo-500 focus:text-indigo-500" :class="{ 'bg-white font-bold text-indigo-600': link.active }" :href="link.url" v-html="link.label" />
+                            <div v-if="link.url === null" class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded-sm" v-html="link.label" />
+                            <Link v-else class="mr-1 mb-1 px-4 py-3 text-sm leading-4 border rounded-sm hover:bg-white focus:border-indigo-500 focus:text-indigo-500" :class="{ 'bg-white font-bold text-indigo-600': link.active }" :href="link.url" v-html="link.label" />
                         </template>
                     </div>
                 </div>
                 
-                <div v-if="profiles.data.length === 0" class="text-center py-16 bg-white rounded-lg shadow-sm">
+                <div v-if="profiles.data.length === 0" class="text-center py-16 bg-white rounded-lg shadow-xs">
                     <svg class="mx-auto h-12 w-12 text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                     </svg>
                     <h3 class="mt-2 text-sm font-medium text-gray-900">No saved profiles</h3>
                     <p class="mt-1 text-sm text-gray-500">You haven't shortlisted any matrimonial profiles yet.</p>
                     <div class="mt-6">
-                        <Link :href="route('matrimonial-directory.index')" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <Link :href="route('matrimonial-directory.index')" class="inline-flex items-center px-4 py-2 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             Browse Directory
                         </Link>
                     </div>

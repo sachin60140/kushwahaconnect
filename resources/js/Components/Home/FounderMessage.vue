@@ -40,13 +40,13 @@ const links = computed(() => [
     <section class="bg-blue-950 px-4 py-16 text-white sm:px-6 lg:px-8">
         <div class="mx-auto grid max-w-5xl items-center gap-8 lg:grid-cols-[auto_1fr]">
             <div class="mx-auto">
-                <div class="flex h-40 w-40 items-center justify-center overflow-hidden rounded-[2rem] border-4 border-orange-400 bg-orange-100 text-4xl font-black text-orange-700 shadow-2xl">
+                <div class="flex h-40 w-40 items-center justify-center overflow-hidden rounded-4xl border-4 border-orange-400 bg-orange-100 text-4xl font-black text-orange-700 shadow-2xl">
                     <img v-if="founderPhoto" :src="founderPhoto" :alt="founderName" class="h-full w-full object-cover" loading="lazy">
                     <span v-else>KS</span>
                 </div>
             </div>
 
-            <div class="rounded-3xl border border-white/10 bg-white/10 p-6 shadow-2xl backdrop-blur sm:p-8">
+            <div class="rounded-3xl border border-white/10 bg-white/10 p-6 shadow-2xl backdrop-blur-sm sm:p-8">
                 <p class="text-sm font-black uppercase tracking-[0.22em] text-orange-300">{{ __('founder_title') }}</p>
                 <h2 class="mt-3 text-3xl font-black text-white">{{ founderName }}</h2>
                 <p class="mt-5 text-lg font-bold text-blue-50">{{ __('founder_hello') }}</p>

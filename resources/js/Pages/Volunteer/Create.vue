@@ -57,7 +57,7 @@ const submit = () => {
                             <p class="text-gray-600">Join our network of volunteers and help support the Kushwaha community in your local area.</p>
                         </div>
 
-                        <div v-if="$page.props.flash?.success" class="mb-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 rounded shadow-sm">
+                        <div v-if="$page.props.flash?.success" class="mb-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 rounded-sm shadow-xs">
                             {{ $page.props.flash.success }}
                         </div>
 
@@ -67,12 +67,12 @@ const submit = () => {
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Full Name <span class="text-red-500">*</span></label>
-                                    <input type="text" v-model="form.name" required class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 sm:text-base py-2 px-3 transition-colors duration-200">
+                                    <input type="text" v-model="form.name" required class="block w-full rounded-lg border-gray-300 shadow-xs focus:border-green-500 focus:ring-3 focus:ring-green-200 sm:text-base py-2 px-3 transition-colors duration-200">
                                     <div v-if="form.errors.name" class="text-red-500 text-xs mt-1">{{ form.errors.name }}</div>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                                    <input type="email" v-model="form.email" class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 sm:text-base py-2 px-3 transition-colors duration-200">
+                                    <input type="email" v-model="form.email" class="block w-full rounded-lg border-gray-300 shadow-xs focus:border-green-500 focus:ring-3 focus:ring-green-200 sm:text-base py-2 px-3 transition-colors duration-200">
                                     <div v-if="form.errors.email" class="text-red-500 text-xs mt-1">{{ form.errors.email }}</div>
                                 </div>
                             </div>
@@ -80,12 +80,12 @@ const submit = () => {
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Mobile Number <span class="text-red-500">*</span></label>
-                                    <input type="text" v-model="form.mobile" required class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 sm:text-base py-2 px-3 transition-colors duration-200">
+                                    <input type="text" v-model="form.mobile" required class="block w-full rounded-lg border-gray-300 shadow-xs focus:border-green-500 focus:ring-3 focus:ring-green-200 sm:text-base py-2 px-3 transition-colors duration-200">
                                     <div v-if="form.errors.mobile" class="text-red-500 text-xs mt-1">{{ form.errors.mobile }}</div>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">WhatsApp Number</label>
-                                    <input type="text" v-model="form.whatsapp" class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 sm:text-base py-2 px-3 transition-colors duration-200">
+                                    <input type="text" v-model="form.whatsapp" class="block w-full rounded-lg border-gray-300 shadow-xs focus:border-green-500 focus:ring-3 focus:ring-green-200 sm:text-base py-2 px-3 transition-colors duration-200">
                                     <div v-if="form.errors.whatsapp" class="text-red-500 text-xs mt-1">{{ form.errors.whatsapp }}</div>
                                 </div>
                             </div>
@@ -94,17 +94,17 @@ const submit = () => {
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">State <span class="text-red-500">*</span></label>
-                                    <input type="text" v-model="form.state" required class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 sm:text-base py-2 px-3 transition-colors duration-200">
+                                    <input type="text" v-model="form.state" required class="block w-full rounded-lg border-gray-300 shadow-xs focus:border-green-500 focus:ring-3 focus:ring-green-200 sm:text-base py-2 px-3 transition-colors duration-200">
                                     <div v-if="form.errors.state" class="text-red-500 text-xs mt-1">{{ form.errors.state }}</div>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">District <span class="text-red-500">*</span></label>
-                                    <input type="text" v-model="form.district" required class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 sm:text-base py-2 px-3 transition-colors duration-200">
+                                    <input type="text" v-model="form.district" required class="block w-full rounded-lg border-gray-300 shadow-xs focus:border-green-500 focus:ring-3 focus:ring-green-200 sm:text-base py-2 px-3 transition-colors duration-200">
                                     <div v-if="form.errors.district" class="text-red-500 text-xs mt-1">{{ form.errors.district }}</div>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">City/Village <span class="text-red-500">*</span></label>
-                                    <input type="text" v-model="form.city" required class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 sm:text-base py-2 px-3 transition-colors duration-200">
+                                    <input type="text" v-model="form.city" required class="block w-full rounded-lg border-gray-300 shadow-xs focus:border-green-500 focus:ring-3 focus:ring-green-200 sm:text-base py-2 px-3 transition-colors duration-200">
                                     <div v-if="form.errors.city" class="text-red-500 text-xs mt-1">{{ form.errors.city }}</div>
                                 </div>
                             </div>
@@ -113,12 +113,12 @@ const submit = () => {
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Your Skills (e.g., Teaching, Medical, Legal, IT)</label>
-                                    <input type="text" v-model="form.skills" placeholder="Comma separated..." class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 sm:text-base py-2 px-3 transition-colors duration-200">
+                                    <input type="text" v-model="form.skills" placeholder="Comma separated..." class="block w-full rounded-lg border-gray-300 shadow-xs focus:border-green-500 focus:ring-3 focus:ring-green-200 sm:text-base py-2 px-3 transition-colors duration-200">
                                     <div v-if="form.errors.skills" class="text-red-500 text-xs mt-1">{{ form.errors.skills }}</div>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Available Time</label>
-                                    <select v-model="form.available_time" class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 sm:text-base py-2 px-3 transition-colors duration-200">
+                                    <select v-model="form.available_time" class="block w-full rounded-lg border-gray-300 shadow-xs focus:border-green-500 focus:ring-3 focus:ring-green-200 sm:text-base py-2 px-3 transition-colors duration-200">
                                         <option value="">Select availability</option>
                                         <option value="Weekends Only">Weekends Only</option>
                                         <option value="Evening Hours">Evening Hours</option>
@@ -133,27 +133,27 @@ const submit = () => {
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Areas of Support (Select all that apply)</label>
                                 <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                                     <label class="inline-flex items-center">
-                                        <input type="checkbox" v-model="form.help_areas" value="education_support" class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200">
+                                        <input type="checkbox" v-model="form.help_areas" value="education_support" class="rounded-sm border-gray-300 text-green-600 shadow-xs focus:border-green-500 focus:ring-3 focus:ring-green-200">
                                         <span class="ml-2 text-sm text-gray-600">Education Support</span>
                                     </label>
                                     <label class="inline-flex items-center">
-                                        <input type="checkbox" v-model="form.help_areas" value="job_support" class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200">
+                                        <input type="checkbox" v-model="form.help_areas" value="job_support" class="rounded-sm border-gray-300 text-green-600 shadow-xs focus:border-green-500 focus:ring-3 focus:ring-green-200">
                                         <span class="ml-2 text-sm text-gray-600">Job/Career Support</span>
                                     </label>
                                     <label class="inline-flex items-center">
-                                        <input type="checkbox" v-model="form.help_areas" value="medical_support" class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200">
+                                        <input type="checkbox" v-model="form.help_areas" value="medical_support" class="rounded-sm border-gray-300 text-green-600 shadow-xs focus:border-green-500 focus:ring-3 focus:ring-green-200">
                                         <span class="ml-2 text-sm text-gray-600">Medical Support</span>
                                     </label>
                                     <label class="inline-flex items-center">
-                                        <input type="checkbox" v-model="form.help_areas" value="event_support" class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200">
+                                        <input type="checkbox" v-model="form.help_areas" value="event_support" class="rounded-sm border-gray-300 text-green-600 shadow-xs focus:border-green-500 focus:ring-3 focus:ring-green-200">
                                         <span class="ml-2 text-sm text-gray-600">Event Organizing</span>
                                     </label>
                                     <label class="inline-flex items-center">
-                                        <input type="checkbox" v-model="form.help_areas" value="social_media_support" class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200">
+                                        <input type="checkbox" v-model="form.help_areas" value="social_media_support" class="rounded-sm border-gray-300 text-green-600 shadow-xs focus:border-green-500 focus:ring-3 focus:ring-green-200">
                                         <span class="ml-2 text-sm text-gray-600">Social Media/IT Support</span>
                                     </label>
                                     <label class="inline-flex items-center">
-                                        <input type="checkbox" v-model="form.help_areas" value="blood_donor" class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200">
+                                        <input type="checkbox" v-model="form.help_areas" value="blood_donor" class="rounded-sm border-gray-300 text-green-600 shadow-xs focus:border-green-500 focus:ring-3 focus:ring-green-200">
                                         <span class="ml-2 text-sm text-gray-600">Blood Donor</span>
                                     </label>
                                 </div>
@@ -162,7 +162,7 @@ const submit = () => {
                             <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 mt-6">
                                 <label class="flex items-start">
                                     <div class="flex items-center h-5">
-                                        <input type="checkbox" v-model="form.consent" required class="focus:ring focus:ring-green-200 h-4 w-4 text-green-600 border-gray-300 rounded">
+                                        <input type="checkbox" v-model="form.consent" required class="focus:ring-3 focus:ring-green-200 h-4 w-4 text-green-600 border-gray-300 rounded-sm">
                                     </div>
                                     <div class="ml-3 text-sm">
                                         <span class="font-medium text-gray-700">I agree to the <Link href="/terms" class="text-green-600 underline">Terms and Conditions</Link></span>
@@ -172,8 +172,8 @@ const submit = () => {
                             </div>
 
                             <div class="flex justify-end gap-4 border-t border-gray-200 pt-6 mt-6">
-                                <Link :href="route('welcome')" class="bg-white border border-gray-300 text-gray-700 font-medium px-6 py-2.5 rounded-lg shadow-sm hover:bg-gray-50 transition-colors duration-200">Cancel</Link>
-                                <button type="submit" :disabled="form.processing" class="bg-orange-500 text-white font-bold px-6 py-2.5 rounded-lg shadow hover:bg-orange-600 disabled:opacity-50 transition-colors duration-200">Submit Registration</button>
+                                <Link :href="route('welcome')" class="bg-white border border-gray-300 text-gray-700 font-medium px-6 py-2.5 rounded-lg shadow-xs hover:bg-gray-50 transition-colors duration-200">Cancel</Link>
+                                <button type="submit" :disabled="form.processing" class="bg-orange-500 text-white font-bold px-6 py-2.5 rounded-lg shadow-sm hover:bg-orange-600 disabled:opacity-50 transition-colors duration-200">Submit Registration</button>
                             </div>
                         </form>
                     </div>

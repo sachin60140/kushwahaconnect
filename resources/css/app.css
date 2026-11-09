@@ -1,8 +1,128 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&display=swap')
+layer(base);
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@plugin '@tailwindcss/forms';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+/* Compiled assets are committed; never scan them for class names. */
+@source not '../../public/build';
+
+@theme {
+  --font-sans:
+    Inter, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-devanagari:
+    Noto Sans Devanagari, Inter, ui-sans-serif, system-ui, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility kc-fade-up {
+  animation: kc-fade-up 0.6s ease-out both;
+}
+
+@utility kc-page {
+  @apply bg-[#fffaf0] px-4 py-12 sm:px-6 lg:px-8;
+}
+
+@utility kc-container {
+  @apply mx-auto max-w-7xl;
+}
+
+@utility kc-surface {
+  @apply rounded-3xl border border-slate-100 bg-white shadow-xl shadow-blue-950/10;
+}
+
+@utility kc-panel {
+  @apply rounded-2xl border border-slate-100 bg-white shadow-xs transition hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-950/10;
+}
+
+@utility kc-hero {
+  @apply relative overflow-hidden bg-blue-950 px-4 py-14 text-white sm:px-6 lg:px-8;
+}
+
+@utility kc-hero-inner {
+  @apply relative mx-auto max-w-7xl;
+}
+
+@utility kc-eyebrow {
+  @apply text-sm font-black uppercase tracking-[0.22em] text-orange-500;
+}
+
+@utility kc-title {
+  @apply text-3xl font-black tracking-tight text-blue-950 sm:text-4xl;
+}
+
+@utility kc-copy {
+  @apply text-base leading-7 text-slate-600;
+}
+
+@utility kc-btn-primary {
+  @apply inline-flex min-h-12 items-center justify-center rounded-full bg-orange-500 px-6 text-sm font-black text-white shadow-xs transition hover:bg-orange-600 disabled:opacity-60;
+}
+
+@utility kc-btn-blue {
+  @apply inline-flex min-h-12 items-center justify-center rounded-full bg-blue-950 px-6 text-sm font-black text-white shadow-xs transition hover:bg-blue-900 disabled:opacity-60;
+}
+
+@utility kc-btn-green {
+  @apply inline-flex min-h-12 items-center justify-center rounded-full bg-green-700 px-6 text-sm font-black text-white shadow-xs transition hover:bg-green-800 disabled:opacity-60;
+}
+
+@utility kc-btn-secondary {
+  @apply inline-flex min-h-12 items-center justify-center rounded-full border border-blue-950/15 bg-white px-6 text-sm font-black text-blue-950 shadow-xs transition hover:border-blue-950 hover:bg-blue-50 disabled:opacity-60;
+}
+
+@utility kc-table {
+  @apply overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-xl shadow-blue-950/10;
+}
+
+@utility kc-legal {
+  & h2 {
+    @apply mt-9 text-2xl font-black leading-tight text-blue-950;
+  }
+
+  & h2:first-child {
+    @apply mt-0;
+  }
+
+  & p {
+    @apply mt-4;
+  }
+
+  & ul {
+    @apply mt-4 space-y-2 pl-6;
+  }
+
+  & li {
+    @apply list-disc;
+  }
+
+  & a {
+    @apply font-black text-orange-600 underline decoration-orange-300 underline-offset-4 hover:text-orange-700;
+  }
+}
 
 @layer base {
     html {
@@ -40,94 +160,14 @@
             transform: translateY(0);
         }
     }
-
-    .kc-fade-up {
-        animation: kc-fade-up 0.6s ease-out both;
-    }
 }
 
-@layer components {
-    .kc-page {
-        @apply bg-[#fffaf0] px-4 py-12 sm:px-6 lg:px-8;
-    }
 
-    .kc-container {
-        @apply mx-auto max-w-7xl;
-    }
-
-    .kc-surface {
-        @apply rounded-3xl border border-slate-100 bg-white shadow-xl shadow-blue-950/10;
-    }
-
-    .kc-panel {
-        @apply rounded-2xl border border-slate-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-950/10;
-    }
-
-    .kc-hero {
-        @apply relative overflow-hidden bg-blue-950 px-4 py-14 text-white sm:px-6 lg:px-8;
-    }
-
-    .kc-hero-inner {
-        @apply relative mx-auto max-w-7xl;
-    }
-
-    .kc-eyebrow {
-        @apply text-sm font-black uppercase tracking-[0.22em] text-orange-500;
-    }
-
-    .kc-title {
-        @apply text-3xl font-black tracking-tight text-blue-950 sm:text-4xl;
-    }
-
-    .kc-copy {
-        @apply text-base leading-7 text-slate-600;
-    }
-
-    .kc-btn-primary {
-        @apply inline-flex min-h-12 items-center justify-center rounded-full bg-orange-500 px-6 text-sm font-black text-white shadow-sm transition hover:bg-orange-600 disabled:opacity-60;
-    }
-
-    .kc-btn-blue {
-        @apply inline-flex min-h-12 items-center justify-center rounded-full bg-blue-950 px-6 text-sm font-black text-white shadow-sm transition hover:bg-blue-900 disabled:opacity-60;
-    }
-
-    .kc-btn-green {
-        @apply inline-flex min-h-12 items-center justify-center rounded-full bg-green-700 px-6 text-sm font-black text-white shadow-sm transition hover:bg-green-800 disabled:opacity-60;
-    }
-
-    .kc-btn-secondary {
-        @apply inline-flex min-h-12 items-center justify-center rounded-full border border-blue-950/15 bg-white px-6 text-sm font-black text-blue-950 shadow-sm transition hover:border-blue-950 hover:bg-blue-50 disabled:opacity-60;
-    }
-
-    .kc-table {
-        @apply overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-xl shadow-blue-950/10;
-    }
-
-    .kc-legal h2 {
-        @apply mt-9 text-2xl font-black leading-tight text-blue-950;
-    }
-
-    .kc-legal h2:first-child {
-        @apply mt-0;
-    }
-
-    .kc-legal p {
-        @apply mt-4;
-    }
-
-    .kc-legal ul {
-        @apply mt-4 space-y-2 pl-6;
-    }
-
-    .kc-legal li {
-        @apply list-disc;
-    }
-
-    .kc-legal a {
-        @apply font-black text-orange-600 underline decoration-orange-300 underline-offset-4 hover:text-orange-700;
-    }
-}
-
+/*
+  Kept as plain CSS in the native "utilities" cascade layer (not @utility):
+  these selectors re-brand Tailwind's own classes, including variant forms
+  like hover:bg-indigo-700, and must come after Tailwind's utilities.
+*/
 /* Compatibility pass for older pages that used the default indigo/pink scaffolding. */
 @layer utilities {
     .bg-gray-50 {

@@ -15,11 +15,11 @@ If hPanel does not allow changing the document root to `public`, use the shared-
 
 ## Production Requirements
 
-- PHP 8.2 or newer
+- PHP 8.3 or newer for both the website and the SSH command line (check with `php -v`); Laravel 13 requires it
 - PHP extensions: Ctype, cURL, DOM, Fileinfo, Filter, Hash, Mbstring, OpenSSL, PCRE, PDO, Session, Tokenizer, XML
 - Composer
 - MySQL database and database user from hPanel
-- Node.js only if building assets on the server
+- Node.js 20.19+ or 22.12+ only if building assets (Vite 8); the deploy script uses the committed `public/build` by default
 
 ## Deployment Steps
 

@@ -30,7 +30,7 @@ const activeItems = computed(() => props.updates[activeTab.value] || []);
             </div>
 
             <div class="mt-9 flex justify-center">
-                <div class="grid w-full gap-2 rounded-2xl bg-white p-2 shadow-sm sm:w-auto sm:grid-cols-3">
+                <div class="grid w-full gap-2 rounded-2xl bg-white p-2 shadow-xs sm:w-auto sm:grid-cols-3">
                     <button
                         v-for="tab in tabs"
                         :key="tab.key"
@@ -48,9 +48,9 @@ const activeItems = computed(() => props.updates[activeTab.value] || []);
                 <article
                     v-for="item in activeItems"
                     :key="item.id"
-                    class="overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-950/10"
+                    class="overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-xs transition hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-950/10"
                 >
-                    <div class="h-40 bg-gradient-to-br from-blue-950 to-orange-500">
+                    <div class="h-40 bg-linear-to-br from-blue-950 to-orange-500">
                         <img v-if="item.image_url" :src="item.image_url" :alt="item.title" class="h-full w-full object-cover" loading="lazy">
                     </div>
                     <div class="p-5">

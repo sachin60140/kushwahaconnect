@@ -91,12 +91,12 @@ const submit = () => {
         <div class="py-12 bg-gray-50">
             <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
                 <div class="kc-surface overflow-hidden">
-                    <div class="px-6 py-8 md:p-10 border-b border-gray-200 bg-gradient-to-r from-orange-50 to-white">
+                    <div class="px-6 py-8 md:p-10 border-b border-gray-200 bg-linear-to-r from-orange-50 to-white">
                         <h2 class="text-3xl font-black text-blue-950 mb-2">Create Community Profile</h2>
                         <p class="text-gray-600 text-lg">Connect with community members, get updates, and support social initiatives.</p>
                     </div>
 
-                    <div v-if="$page.props.flash?.success" class="m-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 rounded shadow-sm">
+                    <div v-if="$page.props.flash?.success" class="m-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 rounded-sm shadow-xs">
                         {{ $page.props.flash.success }}
                     </div>
 
@@ -118,22 +118,22 @@ const submit = () => {
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div class="col-span-1 md:col-span-2">
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Profile Photo (Max 2MB)</label>
-                                    <input type="file" @input="form.profile_photo = $event.target.files[0]" accept="image/jpeg,image/png,image/jpg" class="w-full border border-gray-300 rounded-lg shadow-sm p-2 bg-white focus:border-orange-500 focus:ring focus:ring-orange-200">
+                                    <input type="file" @input="form.profile_photo = $event.target.files[0]" accept="image/jpeg,image/png,image/jpg" class="w-full border border-gray-300 rounded-lg shadow-xs p-2 bg-white focus:border-orange-500 focus:ring-3 focus:ring-orange-200">
                                     <div v-if="form.errors.profile_photo" class="text-red-500 text-sm mt-1">{{ form.errors.profile_photo }}</div>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
-                                    <input v-model="form.full_name" type="text" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200" required>
+                                    <input v-model="form.full_name" type="text" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200" required>
                                     <div v-if="form.errors.full_name" class="text-red-500 text-sm mt-1">{{ form.errors.full_name }}</div>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Father/Husband Name</label>
-                                    <input v-model="form.father_husband_name" type="text" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200">
+                                    <input v-model="form.father_husband_name" type="text" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200">
                                     <div v-if="form.errors.father_husband_name" class="text-red-500 text-sm mt-1">{{ form.errors.father_husband_name }}</div>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Gender *</label>
-                                    <select v-model="form.gender" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200" required>
+                                    <select v-model="form.gender" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200" required>
                                         <option value="">Select Gender</option>
                                         <option value="Male">Male</option>
                                         <option value="Female">Female</option>
@@ -143,7 +143,7 @@ const submit = () => {
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
-                                    <input v-model="form.dob" type="date" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200">
+                                    <input v-model="form.dob" type="date" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200">
                                     <div v-if="form.errors.dob" class="text-red-500 text-sm mt-1">{{ form.errors.dob }}</div>
                                 </div>
                             </div>
@@ -155,17 +155,17 @@ const submit = () => {
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Mobile Number *</label>
-                                    <input v-model="form.mobile" type="text" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200" required>
+                                    <input v-model="form.mobile" type="text" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200" required>
                                     <div v-if="form.errors.mobile" class="text-red-500 text-sm mt-1">{{ form.errors.mobile }}</div>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">WhatsApp Number</label>
-                                    <input v-model="form.whatsapp" type="text" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200">
+                                    <input v-model="form.whatsapp" type="text" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200">
                                     <div v-if="form.errors.whatsapp" class="text-red-500 text-sm mt-1">{{ form.errors.whatsapp }}</div>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                    <input v-model="form.email" type="email" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200">
+                                    <input v-model="form.email" type="email" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200">
                                     <div v-if="form.errors.email" class="text-red-500 text-sm mt-1">{{ form.errors.email }}</div>
                                 </div>
                             </div>
@@ -177,7 +177,7 @@ const submit = () => {
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">State *</label>
-                                    <select v-model="form.state_id" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200" required>
+                                    <select v-model="form.state_id" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200" required>
                                         <option value="">Select State</option>
                                         <option v-for="state in states" :key="state.id" :value="state.id">{{ state.name_en }} ({{ state.name_hi }})</option>
                                     </select>
@@ -185,7 +185,7 @@ const submit = () => {
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">District *</label>
-                                    <select v-model="form.district_id" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200" required>
+                                    <select v-model="form.district_id" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200" required>
                                         <option value="">Select District</option>
                                         <option v-for="district in districts" :key="district.id" :value="district.id">{{ district.name_en }} ({{ district.name_hi }})</option>
                                     </select>
@@ -193,34 +193,34 @@ const submit = () => {
                                 </div>
                                 <div class="col-span-1 md:col-span-2">
                                     <label class="block text-sm font-medium text-gray-700 mb-1">City/Village *</label>
-                                    <input v-model="form.city_village" type="text" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200" required>
+                                    <input v-model="form.city_village" type="text" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200" required>
                                     <div v-if="form.errors.city_village" class="text-red-500 text-sm mt-1">{{ form.errors.city_village }}</div>
                                 </div>
                                 <div class="col-span-1 md:col-span-2">
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Current Address *</label>
-                                    <textarea v-model="form.current_address" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200" required></textarea>
+                                    <textarea v-model="form.current_address" rows="3" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200" required></textarea>
                                     <div v-if="form.errors.current_address" class="text-red-500 text-sm mt-1">{{ form.errors.current_address }}</div>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Pin Code *</label>
-                                    <input v-model="form.pin_code" type="text" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200" required>
+                                    <input v-model="form.pin_code" type="text" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200" required>
                                     <div v-if="form.errors.pin_code" class="text-red-500 text-sm mt-1">{{ form.errors.pin_code }}</div>
                                 </div>
                             </div>
                         </div>
 
                             <!-- Account Security -->
-                            <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm">
+                            <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-xs">
                                 <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Account Security</h3>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">Password *</label>
-                                        <input type="password" v-model="form.password" required class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200">
+                                        <input type="password" v-model="form.password" required class="block w-full rounded-lg border-gray-300 shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200">
                                         <p class="text-xs text-red-500 mt-1" v-if="form.errors.password">{{ form.errors.password }}</p>
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">Confirm Password *</label>
-                                        <input type="password" v-model="form.password_confirmation" required class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200">
+                                        <input type="password" v-model="form.password_confirmation" required class="block w-full rounded-lg border-gray-300 shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200">
                                         <p class="text-xs text-red-500 mt-1" v-if="form.errors.password_confirmation">{{ form.errors.password_confirmation }}</p>
                                     </div>
                                 </div>
@@ -232,12 +232,12 @@ const submit = () => {
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Education</label>
-                                    <input v-model="form.education" type="text" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200">
+                                    <input v-model="form.education" type="text" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200">
                                     <div v-if="form.errors.education" class="text-red-500 text-sm mt-1">{{ form.errors.education }}</div>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Occupation</label>
-                                    <input v-model="form.occupation" type="text" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200">
+                                    <input v-model="form.occupation" type="text" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200">
                                     <div v-if="form.errors.occupation" class="text-red-500 text-sm mt-1">{{ form.errors.occupation }}</div>
                                 </div>
                             </div>
@@ -247,18 +247,18 @@ const submit = () => {
                         <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 space-y-4">
                             <h3 class="text-lg font-bold text-gray-800">Privacy & Consent</h3>
                             <label class="flex items-start">
-                                <input v-model="form.is_public" type="checkbox" class="mt-1 rounded border-gray-300 text-orange-600 focus:ring-orange-500">
+                                <input v-model="form.is_public" type="checkbox" class="mt-1 rounded-sm border-gray-300 text-orange-600 focus:ring-orange-500">
                                 <span class="ml-2 text-gray-700">Make my profile public (Visible to community members)</span>
                             </label>
                             <label class="flex items-start">
-                                <input v-model="form.consent" type="checkbox" class="mt-1 rounded border-gray-300 text-orange-600 focus:ring-orange-500" required>
+                                <input v-model="form.consent" type="checkbox" class="mt-1 rounded-sm border-gray-300 text-orange-600 focus:ring-orange-500" required>
                                 <span class="ml-2 text-sm text-gray-600">I agree that KushwahaConnect.com may use my submitted information for community connection, updates, and social communication. My personal details will not be publicly displayed without my permission. *</span>
                             </label>
                             <div v-if="form.errors.consent" class="text-red-500 text-sm">{{ form.errors.consent }}</div>
                         </div>
 
                         <div class="flex items-center justify-end">
-                            <button type="submit" :disabled="form.processing" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-full shadow transition disabled:opacity-50">
+                            <button type="submit" :disabled="form.processing" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-full shadow-sm transition disabled:opacity-50">
                                 {{ form.processing ? 'Submitting...' : 'Submit Details' }}
                             </button>
                         </div>
