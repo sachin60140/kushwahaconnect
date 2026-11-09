@@ -58,6 +58,7 @@ class MatrimonialExport implements FromCollection, WithHeadings, WithMapping
             'Email' => 'email',
             'Is Public' => 'is_public',
             'Hide Photo' => 'hide_photo',
+            'Biodata File' => 'biodata',
             'Consent' => 'consent',
             'Status' => 'status',
             'Verified' => 'is_verified',

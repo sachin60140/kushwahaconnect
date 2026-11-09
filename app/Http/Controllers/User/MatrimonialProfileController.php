@@ -4,7 +4,9 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\MatrimonialProfile;
+use App\Support\ImageUpload;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class MatrimonialProfileController extends Controller
@@ -24,53 +26,43 @@ class MatrimonialProfileController extends Controller
         }
 
         return Inertia::render('User/MatrimonialProfile/Edit', [
-            'profile' => $profile,
+            // File paths stay server-side; the page gets access-checked URLs instead.
+            'profile' => $profile->makeHidden(['photo', 'id_proof', 'biodata', 'admin_note']),
+            'isNew' => ! $profile->exists,
+            'biodataUrl' => $profile->exists && $profile->biodata ? route('matrimonial.biodata', $profile->id) : null,
         ]);
     }
 
     public function update(Request $request)
     {
+        $existing = MatrimonialProfile::where('user_id', $request->user()->id)->first();
+
         $validated = $request->validate([
-            'profile_for' => 'required|string',
-            'full_name' => 'required|string|max:255',
-            'gender' => 'required|string',
-            'dob' => 'required|date',
-            'height' => 'nullable|string',
-            'marital_status' => 'required|string',
-            'manglik' => 'nullable|string',
-            'gotra' => 'nullable|string',
-            'mother_tongue' => 'nullable|string',
-            'current_city' => 'nullable|string',
-            'native_place' => 'nullable|string',
-            'education' => 'nullable|string',
-            'college' => 'nullable|string',
-            'occupation' => 'nullable|string',
-            'company' => 'nullable|string',
-            'annual_income' => 'nullable|string',
-            'work_location' => 'nullable|string',
-            'father_name' => 'nullable|string',
-            'father_occupation' => 'nullable|string',
-            'mother_name' => 'nullable|string',
-            'mother_occupation' => 'nullable|string',
-            'brothers' => 'nullable|integer',
-            'sisters' => 'nullable|integer',
-            'family_type' => 'nullable|string',
-            'family_location' => 'nullable|string',
-            'pref_age_range' => 'nullable|string',
-            'pref_height' => 'nullable|string',
-            'pref_education' => 'nullable|string',
-            'pref_location' => 'nullable|string',
-            'pref_profession' => 'nullable|string',
-            'other_expectations' => 'nullable|string',
-            'mobile' => 'required|string',
-            'whatsapp' => 'nullable|string',
-            'email' => 'nullable|email',
+            ...MatrimonialProfile::detailRules(),
+            'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
+            // Mandatory when creating a profile; existing profiles may add it later.
+            'biodata' => [$existing ? 'nullable' : 'required', ...MatrimonialProfile::BIODATA_RULES],
+        ], [
+            'biodata.required' => 'Please upload your biodata (PDF, JPG or PNG) to create your matrimonial profile.',
+            'biodata.mimes' => 'Biodata must be a PDF, JPG or PNG file.',
+            'biodata.max' => 'Biodata must be 5 MB or smaller.',
         ]);
+
+        $details = collect($validated)->except(['photo', 'biodata'])->all();
 
         $profile = MatrimonialProfile::updateOrCreate(
             ['user_id' => $request->user()->id],
-            $validated
+            $details
         );
+
+        if ($request->hasFile('photo')) {
+            $previousPhoto = $profile->photo;
+            $profile->photo = ImageUpload::storeProfilePhoto($request->file('photo'), 'matrimonial_photos', 'local');
+
+            if ($previousPhoto) {
+                Storage::disk('local')->delete($previousPhoto);
+            }
+        }
 
         // Auto-approve, but a re-save must not undo an admin's rejection.
         if ($profile->status !== 'rejected') {
@@ -78,6 +70,10 @@ class MatrimonialProfileController extends Controller
         }
         $profile->is_public = true;
         $profile->save();
+
+        if ($request->hasFile('biodata')) {
+            $profile->replaceBiodata($request->file('biodata'));
+        }
 
         return redirect()->route('dashboard')->with('status', 'Matrimonial profile updated successfully.');
     }

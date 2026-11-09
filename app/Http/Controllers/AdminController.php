@@ -278,6 +278,10 @@ class AdminController extends Controller
                 'id_proof_url',
                 $profile->id_proof ? route('admin.matrimonial.id-proof', $profile->id) : null
             );
+            $profile->setAttribute(
+                'biodata_url',
+                $profile->biodata ? route('matrimonial.biodata', $profile->id) : null
+            );
 
             return $profile;
         });
@@ -286,6 +290,24 @@ class AdminController extends Controller
             'profiles' => $profiles,
             'filters' => $request->only(['search', 'status']),
         ]);
+    }
+
+    /** Upload or replace a profile's biodata on the member's behalf. */
+    public function uploadMatrimonialBiodata(Request $request, $id)
+    {
+        $profile = MatrimonialProfile::findOrFail($id);
+
+        $request->validate([
+            'biodata' => ['required', ...MatrimonialProfile::BIODATA_RULES],
+        ], [
+            'biodata.mimes' => 'Biodata must be a PDF, JPG or PNG file.',
+            'biodata.max' => 'Biodata must be 5 MB or smaller.',
+        ]);
+
+        $hadBiodata = (bool) $profile->biodata;
+        $profile->replaceBiodata($request->file('biodata'));
+
+        return redirect()->back()->with('success', $hadBiodata ? 'Biodata replaced.' : 'Biodata uploaded.');
     }
 
     public function matrimonialIdProof($id)
@@ -320,6 +342,9 @@ class AdminController extends Controller
         }
         if ($profile->id_proof) {
             Storage::disk('local')->delete($profile->id_proof);
+        }
+        if ($profile->biodata) {
+            Storage::disk('local')->delete($profile->biodata);
         }
         $profile->delete();
         return redirect()->back()->with('success', 'Profile deleted.');

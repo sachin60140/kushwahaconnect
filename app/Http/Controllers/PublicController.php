@@ -145,20 +145,12 @@ class PublicController extends Controller
 
     public function storeMatrimonial(Request $request)
     {
+        // Complete profile: same detail rules as the member's own profile page.
         $validated = $request->validate([
-            'profile_for' => 'required|string',
-            'full_name' => 'required|string|max:255',
-            'gender' => 'required|string',
-            'dob' => 'required|date',
-            'marital_status' => 'required|string',
-            'mobile' => 'required|string|max:20',
-            'email' => 'nullable|email|max:255',
-            'current_city' => 'nullable|string|max:255',
-            'education' => 'nullable|string|max:255',
-            'occupation' => 'nullable|string|max:255',
-            'photo' => 'nullable|image|max:2048',
+            ...\App\Models\MatrimonialProfile::detailRules(),
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'id_proof' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'consent' => 'accepted'
+            'consent' => 'accepted',
         ]);
 
         if ($request->hasFile('photo')) {

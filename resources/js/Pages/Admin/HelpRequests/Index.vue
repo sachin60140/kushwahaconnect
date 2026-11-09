@@ -4,8 +4,15 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
 const props = defineProps({
     requests: Object,
-    filters: Object
+    filters: Object,
+    publicStatuses: {
+        type: Array,
+        default: () => ['Approved', 'Assigned', 'In Progress', 'Resolved'],
+    },
 });
+
+// Only requests visitors can open have a public page to view or share.
+const isLive = (req) => req.is_public && props.publicStatuses.includes(req.status);
 
 const form = useForm({});
 
@@ -42,7 +49,12 @@ const filterByStatus = () => {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Help Requests Management</h2>
+            <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">Help Requests Management</h2>
+                <Link :href="route('admin.help-requests.create')" class="inline-flex items-center justify-center px-4 py-2 bg-orange-600 text-white text-sm font-bold rounded-lg shadow-xs hover:bg-orange-700 transition-colors">
+                    + Create Help Request
+                </Link>
+            </div>
         </template>
 
         <div class="py-12">
@@ -108,7 +120,8 @@ const filterByStatus = () => {
                                             <option value="Rejected">Rejected</option>
                                         </select>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-3">
+                                        <a v-if="isLive(req)" :href="route('help.show', req.id)" target="_blank" rel="noopener" class="text-green-700 hover:text-green-900 font-bold">View / Share</a>
                                         <button @click="destroy(req.id)" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-sm">Delete</button>
                                     </td>
                                 </tr>

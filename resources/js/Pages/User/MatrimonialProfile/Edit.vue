@@ -8,6 +8,14 @@ import { Head, useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
     profile: Object,
+    isNew: {
+        type: Boolean,
+        default: false,
+    },
+    biodataUrl: {
+        type: String,
+        default: null,
+    },
 });
 
 const form = useForm({
@@ -46,10 +54,15 @@ const form = useForm({
     mobile: props.profile.mobile || '',
     whatsapp: props.profile.whatsapp || '',
     email: props.profile.email || '',
+    photo: null,
+    biodata: null,
 });
 
+// A biodata is mandatory when creating a profile; existing profiles can add it any time.
+const biodataRequired = props.isNew;
+
 const submit = () => {
-    form.post(route('user.matrimonial-profile.update'));
+    form.post(route('user.matrimonial-profile.update'), { forceFormData: true });
 };
 </script>
 
@@ -121,8 +134,8 @@ const submit = () => {
                                         <InputError class="mt-2" :message="form.errors.marital_status" />
                                     </div>
                                     <div>
-                                        <InputLabel for="height" value="Height" />
-                                        <TextInput id="height" type="text" class="mt-1 block w-full" v-model="form.height" placeholder="e.g. 5' 8&quot;" />
+                                        <InputLabel for="height" value="Height *" />
+                                        <TextInput id="height" type="text" class="mt-1 block w-full" v-model="form.height" required placeholder="e.g. 5' 8&quot;" />
                                         <InputError class="mt-2" :message="form.errors.height" />
                                     </div>
                                     <div>
@@ -148,8 +161,8 @@ const submit = () => {
                                 <h4 class="font-semibold text-gray-800 mb-4 border-b pb-2">Education & Career</h4>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <InputLabel for="education" value="Highest Education" />
-                                        <TextInput id="education" type="text" class="mt-1 block w-full" v-model="form.education" />
+                                        <InputLabel for="education" value="Highest Education *" />
+                                        <TextInput id="education" type="text" class="mt-1 block w-full" v-model="form.education" required />
                                         <InputError class="mt-2" :message="form.errors.education" />
                                     </div>
                                     <div>
@@ -158,8 +171,8 @@ const submit = () => {
                                         <InputError class="mt-2" :message="form.errors.college" />
                                     </div>
                                     <div>
-                                        <InputLabel for="occupation" value="Occupation / Profession" />
-                                        <TextInput id="occupation" type="text" class="mt-1 block w-full" v-model="form.occupation" />
+                                        <InputLabel for="occupation" value="Occupation / Profession *" />
+                                        <TextInput id="occupation" type="text" class="mt-1 block w-full" v-model="form.occupation" required />
                                         <InputError class="mt-2" :message="form.errors.occupation" />
                                     </div>
                                     <div>
@@ -185,8 +198,8 @@ const submit = () => {
                                 <h4 class="font-semibold text-gray-800 mb-4 border-b pb-2">Family Details</h4>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <InputLabel for="father_name" value="Father's Name" />
-                                        <TextInput id="father_name" type="text" class="mt-1 block w-full" v-model="form.father_name" />
+                                        <InputLabel for="father_name" value="Father's Name *" />
+                                        <TextInput id="father_name" type="text" class="mt-1 block w-full" v-model="form.father_name" required />
                                         <InputError class="mt-2" :message="form.errors.father_name" />
                                     </div>
                                     <div>
@@ -225,8 +238,8 @@ const submit = () => {
                                         <InputError class="mt-2" :message="form.errors.family_type" />
                                     </div>
                                     <div>
-                                        <InputLabel for="family_location" value="Family Location (City/Town)" />
-                                        <TextInput id="family_location" type="text" class="mt-1 block w-full" v-model="form.family_location" />
+                                        <InputLabel for="family_location" value="Family Location (City/Town) *" />
+                                        <TextInput id="family_location" type="text" class="mt-1 block w-full" v-model="form.family_location" required />
                                         <InputError class="mt-2" :message="form.errors.family_location" />
                                     </div>
                                 </div>
@@ -269,13 +282,40 @@ const submit = () => {
                                 </div>
                             </div>
 
+                            <!-- Photo & Biodata -->
+                            <div class="bg-pink-50 p-4 rounded-lg border border-pink-100">
+                                <h4 class="font-semibold text-pink-800 mb-4 border-b border-pink-200 pb-2">Photo & Biodata</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <InputLabel for="photo" value="Profile Photo (JPG/PNG, max 2 MB)" />
+                                        <div class="mt-2 flex items-center gap-4">
+                                            <img v-if="profile.photo_url" :src="profile.photo_url" alt="Current photo" class="h-16 w-16 rounded-lg object-cover border border-pink-200">
+                                            <input id="photo" type="file" accept="image/jpeg,image/png" @input="form.photo = $event.target.files[0]" class="block w-full text-sm text-gray-700 file:mr-3 file:rounded-md file:border-0 file:bg-pink-100 file:px-3 file:py-2 file:font-semibold file:text-pink-800 hover:file:bg-pink-200">
+                                        </div>
+                                        <p class="mt-1 text-xs text-gray-500">{{ profile.photo_url ? 'Choose a file only to replace the current photo.' : 'A clear recent photo helps families find you.' }}</p>
+                                        <InputError class="mt-2" :message="form.errors.photo" />
+                                    </div>
+                                    <div>
+                                        <InputLabel for="biodata" :value="biodataRequired ? 'Biodata (PDF/JPG/PNG, max 5 MB) *' : 'Biodata (PDF/JPG/PNG, max 5 MB)'" />
+                                        <input id="biodata" type="file" accept="application/pdf,image/jpeg,image/png" :required="biodataRequired" @input="form.biodata = $event.target.files[0]" class="mt-2 block w-full text-sm text-gray-700 file:mr-3 file:rounded-md file:border-0 file:bg-pink-100 file:px-3 file:py-2 file:font-semibold file:text-pink-800 hover:file:bg-pink-200">
+                                        <p v-if="biodataUrl" class="mt-1 text-xs text-gray-600">
+                                            Biodata uploaded. <a :href="biodataUrl" target="_blank" rel="noopener" class="font-bold text-pink-700 hover:underline">View current biodata</a> — choose a file only to replace it.
+                                        </p>
+                                        <p v-else-if="!isNew" class="mt-1 text-xs font-semibold text-orange-700">No biodata yet — please upload one so families can see complete details.</p>
+                                        <p class="mt-1 text-xs text-gray-500">Shared only with admins and members whose interest you have accepted.</p>
+                                        <InputError class="mt-2" :message="form.errors.biodata" />
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Contact info for Matchmaking -->
                             <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
                                 <h4 class="font-semibold text-gray-800 mb-4 border-b pb-2">Contact Info for Matchmaking</h4>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <InputLabel for="mobile" value="Contact Mobile Number *" />
-                                        <TextInput id="mobile" type="text" class="mt-1 block w-full bg-gray-100" v-model="form.mobile" required readonly />
+                                        <!-- Locked to the account's mobile when it has one; editable otherwise, or the required field could never be filled. -->
+                                        <TextInput id="mobile" type="text" class="mt-1 block w-full" :class="{ 'bg-gray-100': !!profile.mobile }" v-model="form.mobile" required :readonly="!!profile.mobile" />
                                         <InputError class="mt-2" :message="form.errors.mobile" />
                                     </div>
                                     <div>
