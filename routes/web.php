@@ -274,6 +274,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     ]);
 
     Route::get('/admin/help-requests', [\App\Http\Controllers\AdminHelpController::class, 'index'])->name('admin.help-requests.index');
+    Route::get('/admin/help-requests/create', [\App\Http\Controllers\AdminHelpController::class, 'create'])->name('admin.help-requests.create');
+    Route::post('/admin/help-requests', [\App\Http\Controllers\AdminHelpController::class, 'store'])->name('admin.help-requests.store');
     Route::patch('/admin/help-requests/{id}/status', [\App\Http\Controllers\AdminHelpController::class, 'updateStatus'])->name('admin.help-requests.status');
     Route::delete('/admin/help-requests/{id}', [\App\Http\Controllers\AdminHelpController::class, 'destroy'])->name('admin.help-requests.destroy');
 
