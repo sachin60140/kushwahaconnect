@@ -7,6 +7,8 @@ use Inertia\Inertia;
 use App\Models\Connection;
 use App\Models\MatrimonialProfile;
 use App\Models\Shortlist;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class MatrimonialDirectoryController extends Controller
 {
@@ -110,6 +112,28 @@ class MatrimonialDirectoryController extends Controller
         ]);
     }
 
+    /**
+     * Download/view a profile's biodata: owner, admins, or members with an accepted
+     * interest. Everyone else gets a 404 so the file's existence isn't revealed.
+     */
+    public function biodata(Request $request, int $id)
+    {
+        $profile = MatrimonialProfile::findOrFail($id);
+
+        if (! $profile->biodataVisibleTo($request->user()) || ! Storage::disk('local')->exists($profile->biodata)) {
+            abort(404);
+        }
+
+        $extension = strtolower(pathinfo($profile->biodata, PATHINFO_EXTENSION)) ?: 'pdf';
+        $name = 'biodata-'.(Str::slug($profile->full_name) ?: $profile->id).'.'.$extension;
+
+        return response()->file(Storage::disk('local')->path($profile->biodata), [
+            'Content-Disposition' => 'inline; filename="'.$name.'"',
+            'X-Content-Type-Options' => 'nosniff',
+            'Cache-Control' => 'private, no-store',
+        ]);
+    }
+
     private function applyDisplayPrivacy(MatrimonialProfile $profile, Request $request): void
     {
         $settings = $profile->user?->privacySetting;
@@ -126,6 +150,11 @@ class MatrimonialDirectoryController extends Controller
             ? route('matrimonial.photo', $profile->id)
             : null;
 
+        // Biodata link only for viewers allowed to open it (owner, admin, accepted interest).
+        $profile->biodata_url = $profile->biodataVisibleTo($request->user())
+            ? route('matrimonial.biodata', $profile->id)
+            : null;
+
         // Directory cards never show contact details, documents or family names;
         // don't ship them to every logged-in member's browser.
         $profile->makeHidden([
@@ -134,6 +163,7 @@ class MatrimonialDirectoryController extends Controller
             'email',
             'photo',
             'id_proof',
+            'biodata',
             'admin_note',
             'father_name',
             'mother_name',

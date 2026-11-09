@@ -1,29 +1,88 @@
 <script setup>
 import { Head, useForm } from '@inertiajs/vue3';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
-import { useLanguage } from '@/composables/useLanguage';
 
-const props = defineProps({
-    states: Array
+defineProps({
+    states: Array,
 });
 
-const { __ } = useLanguage();
+// Complete profile, matching MatrimonialProfile::detailRules() on the server.
+const sections = [
+    {
+        title: 'Basic Information',
+        fields: [
+            { key: 'profile_for', label: 'Profile For', type: 'select', required: true, options: ['Self', 'Son', 'Daughter', 'Brother', 'Sister', 'Relative', 'Friend'] },
+            { key: 'full_name', label: 'Full Name', required: true },
+            { key: 'gender', label: 'Gender', type: 'select', required: true, options: [{ value: 'Male', label: 'Groom (Male)' }, { value: 'Female', label: 'Bride (Female)' }] },
+            { key: 'dob', label: 'Date of Birth', type: 'date', required: true },
+            { key: 'marital_status', label: 'Marital Status', type: 'select', required: true, options: ['Never Married', 'Awaiting Divorce', 'Divorced', 'Widowed', 'Annulled'] },
+            { key: 'height', label: 'Height', required: true, placeholder: "e.g. 5' 6\"" },
+            { key: 'manglik', label: 'Manglik Status', type: 'select', options: ['No', 'Yes', "Don't Know", 'Anshik'] },
+            { key: 'gotra', label: 'Gotra / Sub-caste' },
+            { key: 'mother_tongue', label: 'Mother Tongue', placeholder: 'e.g. Hindi, Bhojpuri' },
+            { key: 'current_city', label: 'Current City' },
+            { key: 'native_place', label: 'Native Place' },
+        ],
+    },
+    {
+        title: 'Education & Career',
+        fields: [
+            { key: 'education', label: 'Highest Education', required: true, placeholder: 'e.g. B.Tech, M.Sc.' },
+            { key: 'college', label: 'College / University' },
+            { key: 'occupation', label: 'Occupation / Profession', required: true },
+            { key: 'company', label: 'Company / Organisation' },
+            { key: 'annual_income', label: 'Annual Income', placeholder: 'e.g. 5-7 Lakhs' },
+            { key: 'work_location', label: 'Work Location (City)' },
+        ],
+    },
+    {
+        title: 'Family Details',
+        fields: [
+            { key: 'father_name', label: "Father's Name", required: true },
+            { key: 'father_occupation', label: "Father's Occupation" },
+            { key: 'mother_name', label: "Mother's Name" },
+            { key: 'mother_occupation', label: "Mother's Occupation" },
+            { key: 'brothers', label: 'Number of Brothers', type: 'number' },
+            { key: 'sisters', label: 'Number of Sisters', type: 'number' },
+            { key: 'family_type', label: 'Family Type', type: 'select', options: [{ value: 'Joint', label: 'Joint Family' }, { value: 'Nuclear', label: 'Nuclear Family' }, { value: 'Others', label: 'Others' }] },
+            { key: 'family_location', label: 'Family Location (City/Town)', required: true },
+        ],
+    },
+    {
+        title: 'Partner Preferences',
+        fields: [
+            { key: 'pref_age_range', label: 'Preferred Age Range', placeholder: 'e.g. 24-28' },
+            { key: 'pref_height', label: 'Preferred Height', placeholder: "e.g. 5'2\" to 5'6\"" },
+            { key: 'pref_education', label: 'Preferred Education' },
+            { key: 'pref_profession', label: 'Preferred Profession' },
+            { key: 'pref_location', label: 'Preferred Location', span: true },
+            { key: 'other_expectations', label: 'Other Expectations', type: 'textarea', span: true },
+        ],
+    },
+    {
+        title: 'Contact Details',
+        fields: [
+            { key: 'mobile', label: 'Mobile Number', type: 'tel', required: true },
+            { key: 'whatsapp', label: 'WhatsApp Number', type: 'tel' },
+            { key: 'email', label: 'Email', type: 'email', span: true },
+        ],
+    },
+];
+
+const initial = Object.fromEntries(sections.flatMap((section) => section.fields.map((field) => [field.key, ''])));
 
 const form = useForm({
+    ...initial,
+    manglik: 'No',
+    brothers: 0,
+    sisters: 0,
     photo: null,
     id_proof: null,
-    profile_for: '',
-    full_name: '',
-    gender: '',
-    dob: '',
-    marital_status: '',
-    mobile: '',
-    email: '',
-    current_city: '',
-    education: '',
-    occupation: '',
     consent: false,
 });
+
+const optionValue = (option) => (typeof option === 'string' ? option : option.value);
+const optionLabel = (option) => (typeof option === 'string' ? option : option.label);
 
 const submit = () => {
     form.post(route('matrimonial.store'), {
@@ -31,6 +90,8 @@ const submit = () => {
         onSuccess: () => form.reset(),
     });
 };
+
+const inputClass = 'w-full border-gray-300 rounded-lg shadow-xs focus:border-green-500 focus:ring-3 focus:ring-green-200';
 </script>
 
 <template>
@@ -49,11 +110,12 @@ const submit = () => {
                 <div class="kc-surface overflow-hidden">
                     <div class="px-6 py-8 md:p-10 border-b border-gray-200 bg-linear-to-r from-green-800 to-blue-950 text-white">
                         <h2 class="text-3xl font-extrabold mb-2 text-white">Matrimonial Registration</h2>
-                        <p class="text-green-100 text-lg">Safe and secure matrimonial profiles for Kushwaha Samaj.</p>
+                        <p class="text-green-100 text-lg">Please fill in complete details. Fields marked * are required.</p>
                     </div>
 
                     <div v-if="$page.props.flash?.success" class="m-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 rounded-sm shadow-xs">
                         {{ $page.props.flash.success }}
+                        <p class="mt-1 text-sm">Members can add a biodata from <strong>My Matrimonial Profile</strong> after logging in.</p>
                     </div>
 
                     <form @submit.prevent="submit" class="p-6 md:p-10 space-y-8">
@@ -64,63 +126,31 @@ const submit = () => {
                             </ul>
                         </div>
 
-                        <div>
-                            <h3 class="text-xl font-bold text-gray-800 border-b pb-2 mb-4">Basic Information</h3>
+                        <div v-for="section in sections" :key="section.title">
+                            <h3 class="text-xl font-bold text-gray-800 border-b pb-2 mb-4">{{ section.title }}</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Profile For *</label>
-                                    <select v-model="form.profile_for" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-green-500 focus:ring-3 focus:ring-green-200" required>
-                                        <option value="">Select</option>
-                                        <option value="Self">Self</option>
-                                        <option value="Son">Son</option>
-                                        <option value="Daughter">Daughter</option>
-                                        <option value="Brother">Brother</option>
-                                        <option value="Sister">Sister</option>
-                                        <option value="Relative">Relative</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
-                                    <input v-model="form.full_name" type="text" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-green-500 focus:ring-3 focus:ring-green-200" required>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Gender *</label>
-                                    <select v-model="form.gender" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-green-500 focus:ring-3 focus:ring-green-200" required>
-                                        <option value="">Select</option>
-                                        <option value="Male">Groom (Male)</option>
-                                        <option value="Female">Bride (Female)</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Date of Birth *</label>
-                                    <input v-model="form.dob" type="date" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-green-500 focus:ring-3 focus:ring-green-200" required>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Marital Status *</label>
-                                    <select v-model="form.marital_status" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-green-500 focus:ring-3 focus:ring-green-200" required>
-                                        <option value="">Select</option>
-                                        <option value="Never Married">Never Married</option>
-                                        <option value="Divorced">Divorced</option>
-                                        <option value="Widowed">Widowed</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Current City</label>
-                                    <input v-model="form.current_city" type="text" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-green-500 focus:ring-3 focus:ring-green-200">
-                                </div>
-                            </div>
-                        </div>
+                                <div v-for="field in section.fields" :key="field.key" :class="{ 'md:col-span-2': field.span }">
+                                    <label :for="field.key" class="block text-sm font-medium text-gray-700 mb-1">
+                                        {{ field.label }}<span v-if="field.required" class="text-red-500"> *</span>
+                                    </label>
 
-                        <div>
-                            <h3 class="text-xl font-bold text-gray-800 border-b pb-2 mb-4">Contact Details</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Mobile Number *</label>
-                                    <input v-model="form.mobile" type="text" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-green-500 focus:ring-3 focus:ring-green-200" required>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                    <input v-model="form.email" type="email" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-green-500 focus:ring-3 focus:ring-green-200">
+                                    <select v-if="field.type === 'select'" :id="field.key" v-model="form[field.key]" :required="field.required" :class="inputClass">
+                                        <option value="">Select</option>
+                                        <option v-for="option in field.options" :key="optionValue(option)" :value="optionValue(option)">{{ optionLabel(option) }}</option>
+                                    </select>
+                                    <textarea v-else-if="field.type === 'textarea'" :id="field.key" v-model="form[field.key]" rows="3" :class="inputClass"></textarea>
+                                    <input
+                                        v-else
+                                        :id="field.key"
+                                        v-model="form[field.key]"
+                                        :type="field.type || 'text'"
+                                        :min="field.type === 'number' ? 0 : undefined"
+                                        :max="field.type === 'number' ? 20 : undefined"
+                                        :required="field.required"
+                                        :placeholder="field.placeholder"
+                                        :class="inputClass"
+                                    >
+                                    <div v-if="form.errors[field.key]" class="text-red-500 text-sm mt-1">{{ form.errors[field.key] }}</div>
                                 </div>
                             </div>
                         </div>

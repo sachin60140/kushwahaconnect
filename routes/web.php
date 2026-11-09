@@ -236,6 +236,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/matrimonial', [AdminController::class, 'matrimonial'])->name('admin.matrimonial');
     Route::get('/admin/matrimonial/export', [AdminController::class, 'exportMatrimonial'])->name('admin.matrimonial.export');
     Route::get('/admin/matrimonial/{id}/id-proof', [AdminController::class, 'matrimonialIdProof'])->name('admin.matrimonial.id-proof');
+    Route::post('/admin/matrimonial/{id}/biodata', [AdminController::class, 'uploadMatrimonialBiodata'])->name('admin.matrimonial.biodata');
     Route::patch('/admin/matrimonial/{id}/status', [AdminController::class, 'updateMatrimonialStatus'])->name('admin.matrimonial.status');
     Route::delete('/admin/matrimonial/{id}', [AdminController::class, 'deleteMatrimonial'])->name('admin.matrimonial.destroy');
     
@@ -343,6 +344,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/matrimonial-directory/{id}/shortlist', [MatrimonialDirectoryController::class, 'toggleShortlist'])->name('matrimonial-directory.shortlist');
     Route::get('/my-shortlists', [MatrimonialDirectoryController::class, 'myShortlists'])->name('my.shortlists');
     Route::get('/matrimonial-photo/{id}', [PublicController::class, 'showMatrimonialPhoto'])->name('matrimonial.photo');
+    Route::get('/matrimonial-biodata/{id}', [MatrimonialDirectoryController::class, 'biodata'])->whereNumber('id')->name('matrimonial.biodata');
     
     Route::get('/jobs/create', [\App\Http\Controllers\JobController::class, 'create'])->name('jobs.create');
     Route::post('/jobs', [\App\Http\Controllers\JobController::class, 'store'])->name('jobs.store');

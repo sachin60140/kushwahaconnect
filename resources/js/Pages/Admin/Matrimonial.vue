@@ -49,6 +49,37 @@ const updateStatus = (id, status) => {
     });
 };
 
+// Upload or replace a biodata on the member's behalf.
+const biodataFile = ref(null);
+const biodataInput = ref(null);
+const biodataUploading = ref(false);
+const biodataError = ref('');
+
+const uploadBiodata = () => {
+    if (!selectedProfile.value || !biodataFile.value) return;
+
+    biodataUploading.value = true;
+    biodataError.value = '';
+    const id = selectedProfile.value.id;
+
+    router.post(route('admin.matrimonial.biodata', id), { biodata: biodataFile.value }, {
+        forceFormData: true,
+        preserveScroll: true,
+        onSuccess: () => {
+            statusMessage.value = page.props.flash?.success || 'Biodata uploaded.';
+            selectedProfile.value = props.profiles.data.find((profile) => profile.id === id) || selectedProfile.value;
+            biodataFile.value = null;
+            if (biodataInput.value) biodataInput.value.value = '';
+        },
+        onError: (errors) => {
+            biodataError.value = errors.biodata || 'Unable to upload biodata. Please try again.';
+        },
+        onFinish: () => {
+            biodataUploading.value = false;
+        },
+    });
+};
+
 const destroy = (id) => {
     if (confirm('Are you sure you want to delete this profile?')) {
         deleteForm.delete(route('admin.matrimonial.destroy', id), {
@@ -83,6 +114,10 @@ const showModal = ref(false);
 
 const openViewModal = (profile) => {
     selectedProfile.value = profile;
+    // Never carry a chosen file over to a different profile.
+    biodataFile.value = null;
+    biodataError.value = '';
+    if (biodataInput.value) biodataInput.value.value = '';
     showModal.value = true;
 };
 
@@ -199,6 +234,7 @@ const statusClass = (status) => ({
                                             <div>
                                                 <div class="font-bold text-gray-900">{{ profile.full_name }}</div>
                                                 <div class="text-xs text-gray-500 font-medium">Profile for: {{ profile.profile_for }}</div>
+                                                <span v-if="!profile.biodata_url" class="mt-1 inline-block rounded-sm bg-orange-50 px-1.5 py-0.5 text-[11px] font-bold text-orange-700">No biodata</span>
                                             </div>
                                         </div>
                                     </td>
@@ -327,7 +363,26 @@ const statusClass = (status) => ({
                                 </dd>
                             </div>
                             <div class="flex justify-between gap-4"><dt class="text-gray-500">Photo hidden</dt> <dd class="font-bold text-gray-900 text-right">{{ selectedProfile.hide_photo ? 'Yes' : 'No' }}</dd></div>
+                            <div class="flex justify-between gap-4">
+                                <dt class="text-gray-500">Biodata</dt>
+                                <dd class="font-bold text-right">
+                                    <a v-if="selectedProfile.biodata_url" :href="selectedProfile.biodata_url" target="_blank" rel="noopener" class="text-indigo-600 hover:underline">View biodata</a>
+                                    <span v-else class="text-orange-700">Not uploaded</span>
+                                </dd>
+                            </div>
                         </dl>
+                        <form @submit.prevent="uploadBiodata" class="mt-4 border-t border-gray-200 pt-4">
+                            <label class="block text-xs font-bold text-gray-600 mb-1">
+                                {{ selectedProfile.biodata_url ? 'Replace biodata' : 'Upload biodata on their behalf' }} (PDF/JPG/PNG, max 5 MB)
+                            </label>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <input ref="biodataInput" type="file" accept="application/pdf,image/jpeg,image/png" @change="biodataFile = $event.target.files[0] || null" class="min-w-0 flex-1 text-xs text-gray-700 file:mr-2 file:rounded-md file:border-0 file:bg-pink-100 file:px-2 file:py-1.5 file:font-semibold file:text-pink-800">
+                                <button type="submit" :disabled="!biodataFile || biodataUploading" class="rounded-md bg-green-700 px-3 py-1.5 text-xs font-bold text-white hover:bg-green-800 disabled:cursor-not-allowed disabled:bg-gray-300">
+                                    {{ biodataUploading ? 'Uploading…' : 'Upload' }}
+                                </button>
+                            </div>
+                            <p v-if="biodataError" class="mt-1 text-xs font-semibold text-red-600">{{ biodataError }}</p>
+                        </form>
                     </div>
 
                     <div class="md:col-span-2" v-if="selectedProfile.education || selectedProfile.college || selectedProfile.occupation || selectedProfile.company || selectedProfile.annual_income || selectedProfile.work_location">
