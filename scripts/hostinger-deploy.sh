@@ -8,6 +8,22 @@ if [ ! -f ".env" ]; then
     exit 1
 fi
 
+# Record the release for the version footer ("APP_VERSION major.minor" + commit count,
+# e.g. 1.0.47). PHP on shared hosting cannot run git, so bash does it here.
+RELEASE_FILE="storage/app/release.json"
+if command -v git >/dev/null 2>&1 && git rev-parse --verify HEAD >/dev/null 2>&1; then
+    BUILD_NUMBER="$(git rev-list --count HEAD)"
+    if [ "$(git rev-parse --is-shallow-repository 2>/dev/null)" = "true" ]; then
+        echo "Warning: shallow git clone; the build number only counts fetched commits."
+    fi
+    mkdir -p "$(dirname "$RELEASE_FILE")"
+    printf '{"build":%s,"commit":"%s","released_at":"%s"}\n' \
+        "$BUILD_NUMBER" "$(git rev-parse HEAD)" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > "$RELEASE_FILE"
+    echo "Release build number: $BUILD_NUMBER"
+else
+    echo "git not available; the version footer will show APP_VERSION without a build number."
+fi
+
 echo "Installing PHP dependencies..."
 # Hostinger shared hosting disables proc_open, which Composer needs to run Laravel's
 # post-install scripts ("The Process class relies on proc_open"). Install without

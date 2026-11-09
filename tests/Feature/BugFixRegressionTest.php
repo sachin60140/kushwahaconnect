@@ -245,19 +245,58 @@ class BugFixRegressionTest extends TestCase
 
     public function test_every_page_shares_version_and_last_updated_info(): void
     {
-        config(['app.version' => '2.4.1', 'app.updated_at' => '2026-11-09 18:30']);
+        config(['app.version' => '2.4', 'app.updated_at' => '2026-11-09 18:30']);
         \App\Support\AppVersion::flush();
+        $autoVersion = fn ($version) => preg_match('/^2\.4\.\d+$/', $version) === 1;
 
         $this->get(route('welcome'))
             ->assertInertia(fn (Assert $page) => $page
-                ->where('appVersion.version', '2.4.1')
+                ->where('appVersion.version', $autoVersion)
                 ->where('appVersion.updated_at_display', '09 Nov 2026, 06:30 PM IST'));
 
         $this->actingAs($this->admin())
             ->get(route('admin.matrimonial'))
-            ->assertInertia(fn (Assert $page) => $page->where('appVersion.version', '2.4.1'));
+            ->assertInertia(fn (Assert $page) => $page->where('appVersion.version', $autoVersion));
 
         \App\Support\AppVersion::flush();
+    }
+
+    public function test_version_auto_increments_from_deploy_release_file(): void
+    {
+        $releaseFile = \App\Support\AppVersion::releaseFilePath();
+        $previous = is_file($releaseFile) ? file_get_contents($releaseFile) : null;
+
+        try {
+            \App\Support\AppVersion::flush();
+            $head = \App\Support\AppVersion::info()['build'];
+
+            // The deploy script records the commit count of the deployed HEAD.
+            file_put_contents($releaseFile, json_encode([
+                'build' => 47,
+                'commit' => $head ?? 'abcdef1234567',
+                'released_at' => '2026-11-09T17:30:00Z',
+            ]));
+
+            config(['app.version' => '1.0.0']); // an older full version still auto-increments
+            \App\Support\AppVersion::flush();
+
+            $this->get(route('welcome'))
+                ->assertInertia(fn (Assert $page) => $page->where('appVersion.version', '1.0.47'));
+        } finally {
+            $previous === null ? @unlink($releaseFile) : file_put_contents($releaseFile, $previous);
+            \App\Support\AppVersion::flush();
+        }
+    }
+
+    public function test_version_composition_rules(): void
+    {
+        $this->assertSame('1.0.47', \App\Support\AppVersion::compose('1.0', 47));
+        $this->assertSame('1.0.47', \App\Support\AppVersion::compose('1.0.0', 47));
+        $this->assertSame('2.0.5', \App\Support\AppVersion::compose('2', 5));
+        $this->assertSame('3.1.12', \App\Support\AppVersion::compose('v3.1', 12));
+        $this->assertSame('1.0.0', \App\Support\AppVersion::compose('1.0', null));
+        $this->assertSame('2.4.1', \App\Support\AppVersion::compose('2.4.1', null));
+        $this->assertSame('1.0.0', \App\Support\AppVersion::compose('', null));
     }
 
     public function test_help_location_filter_matches_state_names(): void
