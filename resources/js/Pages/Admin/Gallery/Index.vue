@@ -24,7 +24,7 @@ const destroy = (id) => {
         <template #header>
             <div class="flex justify-between items-center">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">Gallery Management</h2>
-                <Link :href="route('admin.gallery.create')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded shadow">
+                <Link :href="route('admin.gallery.create')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-sm shadow-sm">
                     Create New Gallery
                 </Link>
             </div>
@@ -32,7 +32,7 @@ const destroy = (id) => {
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white overflow-hidden shadow-xs sm:rounded-lg">
                     <div class="p-6 text-gray-900 overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
@@ -47,7 +47,7 @@ const destroy = (id) => {
                             <tbody class="bg-white divide-y divide-gray-200">
                                 <tr v-for="gallery in galleries.data" :key="gallery.id">
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="h-16 w-16 rounded overflow-hidden bg-gray-100 flex items-center justify-center">
+                                        <div class="h-16 w-16 rounded-sm overflow-hidden bg-gray-100 flex items-center justify-center">
                                             <img v-if="gallery.thumbnail" :src="`/storage/${gallery.thumbnail}`" class="h-full w-full object-cover">
                                             <svg v-else class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                                         </div>
@@ -66,7 +66,7 @@ const destroy = (id) => {
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <button @click="destroy(gallery.id)" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded">Delete</button>
+                                        <button @click="destroy(gallery.id)" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-sm">Delete</button>
                                     </td>
                                 </tr>
                                 <tr v-if="galleries.data.length === 0">
@@ -77,10 +77,10 @@ const destroy = (id) => {
                         
                         <!-- Pagination -->
                         <div v-if="galleries.links.length > 3" class="mt-6 flex justify-center">
-                            <div class="flex shadow-sm rounded-md">
+                            <div class="flex shadow-xs rounded-md">
                                 <template v-for="(link, p) in galleries.links" :key="p">
-                                    <div v-if="link.url === null" class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded" v-html="link.label" />
-                                    <Link v-else class="mr-1 mb-1 px-4 py-3 text-sm leading-4 border rounded hover:bg-white focus:border-indigo-500 focus:text-indigo-500" :class="{ 'bg-white font-bold text-indigo-600': link.active }" :href="link.url" v-html="link.label" />
+                                    <div v-if="link.url === null" class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded-sm" v-html="link.label" />
+                                    <Link v-else class="mr-1 mb-1 px-4 py-3 text-sm leading-4 border rounded-sm hover:bg-white focus:border-indigo-500 focus:text-indigo-500" :class="{ 'bg-white font-bold text-indigo-600': link.active }" :href="link.url" v-html="link.label" />
                                 </template>
                             </div>
                         </div>

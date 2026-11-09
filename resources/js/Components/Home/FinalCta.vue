@@ -24,7 +24,7 @@ const whatsappHref = computed(() => {
 
 <template>
     <section class="bg-white px-4 py-16 sm:px-6 lg:px-8">
-        <div class="mx-auto max-w-5xl rounded-3xl bg-gradient-to-br from-blue-950 via-blue-900 to-green-800 p-8 text-center text-white shadow-2xl shadow-blue-950/15 sm:p-10">
+        <div class="mx-auto max-w-5xl rounded-3xl bg-linear-to-br from-blue-950 via-blue-900 to-green-800 p-8 text-center text-white shadow-2xl shadow-blue-950/15 sm:p-10">
             <h2 class="text-3xl font-black tracking-tight sm:text-4xl">{{ __('final_cta_title') }}</h2>
             <p class="mx-auto mt-4 max-w-2xl text-base leading-7 text-blue-100">{{ __('final_cta_desc') }}</p>
             <div class="mt-8 grid gap-3 sm:flex sm:justify-center">

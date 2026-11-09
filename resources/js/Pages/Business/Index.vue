@@ -72,12 +72,12 @@ const submitSearch = () => {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 
                 <!-- Search & Filters -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-8 overflow-hidden">
+                <div class="bg-white rounded-lg shadow-xs border border-gray-200 mb-8 overflow-hidden">
                     <div class="p-6">
                         <div class="flex flex-col md:flex-row md:items-end gap-4">
                             <div class="flex-1">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Search Businesses</label>
-                                <div class="relative rounded-md shadow-sm">
+                                <div class="relative rounded-md shadow-xs">
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -88,18 +88,18 @@ const submitSearch = () => {
                             </div>
                             <div class="w-full md:w-64">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                                <select v-model="form.category" class="mt-1 block w-full pl-3 pr-10 py-2.5 text-base border-gray-300 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm rounded-md">
+                                <select v-model="form.category" class="mt-1 block w-full pl-3 pr-10 py-2.5 text-base border-gray-300 focus:outline-hidden focus:ring-orange-500 focus:border-orange-500 sm:text-sm rounded-md">
                                     <option value="">All Categories</option>
                                     <option v-for="category in categories" :key="category" :value="category">{{ category }}</option>
                                 </select>
                             </div>
                             <div>
-                                <button @click="submitSearch" class="w-full md:w-auto flex justify-center items-center px-6 py-2.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors">
+                                <button @click="submitSearch" class="w-full md:w-auto flex justify-center items-center px-6 py-2.5 border border-transparent text-sm font-medium rounded-md shadow-xs text-white bg-orange-600 hover:bg-orange-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors">
                                     Search
                                 </button>
                             </div>
                             <div>
-                                <button type="button" @click="showAdvancedFilters = !showAdvancedFilters" class="w-full md:w-auto flex justify-center items-center px-4 py-2.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors">
+                                <button type="button" @click="showAdvancedFilters = !showAdvancedFilters" class="w-full md:w-auto flex justify-center items-center px-4 py-2.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors">
                                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
                                     Filters
                                 </button>
@@ -110,14 +110,14 @@ const submitSearch = () => {
                         <div v-show="showAdvancedFilters" class="mt-6 pt-6 border-t border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">State</label>
-                                <select v-model="form.state_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm">
+                                <select v-model="form.state_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-orange-500 focus:ring-orange-500 sm:text-sm">
                                     <option value="">Any State</option>
                                     <option v-for="state in states" :key="state.id" :value="state.id">{{ state.name_en }}</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">District</label>
-                                <select v-model="form.district_id" :disabled="!form.state_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm disabled:opacity-50">
+                                <select v-model="form.district_id" :disabled="!form.state_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-orange-500 focus:ring-orange-500 sm:text-sm disabled:opacity-50">
                                     <option value="">Any District</option>
                                     <option v-for="district in districts" :key="district.id" :value="district.id">{{ district.name_en }}</option>
                                 </select>
@@ -128,11 +128,11 @@ const submitSearch = () => {
 
                 <!-- Business Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                    <div v-for="business in businesses.data" :key="business.id" class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-300 overflow-hidden flex flex-col group">
+                    <div v-for="business in businesses.data" :key="business.id" class="bg-white rounded-xl shadow-xs border border-gray-200 hover:shadow-md transition-shadow duration-300 overflow-hidden flex flex-col group">
                         <div v-if="business.cover_image_path" class="h-48 w-full overflow-hidden shrink-0">
                             <img :src="'/storage/' + business.cover_image_path" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Business Cover">
                         </div>
-                        <div v-else class="h-48 w-full bg-gradient-to-r from-orange-100 to-orange-50 shrink-0 flex items-center justify-center border-b border-gray-100">
+                        <div v-else class="h-48 w-full bg-linear-to-r from-orange-100 to-orange-50 shrink-0 flex items-center justify-center border-b border-gray-100">
                             <svg class="w-16 h-16 text-orange-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
                         </div>
                         
@@ -177,7 +177,7 @@ const submitSearch = () => {
                     </div>
                 </div>
 
-                <div v-if="businesses.data.length === 0" class="text-center py-16 bg-white rounded-xl shadow-sm border border-gray-100 mt-8">
+                <div v-if="businesses.data.length === 0" class="text-center py-16 bg-white rounded-xl shadow-xs border border-gray-100 mt-8">
                     <svg class="mx-auto h-12 w-12 text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                     </svg>
@@ -187,7 +187,7 @@ const submitSearch = () => {
 
                 <!-- Pagination -->
                 <div v-if="businesses.links.length > 3" class="mt-10 flex justify-center">
-                    <div class="flex shadow-sm rounded-lg bg-white overflow-hidden border border-gray-200">
+                    <div class="flex shadow-xs rounded-lg bg-white overflow-hidden border border-gray-200">
                         <template v-for="(link, p) in businesses.links" :key="p">
                             <div v-if="link.url === null" class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400" v-html="link.label" />
                             <Link v-else class="mr-1 mb-1 px-4 py-3 text-sm leading-4 hover:bg-gray-50 focus:text-orange-600 transition-colors duration-200" :class="{ 'bg-orange-50 font-bold text-orange-700 border-b-2 border-orange-600': link.active }" :href="link.url" v-html="link.label" />

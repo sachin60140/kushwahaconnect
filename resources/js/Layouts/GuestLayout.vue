@@ -7,9 +7,9 @@ import AppVersionFooter from '@/Components/AppVersionFooter.vue';
     <div class="min-h-screen bg-[#fffaf0] text-slate-900">
         <div class="grid min-h-screen lg:grid-cols-[1fr_0.9fr]">
             <section class="relative hidden overflow-hidden bg-blue-950 px-12 py-16 text-white lg:flex lg:flex-col lg:justify-between">
-                <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(249,115,22,0.28),_transparent_32%),radial-gradient(circle_at_bottom_right,_rgba(21,128,61,0.24),_transparent_34%)]"></div>
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(249,115,22,0.28),transparent_32%),radial-gradient(circle_at_bottom_right,rgba(21,128,61,0.24),transparent_34%)]"></div>
                 <div class="relative">
-                    <Link :href="route('welcome')" class="inline-flex items-center gap-3 rounded-2xl border border-white/15 bg-white/10 px-5 py-4 backdrop-blur transition hover:bg-white/15">
+                    <Link :href="route('welcome')" class="inline-flex items-center gap-3 rounded-2xl border border-white/15 bg-white/10 px-5 py-4 backdrop-blur-sm transition hover:bg-white/15">
                         <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-lg font-black text-blue-950">KC</span>
                         <span>
                             <span class="block text-2xl font-black text-orange-300">Kushwaha</span>
@@ -29,15 +29,15 @@ import AppVersionFooter from '@/Components/AppVersionFooter.vue';
                 </div>
 
                 <div class="relative grid grid-cols-3 gap-4">
-                    <div class="rounded-3xl bg-white/10 p-5 backdrop-blur">
+                    <div class="rounded-3xl bg-white/10 p-5 backdrop-blur-sm">
                         <p class="text-2xl font-black text-orange-300">01</p>
                         <p class="mt-2 text-sm font-bold text-blue-100">Community Profile</p>
                     </div>
-                    <div class="rounded-3xl bg-white/10 p-5 backdrop-blur">
+                    <div class="rounded-3xl bg-white/10 p-5 backdrop-blur-sm">
                         <p class="text-2xl font-black text-green-300">02</p>
                         <p class="mt-2 text-sm font-bold text-blue-100">Trusted Connections</p>
                     </div>
-                    <div class="rounded-3xl bg-white/10 p-5 backdrop-blur">
+                    <div class="rounded-3xl bg-white/10 p-5 backdrop-blur-sm">
                         <p class="text-2xl font-black text-orange-300">03</p>
                         <p class="mt-2 text-sm font-bold text-blue-100">Support Network</p>
                     </div>

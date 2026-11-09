@@ -51,7 +51,7 @@ const deleteNotification = (id) => {
 
         <div class="py-12">
             <div class="mx-auto max-w-4xl sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white overflow-hidden shadow-xs sm:rounded-lg">
                     <div class="p-0 text-gray-900">
                         
                         <div v-if="notifications.data.length === 0" class="p-8 text-center text-gray-500">
@@ -68,7 +68,7 @@ const deleteNotification = (id) => {
                                  :class="{ 'bg-orange-50/50': !notification.read_at }">
                                 
                                 <!-- Icon based on type (assuming we will add types later, generic for now) -->
-                                <div class="flex-shrink-0 mt-1">
+                                <div class="shrink-0 mt-1">
                                     <div class="h-10 w-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600">
                                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -105,8 +105,8 @@ const deleteNotification = (id) => {
                         <div v-if="notifications.links && notifications.links.length > 3" class="px-6 py-4 border-t border-gray-200">
                             <div class="flex flex-wrap -mb-1">
                                 <template v-for="(link, p) in notifications.links" :key="p">
-                                    <div v-if="link.url === null" class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded" v-html="link.label" />
-                                    <Link v-else :href="link.url" class="mr-1 mb-1 px-4 py-3 text-sm leading-4 border rounded hover:bg-white focus:border-orange-500 focus:text-orange-500" :class="{ 'bg-white font-bold': link.active }" v-html="link.label" />
+                                    <div v-if="link.url === null" class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded-sm" v-html="link.label" />
+                                    <Link v-else :href="link.url" class="mr-1 mb-1 px-4 py-3 text-sm leading-4 border rounded-sm hover:bg-white focus:border-orange-500 focus:text-orange-500" :class="{ 'bg-white font-bold': link.active }" v-html="link.label" />
                                 </template>
                             </div>
                         </div>

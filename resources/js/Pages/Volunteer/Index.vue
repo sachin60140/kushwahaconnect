@@ -50,19 +50,19 @@ const clearSearch = () => {
         <div class="py-12 bg-gray-50 min-h-screen">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <!-- Filters -->
-                <div class="bg-white overflow-hidden shadow sm:rounded-xl mb-8 p-6">
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-xl mb-8 p-6">
                     <form @submit.prevent="submitSearch" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">State</label>
-                            <input type="text" v-model="form.state" class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 sm:text-base py-3 transition-colors duration-200" placeholder="e.g. Bihar">
+                            <input type="text" v-model="form.state" class="block w-full rounded-lg border-gray-300 shadow-xs focus:border-green-500 focus:ring-3 focus:ring-green-200 sm:text-base py-3 transition-colors duration-200" placeholder="e.g. Bihar">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">District/City</label>
-                            <input type="text" v-model="form.district" class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 sm:text-base py-3 transition-colors duration-200" placeholder="e.g. Patna">
+                            <input type="text" v-model="form.district" class="block w-full rounded-lg border-gray-300 shadow-xs focus:border-green-500 focus:ring-3 focus:ring-green-200 sm:text-base py-3 transition-colors duration-200" placeholder="e.g. Patna">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Area of Help</label>
-                            <select v-model="form.help_area" class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 sm:text-base py-3 transition-colors duration-200">
+                            <select v-model="form.help_area" class="block w-full rounded-lg border-gray-300 shadow-xs focus:border-green-500 focus:ring-3 focus:ring-green-200 sm:text-base py-3 transition-colors duration-200">
                                 <option value="">All Areas</option>
                                 <option value="education_support">Education Support</option>
                                 <option value="job_support">Job/Career Support</option>
@@ -73,10 +73,10 @@ const clearSearch = () => {
                             </select>
                         </div>
                         <div class="flex space-x-2">
-                            <button type="submit" class="flex-1 inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-base font-medium rounded-lg text-white bg-green-600 hover:bg-green-700 focus:outline-none transition-colors duration-200">
+                            <button type="submit" class="flex-1 inline-flex justify-center py-3 px-6 border border-transparent shadow-xs text-base font-medium rounded-lg text-white bg-green-600 hover:bg-green-700 focus:outline-hidden transition-colors duration-200">
                                 Filter
                             </button>
-                            <button type="button" @click="clearSearch" class="inline-flex justify-center py-3 px-6 border border-gray-300 shadow-sm text-base font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none transition-colors duration-200">
+                            <button type="button" @click="clearSearch" class="inline-flex justify-center py-3 px-6 border border-gray-300 shadow-xs text-base font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-hidden transition-colors duration-200">
                                 Clear
                             </button>
                         </div>
@@ -121,7 +121,7 @@ const clearSearch = () => {
                                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
                                     Call
                                 </a>
-                                <a v-if="volunteer.whatsapp" :href="`https://wa.me/${volunteer.whatsapp.replace(/[^0-9]/g, '')}`" target="_blank" class="flex-1 text-center bg-green-500 text-white hover:bg-green-600 text-sm font-bold py-2 px-4 rounded-lg flex items-center justify-center shadow-sm transition-colors duration-200">
+                                <a v-if="volunteer.whatsapp" :href="`https://wa.me/${volunteer.whatsapp.replace(/[^0-9]/g, '')}`" target="_blank" class="flex-1 text-center bg-green-500 text-white hover:bg-green-600 text-sm font-bold py-2 px-4 rounded-lg flex items-center justify-center shadow-xs transition-colors duration-200">
                                     <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12.016 1.996C6.486 1.996 2 6.481 2 12.012c0 1.945.541 3.753 1.464 5.289l-1.572 5.733 5.854-1.536A9.972 9.972 0 0012.016 22.02c5.53 0 10.016-4.485 10.016-10.008 0-5.53-4.486-10.016-10.016-10.016zm5.836 14.215c-.244.693-1.42 1.328-1.993 1.408-.415.059-1.02.136-2.912-.646-2.235-.92-3.666-3.19-3.774-3.333-.108-.144-.902-1.2-1.002-2.316-.08-1.116.516-1.637.7-1.84.183-.203.468-.26.653-.26.185 0 .37.004.536.012.185.008.435-.068.68.536.257.632.846 2.065.92 2.215.074.15.122.327.025.518-.097.19-.148.308-.295.48-.147.17-.308.384-.442.52-.147.15-.3.313-.122.62.178.307.794 1.314 1.708 2.13.194.347.534.613.916.748.382.135.608.113.84-.047.23-.16.994-1.162 1.264-1.562.27-.4.542-.332.906-.195.364.137 2.3 1.085 2.694 1.282.394.197.656.295.753.46.098.165.098.96-.146 1.653z" clip-rule="evenodd"></path></svg>
                                     WhatsApp
                                 </a>
@@ -132,7 +132,7 @@ const clearSearch = () => {
 
                 <!-- Pagination -->
                 <div v-if="volunteers.links.length > 3" class="mt-8 flex justify-center">
-                    <div class="flex shadow-sm rounded-lg bg-white overflow-hidden border border-gray-200">
+                    <div class="flex shadow-xs rounded-lg bg-white overflow-hidden border border-gray-200">
                         <template v-for="(link, p) in volunteers.links" :key="p">
                             <div v-if="link.url === null" class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400" v-html="link.label" />
                             <Link v-else class="mr-1 mb-1 px-4 py-3 text-sm leading-4 hover:bg-gray-50 focus:text-green-600 transition-colors duration-200" :class="{ 'bg-green-50 font-bold text-green-700 border-b-2 border-green-600': link.active }" :href="link.url" v-html="link.label" />
@@ -140,7 +140,7 @@ const clearSearch = () => {
                     </div>
                 </div>
                 
-                <div v-if="volunteers.data.length === 0" class="text-center py-12 bg-white rounded-xl shadow-sm border border-gray-200">
+                <div v-if="volunteers.data.length === 0" class="text-center py-12 bg-white rounded-xl shadow-xs border border-gray-200">
                     <p class="text-gray-500 text-lg font-medium">No volunteers found matching your criteria.</p>
                 </div>
             </div>

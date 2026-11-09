@@ -22,7 +22,7 @@ trait MapsAttributeColumns
         return array_keys($this->columns());
     }
 
-    public function map($row): array
+    public function map(mixed $row): array
     {
         return array_map(
             fn (string $attribute) => $this->exportValue($row, $attribute),

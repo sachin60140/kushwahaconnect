@@ -16,10 +16,10 @@ const cards = [
 <template>
     <section class="bg-[#fffaf0] px-4 py-16 sm:px-6 lg:px-8">
         <div class="mx-auto max-w-7xl">
-            <div class="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-blue-950 via-cyan-950 to-green-900 px-5 py-8 shadow-2xl shadow-blue-950/20 sm:rounded-[2.5rem] sm:px-8 sm:py-10 lg:px-12 lg:py-12">
+            <div class="relative overflow-hidden rounded-4xl bg-linear-to-br from-blue-950 via-cyan-950 to-green-900 px-5 py-8 shadow-2xl shadow-blue-950/20 sm:rounded-[2.5rem] sm:px-8 sm:py-10 lg:px-12 lg:py-12">
                 <div class="pointer-events-none absolute -left-24 -top-24 h-64 w-64 rounded-full bg-orange-300/20 blur-3xl"></div>
                 <div class="pointer-events-none absolute -bottom-28 right-0 h-72 w-72 rounded-full bg-green-300/20 blur-3xl"></div>
-                <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent"></div>
+                <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-white/40 to-transparent"></div>
 
                 <div class="relative mx-auto max-w-3xl text-center">
                     <p class="text-sm font-black uppercase tracking-[0.22em] text-orange-300">KushwahaConnect</p>
@@ -31,7 +31,7 @@ const cards = [
                     <article
                         v-for="(card, index) in cards"
                         :key="card.title"
-                        class="group relative min-h-64 overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/12 p-6 shadow-lg shadow-blue-950/10 backdrop-blur transition duration-300 hover:-translate-y-1 hover:border-orange-300/70 hover:bg-white/18 hover:shadow-2xl hover:shadow-blue-950/20"
+                        class="group relative min-h-64 overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/12 p-6 shadow-lg shadow-blue-950/10 backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:border-orange-300/70 hover:bg-white/18 hover:shadow-2xl hover:shadow-blue-950/20"
                         :class="index === 0 || index === 2 ? 'xl:min-h-72' : ''"
                     >
                         <div class="absolute inset-x-6 bottom-6 h-20 rounded-3xl bg-white/12 transition group-hover:bg-white/18"></div>
@@ -39,7 +39,7 @@ const cards = [
 
                         <div class="relative flex h-full flex-col">
                             <div class="flex items-start justify-between gap-4">
-                                <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br text-blue-950 shadow-sm" :class="card.accent">
+                                <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br text-blue-950 shadow-xs" :class="card.accent">
                                     <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path :d="card.icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
                                     </svg>
@@ -53,7 +53,7 @@ const cards = [
                             <p class="mt-3 max-w-sm text-sm font-medium leading-6 text-blue-100">{{ __(card.desc) }}</p>
 
                             <div class="mt-auto pt-7">
-                                <span class="inline-flex h-2 w-24 rounded-full bg-gradient-to-r" :class="card.accent"></span>
+                                <span class="inline-flex h-2 w-24 rounded-full bg-linear-to-r" :class="card.accent"></span>
                             </div>
                         </div>
                     </article>

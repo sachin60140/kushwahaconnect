@@ -70,7 +70,7 @@ const designation = (profile) => isHindi.value ? profile.designation_hi || profi
                 </article>
 
                 <div class="grid gap-4 sm:grid-cols-2">
-                    <article v-for="profile in cards" :key="profile.id" class="rounded-3xl border border-slate-100 bg-[#fffaf0] p-5 shadow-sm">
+                    <article v-for="profile in cards" :key="profile.id" class="rounded-3xl border border-slate-100 bg-[#fffaf0] p-5 shadow-xs">
                         <div class="flex gap-4">
                             <div class="h-16 w-16 shrink-0 overflow-hidden rounded-2xl bg-blue-100">
                                 <img v-if="profile.photo_url" :src="profile.photo_url" :alt="name(profile)" class="h-full w-full object-cover">

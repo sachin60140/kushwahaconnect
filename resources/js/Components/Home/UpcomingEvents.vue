@@ -55,9 +55,9 @@ const formatTime = (value) => {
                 <article
                     v-for="event in events"
                     :key="event.id"
-                    class="overflow-hidden rounded-3xl border border-slate-100 bg-[#fffaf0] shadow-sm transition hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-950/10"
+                    class="overflow-hidden rounded-3xl border border-slate-100 bg-[#fffaf0] shadow-xs transition hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-950/10"
                 >
-                    <div class="h-48 bg-gradient-to-br from-blue-950 to-green-700">
+                    <div class="h-48 bg-linear-to-br from-blue-950 to-green-700">
                         <img v-if="event.image_url" :src="event.image_url" :alt="event.title" class="h-full w-full object-cover" loading="lazy">
                     </div>
                     <div class="p-5">

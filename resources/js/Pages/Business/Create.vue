@@ -64,7 +64,7 @@ const submit = () => {
 
         <div class="py-12">
             <div class="mx-auto max-w-3xl sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-200">
+                <div class="bg-white overflow-hidden shadow-xs sm:rounded-lg border border-gray-200">
                     <div class="p-8 text-gray-900">
                         <div class="mb-8">
                             <h3 class="text-2xl font-bold text-gray-900">Business Details</h3>
@@ -83,7 +83,7 @@ const submit = () => {
 
                                 <div class="md:col-span-2">
                                     <InputLabel for="category" value="Business Category *" />
-                                    <select id="category" v-model="form.category" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+                                    <select id="category" v-model="form.category" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-xs" required>
                                         <option value="" disabled>Select Category</option>
                                         <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
                                     </select>
@@ -92,7 +92,7 @@ const submit = () => {
 
                                 <div class="md:col-span-2">
                                     <InputLabel for="description" value="Business Description *" />
-                                    <textarea id="description" v-model="form.description" rows="4" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required placeholder="Describe what your business does, products/services offered, etc."></textarea>
+                                    <textarea id="description" v-model="form.description" rows="4" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-xs" required placeholder="Describe what your business does, products/services offered, etc."></textarea>
                                     <div v-if="form.errors.description" class="mt-1 text-sm text-red-600">{{ form.errors.description }}</div>
                                 </div>
                             </div>
@@ -108,7 +108,7 @@ const submit = () => {
                                     
                                     <div>
                                         <InputLabel for="state_id" value="State *" />
-                                        <select id="state_id" v-model="form.state_id" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+                                        <select id="state_id" v-model="form.state_id" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-xs" required>
                                             <option value="" disabled>Select State</option>
                                             <option v-for="state in states" :key="state.id" :value="state.id">{{ state.name_en }}</option>
                                         </select>
@@ -117,7 +117,7 @@ const submit = () => {
 
                                     <div>
                                         <InputLabel for="district_id" value="District *" />
-                                        <select id="district_id" v-model="form.district_id" :disabled="!form.state_id" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm disabled:opacity-50" required>
+                                        <select id="district_id" v-model="form.district_id" :disabled="!form.state_id" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-xs disabled:opacity-50" required>
                                             <option value="" disabled>Select District</option>
                                             <option v-for="district in districts" :key="district.id" :value="district.id">{{ district.name_en }}</option>
                                         </select>

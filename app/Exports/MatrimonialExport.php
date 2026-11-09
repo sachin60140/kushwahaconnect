@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\MatrimonialProfile;
+use Illuminate\Support\Enumerable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -11,7 +12,7 @@ class MatrimonialExport implements FromCollection, WithHeadings, WithMapping
 {
     use MapsAttributeColumns;
 
-    public function collection()
+    public function collection(): Enumerable
     {
         return MatrimonialProfile::orderBy('id')->get();
     }

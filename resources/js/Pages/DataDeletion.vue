@@ -26,7 +26,7 @@ const submit = () => {
 
     <PublicLayout :show-flash="false">
         <section class="kc-hero">
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(249,115,22,0.24),_transparent_34%)]"></div>
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(249,115,22,0.24),transparent_34%)]"></div>
             <div class="kc-hero-inner">
                 <div class="max-w-3xl">
                     <p class="text-sm font-black uppercase tracking-[0.22em] text-orange-300">Privacy & Data</p>

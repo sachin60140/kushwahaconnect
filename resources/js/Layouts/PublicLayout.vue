@@ -59,11 +59,11 @@ const navLinks = computed(() => [
     <div class="min-h-screen bg-[#fffaf0] pb-20 text-slate-900 antialiased md:pb-0" :class="locale === 'hi' ? 'font-devanagari' : 'font-sans'">
         <AnnouncementBar />
 
-        <header class="sticky top-0 z-50 border-b border-blue-950/10 bg-white/95 shadow-sm backdrop-blur">
+        <header class="sticky top-0 z-50 border-b border-blue-950/10 bg-white/95 shadow-xs backdrop-blur-sm">
             <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="flex min-h-20 items-center justify-between gap-4">
                     <Link :href="route('welcome')" class="flex items-center gap-3" aria-label="KushwahaConnect home">
-                        <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-950 text-lg font-black text-orange-400 shadow-sm">
+                        <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-950 text-lg font-black text-orange-400 shadow-xs">
                             KC
                         </span>
                         <span class="leading-tight">
@@ -88,14 +88,14 @@ const navLinks = computed(() => [
                             <a
                                 href="/lang/hi"
                                 class="rounded-full px-3 py-2 transition"
-                                :class="locale === 'hi' ? 'bg-white text-blue-950 shadow-sm' : 'text-slate-600 hover:text-blue-950'"
+                                :class="locale === 'hi' ? 'bg-white text-blue-950 shadow-xs' : 'text-slate-600 hover:text-blue-950'"
                             >
                                 {{ __('language_hindi') }}
                             </a>
                             <a
                                 href="/lang/en"
                                 class="rounded-full px-3 py-2 transition"
-                                :class="locale === 'en' ? 'bg-white text-blue-950 shadow-sm' : 'text-slate-600 hover:text-blue-950'"
+                                :class="locale === 'en' ? 'bg-white text-blue-950 shadow-xs' : 'text-slate-600 hover:text-blue-950'"
                             >
                                 {{ __('language_english') }}
                             </a>
@@ -110,7 +110,7 @@ const navLinks = computed(() => [
                             <Link :href="route('login')" class="inline-flex min-h-11 items-center justify-center rounded-full border border-blue-950/15 px-5 text-sm font-bold text-blue-950 transition hover:border-blue-950 hover:bg-blue-50">
                                 {{ __('menu_login') }}
                             </Link>
-                            <Link :href="route('join')" class="inline-flex min-h-11 items-center justify-center rounded-full bg-orange-500 px-5 text-sm font-bold text-white shadow-sm transition hover:bg-orange-600">
+                            <Link :href="route('join')" class="inline-flex min-h-11 items-center justify-center rounded-full bg-orange-500 px-5 text-sm font-bold text-white shadow-xs transition hover:bg-orange-600">
                                 {{ __('menu_join') }}
                             </Link>
                         </template>
@@ -263,7 +263,7 @@ const navLinks = computed(() => [
             </div>
         </footer>
 
-        <div class="fixed inset-x-0 bottom-0 z-50 border-t border-slate-200 bg-white/95 px-3 py-2 shadow-2xl backdrop-blur md:hidden">
+        <div class="fixed inset-x-0 bottom-0 z-50 border-t border-slate-200 bg-white/95 px-3 py-2 shadow-2xl backdrop-blur-sm md:hidden">
             <div class="grid grid-cols-3 gap-2">
                 <Link :href="route('join')" class="inline-flex min-h-12 items-center justify-center rounded-xl bg-orange-500 px-2 text-center text-xs font-black text-white">
                     {{ __('menu_join') }}

@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\MemberProfile;
+use Illuminate\Support\Enumerable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -11,7 +12,7 @@ class MembersExport implements FromCollection, WithHeadings, WithMapping
 {
     use MapsAttributeColumns;
 
-    public function collection()
+    public function collection(): Enumerable
     {
         return MemberProfile::with(['state:id,name_en', 'district:id,name_en'])->orderBy('id')->get();
     }

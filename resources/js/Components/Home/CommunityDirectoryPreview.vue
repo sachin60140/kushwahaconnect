@@ -45,9 +45,9 @@ const connect = (member) => {
                 <article
                     v-for="member in members"
                     :key="member.id"
-                    class="overflow-hidden rounded-3xl border border-slate-100 bg-[#fffaf0] shadow-sm transition hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-950/10"
+                    class="overflow-hidden rounded-3xl border border-slate-100 bg-[#fffaf0] shadow-xs transition hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-950/10"
                 >
-                    <div class="h-28 bg-gradient-to-br from-blue-950 via-blue-900 to-green-700"></div>
+                    <div class="h-28 bg-linear-to-br from-blue-950 via-blue-900 to-green-700"></div>
                     <div class="-mt-12 p-5">
                         <div class="flex items-end justify-between gap-3">
                             <div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-3xl border-4 border-[#fffaf0] bg-orange-100 text-xl font-black text-orange-700 shadow-md">

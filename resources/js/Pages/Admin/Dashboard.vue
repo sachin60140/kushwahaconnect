@@ -162,10 +162,10 @@ const genderChartSeries = props.chartData?.gender?.series || [];
 
                 <!-- Main Stat Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <Link v-for="item in statCards" :key="item.name" :href="item.route" class="bg-white overflow-hidden shadow rounded-lg border border-gray-100 hover:shadow-md transition-shadow group">
+                    <Link v-for="item in statCards" :key="item.name" :href="item.route" class="bg-white overflow-hidden shadow-sm rounded-lg border border-gray-100 hover:shadow-md transition-shadow group">
                         <div class="p-5">
                             <div class="flex items-center">
-                                <div class="flex-shrink-0">
+                                <div class="shrink-0">
                                     <div :class="[item.bg, item.color, 'rounded-md p-3 group-hover:scale-110 transition-transform']">
                                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="item.icon"></path></svg>
                                     </div>
@@ -191,7 +191,7 @@ const genderChartSeries = props.chartData?.gender?.series || [];
                 <!-- Charts Row -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <!-- Growth Chart -->
-                    <div class="lg:col-span-3 xl:col-span-2 bg-white shadow rounded-lg border border-gray-100">
+                    <div class="lg:col-span-3 xl:col-span-2 bg-white shadow-sm rounded-lg border border-gray-100">
                         <div class="px-5 py-4 border-b border-gray-200">
                             <h3 class="text-lg leading-6 font-medium text-gray-900">Platform Growth (Last 6 Months)</h3>
                         </div>
@@ -203,7 +203,7 @@ const genderChartSeries = props.chartData?.gender?.series || [];
                     <!-- Side Charts Column -->
                     <div class="lg:col-span-3 xl:col-span-1 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 gap-8">
                         <!-- Demographics Chart -->
-                        <div class="bg-white shadow rounded-lg border border-gray-100">
+                        <div class="bg-white shadow-sm rounded-lg border border-gray-100">
                             <div class="px-5 py-4 border-b border-gray-200">
                                 <h3 class="text-lg leading-6 font-medium text-gray-900">Top Locations</h3>
                             </div>
@@ -214,7 +214,7 @@ const genderChartSeries = props.chartData?.gender?.series || [];
                         </div>
 
                         <!-- Resources Chart -->
-                        <div class="bg-white shadow rounded-lg border border-gray-100">
+                        <div class="bg-white shadow-sm rounded-lg border border-gray-100">
                             <div class="px-5 py-4 border-b border-gray-200">
                                 <h3 class="text-lg leading-6 font-medium text-gray-900">Resource Engagement</h3>
                             </div>
@@ -225,7 +225,7 @@ const genderChartSeries = props.chartData?.gender?.series || [];
                         </div>
 
                         <!-- Gender Chart -->
-                        <div class="bg-white shadow rounded-lg border border-gray-100">
+                        <div class="bg-white shadow-sm rounded-lg border border-gray-100">
                             <div class="px-5 py-4 border-b border-gray-200">
                                 <h3 class="text-lg leading-6 font-medium text-gray-900">Gender Distribution</h3>
                             </div>
@@ -243,7 +243,7 @@ const genderChartSeries = props.chartData?.gender?.series || [];
                     <div class="lg:col-span-1 space-y-8">
                         
                         <!-- Requires Attention Panel -->
-                        <div class="bg-white shadow rounded-lg border border-red-100">
+                        <div class="bg-white shadow-sm rounded-lg border border-red-100">
                             <div class="px-5 py-4 border-b border-gray-200 bg-red-50 rounded-t-lg">
                                 <h3 class="text-lg leading-6 font-medium text-red-800 flex items-center">
                                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
@@ -263,7 +263,7 @@ const genderChartSeries = props.chartData?.gender?.series || [];
                         </div>
 
                         <!-- Growth Stats -->
-                        <div class="bg-white shadow rounded-lg border border-gray-100">
+                        <div class="bg-white shadow-sm rounded-lg border border-gray-100">
                             <div class="px-5 py-4 border-b border-gray-200">
                                 <h3 class="text-lg leading-6 font-medium text-gray-900">Monthly Growth</h3>
                             </div>
@@ -285,7 +285,7 @@ const genderChartSeries = props.chartData?.gender?.series || [];
 
                     <!-- Right Column: Recent Activity Feed -->
                     <div class="lg:col-span-2">
-                        <div class="bg-white shadow rounded-lg border border-gray-100 h-full">
+                        <div class="bg-white shadow-sm rounded-lg border border-gray-100 h-full">
                             <div class="px-5 py-4 border-b border-gray-200 flex justify-between items-center">
                                 <h3 class="text-lg leading-6 font-medium text-gray-900">Recent Activity Feed</h3>
                                 <span class="text-sm text-gray-500">Latest 8 actions</span>
@@ -294,7 +294,7 @@ const genderChartSeries = props.chartData?.gender?.series || [];
                                 <ul class="divide-y divide-gray-200">
                                     <li v-for="(activity, index) in recentActivity" :key="index" class="p-5 hover:bg-gray-50 transition-colors">
                                         <div class="flex items-center space-x-4">
-                                            <div class="flex-shrink-0">
+                                            <div class="shrink-0">
                                                 <span class="inline-flex items-center justify-center h-10 w-10 rounded-full"
                                                     :class="{
                                                         'bg-blue-100 text-blue-600': activity.type === 'Member Registration',
@@ -314,7 +314,7 @@ const genderChartSeries = props.chartData?.gender?.series || [];
                                                     Submitted a new <span class="font-semibold">{{ activity.type }}</span>
                                                 </p>
                                             </div>
-                                            <div class="flex-shrink-0 text-right">
+                                            <div class="shrink-0 text-right">
                                                 <p class="text-sm text-gray-500 mb-1">{{ activity.time }}</p>
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 uppercase" v-if="activity.status.toLowerCase() === 'pending'">
                                                     Pending
@@ -326,7 +326,7 @@ const genderChartSeries = props.chartData?.gender?.series || [];
                                                     {{ activity.status }}
                                                 </span>
                                             </div>
-                                            <div class="flex-shrink-0 ml-4">
+                                            <div class="shrink-0 ml-4">
                                                 <Link :href="activity.url" class="text-indigo-600 hover:text-indigo-900 text-sm font-medium">View &rarr;</Link>
                                             </div>
                                         </div>

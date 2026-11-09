@@ -16,7 +16,7 @@ const props = defineProps({
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
                     Contact Enquiries
                 </h2>
-                <a :href="route('admin.enquiries.export')" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded shadow">
+                <a :href="route('admin.enquiries.export')" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-sm shadow-sm">
                     Export Excel
                 </a>
             </div>
@@ -24,7 +24,7 @@ const props = defineProps({
 
         <div class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white overflow-hidden shadow-xs sm:rounded-lg">
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm text-left text-gray-500">
                             <thead class="text-xs text-gray-700 uppercase bg-gray-50">
@@ -54,8 +54,8 @@ const props = defineProps({
 
                 <div v-if="enquiries.links && enquiries.links.length > 3" class="mt-6 flex flex-wrap">
                     <template v-for="(link, p) in enquiries.links" :key="p">
-                        <div v-if="link.url === null" class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded bg-white" v-html="link.label" />
-                        <Link v-else class="mr-1 mb-1 px-4 py-3 text-sm leading-4 border rounded hover:bg-white" :class="{ 'bg-indigo-50 border-indigo-500 text-indigo-600': link.active, 'bg-white': !link.active }" :href="link.url" v-html="link.label" />
+                        <div v-if="link.url === null" class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded-sm bg-white" v-html="link.label" />
+                        <Link v-else class="mr-1 mb-1 px-4 py-3 text-sm leading-4 border rounded-sm hover:bg-white" :class="{ 'bg-indigo-50 border-indigo-500 text-indigo-600': link.active, 'bg-white': !link.active }" :href="link.url" v-html="link.label" />
                     </template>
                 </div>
             </div>

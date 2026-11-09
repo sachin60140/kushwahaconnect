@@ -135,7 +135,7 @@ const submitCorrection = () => {
 
                 <div v-if="profiles.data.length" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                     <article v-for="profile in profiles.data" :key="profile.id" class="kc-panel overflow-hidden">
-                        <div class="h-56 bg-gradient-to-br from-blue-100 to-green-50">
+                        <div class="h-56 bg-linear-to-br from-blue-100 to-green-50">
                             <img v-if="profile.photo_url" :src="profile.photo_url" :alt="localizedName(profile)" class="h-full w-full object-cover">
                             <div v-else class="flex h-full items-center justify-center text-4xl font-black text-blue-950/20">KC</div>
                         </div>
@@ -159,7 +159,7 @@ const submitCorrection = () => {
                 <div v-else class="kc-surface p-10 text-center text-lg font-bold text-slate-600">{{ text.empty }}</div>
 
                 <div v-if="profiles.links && profiles.links.length > 3" class="mt-10 flex justify-center">
-                    <div class="flex flex-wrap shadow-sm rounded-lg bg-white overflow-hidden border border-gray-200">
+                    <div class="flex flex-wrap shadow-xs rounded-lg bg-white overflow-hidden border border-gray-200">
                         <template v-for="(link, p) in profiles.links" :key="p">
                             <div v-if="link.url === null" class="px-4 py-3 text-sm leading-4 text-gray-400" v-html="link.label" />
                             <Link v-else class="px-4 py-3 text-sm leading-4 hover:bg-gray-50" :class="{ 'bg-orange-50 font-bold text-orange-700': link.active }" :href="link.url" v-html="link.label" />

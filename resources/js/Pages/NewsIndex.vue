@@ -58,17 +58,17 @@ const typeTone = (type) => ({
                     <div v-for="item in items.data" :key="item.id" class="bg-white overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 sm:rounded-xl flex flex-col border border-gray-100 group">
                         <div v-if="item.image_url" class="h-56 w-full bg-gray-200 overflow-hidden relative">
                             <img :src="item.image_url" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" :alt="item.title">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                            <span class="absolute bottom-4 left-4 px-3 py-1 text-xs font-bold rounded-full text-white shadow-sm" 
+                            <div class="absolute inset-0 bg-linear-to-t from-black/60 to-transparent"></div>
+                            <span class="absolute bottom-4 left-4 px-3 py-1 text-xs font-bold rounded-full text-white shadow-xs" 
                                   :class="typeTone(item.type)">
                                 {{ typeLabel(item.type) }}
                             </span>
                         </div>
-                        <div v-else class="h-48 w-full bg-gradient-to-br from-orange-100 to-green-50 flex items-center justify-center relative">
+                        <div v-else class="h-48 w-full bg-linear-to-br from-orange-100 to-green-50 flex items-center justify-center relative">
                             <svg class="h-16 w-16 text-orange-300 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
                             </svg>
-                            <span class="absolute bottom-4 left-4 px-3 py-1 text-xs font-bold rounded-full text-white shadow-sm" 
+                            <span class="absolute bottom-4 left-4 px-3 py-1 text-xs font-bold rounded-full text-white shadow-xs" 
                                   :class="typeTone(item.type)">
                                 {{ typeLabel(item.type) }}
                             </span>
@@ -96,7 +96,7 @@ const typeTone = (type) => ({
 
                 <!-- Pagination -->
                 <div v-if="items.links.length > 3" class="mt-10 flex justify-center">
-                    <div class="flex shadow-sm rounded-lg bg-white overflow-hidden border border-gray-200">
+                    <div class="flex shadow-xs rounded-lg bg-white overflow-hidden border border-gray-200">
                         <template v-for="(link, p) in items.links" :key="p">
                             <div v-if="link.url === null" class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400" v-html="link.label" />
                             <Link v-else class="mr-1 mb-1 px-4 py-3 text-sm leading-4 hover:bg-gray-50 focus:text-orange-600 transition-colors duration-200" :class="{ 'bg-orange-50 font-bold text-orange-700 border-b-2 border-orange-600': link.active }" :href="link.url" v-html="link.label" />
@@ -104,7 +104,7 @@ const typeTone = (type) => ({
                     </div>
                 </div>
                 
-                <div v-if="items.data.length === 0" class="text-center py-16 bg-white rounded-xl shadow-sm border border-gray-100">
+                <div v-if="items.data.length === 0" class="text-center py-16 bg-white rounded-xl shadow-xs border border-gray-100">
                     <svg class="mx-auto h-12 w-12 text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
                     </svg>

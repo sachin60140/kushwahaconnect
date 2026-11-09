@@ -65,7 +65,7 @@ const submit = () => {
 
         <div class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white overflow-hidden shadow-xs sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <div class="mb-6">
                             <h3 class="text-lg font-medium text-gray-900">Manage Matrimonial Profile</h3>
@@ -80,7 +80,7 @@ const submit = () => {
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div>
                                         <InputLabel for="profile_for" value="Profile Creating For *" />
-                                        <select id="profile_for" class="mt-1 block w-full border-gray-300 focus:border-pink-500 focus:ring-pink-500 rounded-md shadow-sm" v-model="form.profile_for" required>
+                                        <select id="profile_for" class="mt-1 block w-full border-gray-300 focus:border-pink-500 focus:ring-pink-500 rounded-md shadow-xs" v-model="form.profile_for" required>
                                             <option value="Self">Self</option>
                                             <option value="Son">Son</option>
                                             <option value="Daughter">Daughter</option>
@@ -98,7 +98,7 @@ const submit = () => {
                                     </div>
                                     <div>
                                         <InputLabel for="gender" value="Gender *" />
-                                        <select id="gender" class="mt-1 block w-full border-gray-300 focus:border-pink-500 focus:ring-pink-500 rounded-md shadow-sm" v-model="form.gender" required>
+                                        <select id="gender" class="mt-1 block w-full border-gray-300 focus:border-pink-500 focus:ring-pink-500 rounded-md shadow-xs" v-model="form.gender" required>
                                             <option value="Male">Male</option>
                                             <option value="Female">Female</option>
                                         </select>
@@ -111,7 +111,7 @@ const submit = () => {
                                     </div>
                                     <div>
                                         <InputLabel for="marital_status" value="Marital Status *" />
-                                        <select id="marital_status" class="mt-1 block w-full border-gray-300 focus:border-pink-500 focus:ring-pink-500 rounded-md shadow-sm" v-model="form.marital_status" required>
+                                        <select id="marital_status" class="mt-1 block w-full border-gray-300 focus:border-pink-500 focus:ring-pink-500 rounded-md shadow-xs" v-model="form.marital_status" required>
                                             <option value="Never Married">Never Married</option>
                                             <option value="Awaiting Divorce">Awaiting Divorce</option>
                                             <option value="Divorced">Divorced</option>
@@ -127,7 +127,7 @@ const submit = () => {
                                     </div>
                                     <div>
                                         <InputLabel for="manglik" value="Manglik Status" />
-                                        <select id="manglik" class="mt-1 block w-full border-gray-300 focus:border-pink-500 focus:ring-pink-500 rounded-md shadow-sm" v-model="form.manglik">
+                                        <select id="manglik" class="mt-1 block w-full border-gray-300 focus:border-pink-500 focus:ring-pink-500 rounded-md shadow-xs" v-model="form.manglik">
                                             <option value="No">No</option>
                                             <option value="Yes">Yes</option>
                                             <option value="Don't Know">Don't Know</option>
@@ -216,7 +216,7 @@ const submit = () => {
                                     </div>
                                     <div>
                                         <InputLabel for="family_type" value="Family Type" />
-                                        <select id="family_type" class="mt-1 block w-full border-gray-300 focus:border-pink-500 focus:ring-pink-500 rounded-md shadow-sm" v-model="form.family_type">
+                                        <select id="family_type" class="mt-1 block w-full border-gray-300 focus:border-pink-500 focus:ring-pink-500 rounded-md shadow-xs" v-model="form.family_type">
                                             <option value="">Select</option>
                                             <option value="Joint">Joint Family</option>
                                             <option value="Nuclear">Nuclear Family</option>
@@ -263,7 +263,7 @@ const submit = () => {
                                     </div>
                                     <div class="md:col-span-2">
                                         <InputLabel for="other_expectations" value="Other Expectations" />
-                                        <textarea id="other_expectations" class="mt-1 block w-full border-gray-300 focus:border-pink-500 focus:ring-pink-500 rounded-md shadow-sm" v-model="form.other_expectations" rows="3"></textarea>
+                                        <textarea id="other_expectations" class="mt-1 block w-full border-gray-300 focus:border-pink-500 focus:ring-pink-500 rounded-md shadow-xs" v-model="form.other_expectations" rows="3"></textarea>
                                         <InputError class="mt-2" :message="form.errors.other_expectations" />
                                     </div>
                                 </div>

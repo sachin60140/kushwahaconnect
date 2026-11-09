@@ -44,12 +44,12 @@ const submit = () => {
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Your Name <span class="text-red-500">*</span></label>
-                                    <input type="text" v-model="form.name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                    <input type="text" v-model="form.name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     <div v-if="form.errors.name" class="text-red-500 text-xs mt-1">{{ form.errors.name }}</div>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Mobile Number <span class="text-red-500">*</span></label>
-                                    <input type="text" v-model="form.mobile" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                    <input type="text" v-model="form.mobile" required class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     <div v-if="form.errors.mobile" class="text-red-500 text-xs mt-1">{{ form.errors.mobile }}</div>
                                 </div>
                             </div>
@@ -57,17 +57,17 @@ const submit = () => {
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">WhatsApp Number</label>
-                                    <input type="text" v-model="form.whatsapp" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                    <input type="text" v-model="form.whatsapp" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     <div v-if="form.errors.whatsapp" class="text-red-500 text-xs mt-1">{{ form.errors.whatsapp }}</div>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">State <span class="text-red-500">*</span></label>
-                                    <input type="text" v-model="form.state" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                    <input type="text" v-model="form.state" required class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     <div v-if="form.errors.state" class="text-red-500 text-xs mt-1">{{ form.errors.state }}</div>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">District <span class="text-red-500">*</span></label>
-                                    <input type="text" v-model="form.district" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                    <input type="text" v-model="form.district" required class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     <div v-if="form.errors.district" class="text-red-500 text-xs mt-1">{{ form.errors.district }}</div>
                                 </div>
                             </div>
@@ -75,12 +75,12 @@ const submit = () => {
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">City/Village <span class="text-red-500">*</span></label>
-                                    <input type="text" v-model="form.city" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                    <input type="text" v-model="form.city" required class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     <div v-if="form.errors.city" class="text-red-500 text-xs mt-1">{{ form.errors.city }}</div>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Category <span class="text-red-500">*</span></label>
-                                    <select v-model="form.category" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                    <select v-model="form.category" required class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                         <option value="Education Help">Education Help</option>
                                         <option value="Job Help">Job Help</option>
                                         <option value="Business Help">Business Help</option>
@@ -97,12 +97,12 @@ const submit = () => {
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Request Title <span class="text-red-500">*</span></label>
-                                    <input type="text" v-model="form.title" required placeholder="Short summary of help needed" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                    <input type="text" v-model="form.title" required placeholder="Short summary of help needed" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     <div v-if="form.errors.title" class="text-red-500 text-xs mt-1">{{ form.errors.title }}</div>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Urgency <span class="text-red-500">*</span></label>
-                                    <select v-model="form.urgency" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                    <select v-model="form.urgency" required class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                         <option value="Normal">Normal</option>
                                         <option value="Urgent">Urgent</option>
                                         <option value="Emergency">Emergency</option>
@@ -113,14 +113,14 @@ const submit = () => {
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Detailed Description <span class="text-red-500">*</span></label>
-                                <textarea v-model="form.description" rows="5" required placeholder="Please describe exactly what kind of help you need..." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
+                                <textarea v-model="form.description" rows="5" required placeholder="Please describe exactly what kind of help you need..." class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
                                 <div v-if="form.errors.description" class="text-red-500 text-xs mt-1">{{ form.errors.description }}</div>
                             </div>
 
                             <div class="bg-gray-50 p-4 rounded-md">
                                 <div class="flex items-start">
                                     <div class="flex items-center h-5">
-                                        <input id="is_public" type="checkbox" v-model="form.is_public" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                                        <input id="is_public" type="checkbox" v-model="form.is_public" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded-sm">
                                     </div>
                                     <div class="ml-3 text-sm">
                                         <label for="is_public" class="font-medium text-gray-700">Make this request public</label>

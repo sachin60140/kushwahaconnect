@@ -46,7 +46,7 @@ const removeConnection = (id) => {
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8 space-y-6">
                 
                 <!-- Received Requests -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white overflow-hidden shadow-xs sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <h3 class="text-lg font-medium text-gray-900 mb-4">Received Connection Requests</h3>
                         
@@ -66,10 +66,10 @@ const removeConnection = (id) => {
                                     </div>
                                 </div>
                                 <div class="flex space-x-2">
-                                    <button @click="handleRequest(req.id, 'accepted')" class="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded hover:bg-green-700">
+                                    <button @click="handleRequest(req.id, 'accepted')" class="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-sm hover:bg-green-700">
                                         Accept
                                     </button>
-                                    <button @click="handleRequest(req.id, 'rejected')" class="px-4 py-2 bg-red-100 text-red-700 text-sm font-medium rounded hover:bg-red-200">
+                                    <button @click="handleRequest(req.id, 'rejected')" class="px-4 py-2 bg-red-100 text-red-700 text-sm font-medium rounded-sm hover:bg-red-200">
                                         Decline
                                     </button>
                                 </div>
@@ -79,7 +79,7 @@ const removeConnection = (id) => {
                 </div>
 
                 <!-- Active Connections -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white overflow-hidden shadow-xs sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <h3 class="text-lg font-medium text-gray-900 mb-4">My Connections</h3>
                         
@@ -88,7 +88,7 @@ const removeConnection = (id) => {
                         </div>
 
                         <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <div v-for="conn in activeConnections" :key="conn.id" class="p-4 bg-white rounded-lg border border-gray-200 shadow-sm flex flex-col justify-between">
+                            <div v-for="conn in activeConnections" :key="conn.id" class="p-4 bg-white rounded-lg border border-gray-200 shadow-xs flex flex-col justify-between">
                                 <div class="flex items-center space-x-4 mb-4">
                                     <div class="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xl">
                                         <!-- Determine if we are sender or receiver to show the other person -->
@@ -114,7 +114,7 @@ const removeConnection = (id) => {
                 </div>
 
                 <!-- Sent Requests -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white overflow-hidden shadow-xs sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <h3 class="text-lg font-medium text-gray-900 mb-4">Sent Requests (Pending)</h3>
                         

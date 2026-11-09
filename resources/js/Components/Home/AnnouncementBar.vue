@@ -21,7 +21,7 @@ const announcement = computed(() => {
             </p>
             <Link
                 :href="route('join')"
-                class="inline-flex min-h-10 items-center justify-center rounded-full bg-orange-500 px-5 text-sm font-bold text-white shadow-sm transition hover:bg-orange-600"
+                class="inline-flex min-h-10 items-center justify-center rounded-full bg-orange-500 px-5 text-sm font-bold text-white shadow-xs transition hover:bg-orange-600"
             >
                 {{ __('announcement_cta') }}
             </Link>

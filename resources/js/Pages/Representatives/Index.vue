@@ -152,9 +152,9 @@ const submitCorrection = () => {
                     <article
                         v-for="representative in representatives.data"
                         :key="representative.id"
-                        class="group overflow-hidden rounded-[1.75rem] border border-blue-950/10 bg-white shadow-sm shadow-blue-950/5 transition duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-blue-950/10"
+                        class="group overflow-hidden rounded-[1.75rem] border border-blue-950/10 bg-white shadow-xs shadow-blue-950/5 transition duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-blue-950/10"
                     >
-                        <div class="relative overflow-hidden bg-gradient-to-br from-blue-950 via-blue-900 to-green-800 p-5 text-white">
+                        <div class="relative overflow-hidden bg-linear-to-br from-blue-950 via-blue-900 to-green-800 p-5 text-white">
                             <div class="absolute -right-12 -top-16 h-40 w-40 rounded-full bg-white/10"></div>
                             <div class="absolute -bottom-20 left-8 h-44 w-44 rounded-full bg-orange-300/10"></div>
                             <div class="relative flex items-start gap-4">
@@ -197,7 +197,7 @@ const submitCorrection = () => {
                 <div v-else class="kc-surface p-10 text-center text-lg font-bold text-slate-600">{{ text.empty }}</div>
 
                 <div v-if="representatives.links && representatives.links.length > 3" class="mt-10 flex justify-center">
-                    <div class="flex flex-wrap shadow-sm rounded-lg bg-white overflow-hidden border border-gray-200">
+                    <div class="flex flex-wrap shadow-xs rounded-lg bg-white overflow-hidden border border-gray-200">
                         <template v-for="(link, p) in representatives.links" :key="p">
                             <div v-if="link.url === null" class="px-4 py-3 text-sm leading-4 text-gray-400" v-html="link.label" />
                             <Link v-else class="px-4 py-3 text-sm leading-4 hover:bg-gray-50" :class="{ 'bg-green-50 font-bold text-green-700': link.active }" :href="link.url" v-html="link.label" />

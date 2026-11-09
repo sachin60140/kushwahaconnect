@@ -24,12 +24,12 @@ const intro = computed(() => {
 
 <template>
     <section class="relative overflow-hidden bg-blue-950 text-white">
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(249,115,22,0.28),_transparent_32%),radial-gradient(circle_at_bottom_right,_rgba(21,128,61,0.22),_transparent_34%)]"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(249,115,22,0.28),transparent_32%),radial-gradient(circle_at_bottom_right,rgba(21,128,61,0.22),transparent_34%)]"></div>
         <div class="absolute left-1/2 top-10 h-72 w-72 -translate-x-1/2 rounded-full bg-white/10 blur-3xl"></div>
 
         <div class="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-24">
             <div class="text-center lg:text-left">
-                <div class="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-bold text-orange-100 shadow-sm backdrop-blur">
+                <div class="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-bold text-orange-100 shadow-xs backdrop-blur-sm">
                     {{ __('hero_badge') }}
                 </div>
 
@@ -61,8 +61,8 @@ const intro = computed(() => {
                 <div class="absolute -left-6 top-8 h-24 w-24 rounded-full bg-orange-400/25 blur-2xl"></div>
                 <div class="absolute -right-6 bottom-4 h-32 w-32 rounded-full bg-green-400/20 blur-2xl"></div>
 
-                <div class="relative rounded-[2rem] border border-white/15 bg-white/10 p-5 shadow-2xl backdrop-blur">
-                    <div class="rounded-[1.5rem] bg-white p-5 text-slate-900">
+                <div class="relative rounded-4xl border border-white/15 bg-white/10 p-5 shadow-2xl backdrop-blur-sm">
+                    <div class="rounded-3xl bg-white p-5 text-slate-900">
                         <div class="flex items-center justify-between rounded-2xl bg-orange-50 px-4 py-3">
                             <div>
                                 <p class="text-xs font-black uppercase tracking-[0.2em] text-orange-600">KushwahaConnect</p>
@@ -74,7 +74,7 @@ const intro = computed(() => {
                         <div class="mt-5 grid grid-cols-2 gap-3">
                             <div class="rounded-2xl bg-blue-50 p-4">
                                 <div class="flex -space-x-2">
-                                    <span v-for="item in 4" :key="item" class="h-9 w-9 rounded-full border-2 border-white bg-gradient-to-br from-orange-300 to-green-500"></span>
+                                    <span v-for="item in 4" :key="item" class="h-9 w-9 rounded-full border-2 border-white bg-linear-to-br from-orange-300 to-green-500"></span>
                                 </div>
                                 <p class="mt-4 text-sm font-black text-blue-950">{{ __('why_connections_title') }}</p>
                             </div>
@@ -94,7 +94,7 @@ const intro = computed(() => {
 
                         <div class="mt-5 rounded-2xl border border-slate-100 p-4">
                             <div class="flex items-center gap-3">
-                                <div class="h-12 w-12 rounded-full bg-gradient-to-br from-blue-900 to-green-700"></div>
+                                <div class="h-12 w-12 rounded-full bg-linear-to-br from-blue-900 to-green-700"></div>
                                 <div class="min-w-0 flex-1">
                                     <div class="h-3 w-4/5 rounded-full bg-slate-200"></div>
                                     <div class="mt-2 h-3 w-2/3 rounded-full bg-slate-100"></div>

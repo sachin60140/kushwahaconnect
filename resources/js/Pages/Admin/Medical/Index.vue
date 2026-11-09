@@ -24,7 +24,7 @@ const destroy = (id) => {
         <template #header>
             <div class="flex justify-between items-center">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">Medical Resources Management</h2>
-                <Link :href="route('admin.medical.create')" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded shadow">
+                <Link :href="route('admin.medical.create')" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-sm shadow-sm">
                     Add Resource
                 </Link>
             </div>
@@ -32,7 +32,7 @@ const destroy = (id) => {
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white overflow-hidden shadow-xs sm:rounded-lg">
                     <div class="p-6 text-gray-900 overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
@@ -72,10 +72,10 @@ const destroy = (id) => {
                         
                         <!-- Pagination -->
                         <div v-if="resources.links.length > 3" class="mt-6 flex justify-center">
-                            <div class="flex shadow-sm rounded-md">
+                            <div class="flex shadow-xs rounded-md">
                                 <template v-for="(link, p) in resources.links" :key="p">
-                                    <div v-if="link.url === null" class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded" v-html="link.label" />
-                                    <Link v-else class="mr-1 mb-1 px-4 py-3 text-sm leading-4 border rounded hover:bg-white focus:border-indigo-500 focus:text-indigo-500" :class="{ 'bg-white font-bold text-indigo-600': link.active }" :href="link.url" v-html="link.label" />
+                                    <div v-if="link.url === null" class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded-sm" v-html="link.label" />
+                                    <Link v-else class="mr-1 mb-1 px-4 py-3 text-sm leading-4 border rounded-sm hover:bg-white focus:border-indigo-500 focus:text-indigo-500" :class="{ 'bg-white font-bold text-indigo-600': link.active }" :href="link.url" v-html="link.label" />
                                 </template>
                             </div>
                         </div>

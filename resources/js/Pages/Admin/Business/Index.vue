@@ -72,12 +72,12 @@ const closeModal = () => {
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 
                 <!-- Filters -->
-                <div class="bg-white p-4 rounded-lg shadow-sm mb-6 flex flex-col sm:flex-row gap-4 items-center justify-between border border-gray-200">
+                <div class="bg-white p-4 rounded-lg shadow-xs mb-6 flex flex-col sm:flex-row gap-4 items-center justify-between border border-gray-200">
                     <div class="flex-1 w-full sm:w-auto">
-                        <input type="text" v-model="form.search" @keyup.enter="submitSearch" placeholder="Search by Business or User Name..." class="w-full sm:max-w-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                        <input type="text" v-model="form.search" @keyup.enter="submitSearch" placeholder="Search by Business or User Name..." class="w-full sm:max-w-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-xs">
                     </div>
                     <div class="flex gap-2 w-full sm:w-auto">
-                        <select v-model="form.status" @change="submitSearch" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-full sm:w-auto">
+                        <select v-model="form.status" @change="submitSearch" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-xs w-full sm:w-auto">
                             <option value="">All Statuses</option>
                             <option value="pending">Pending</option>
                             <option value="approved">Approved</option>
@@ -88,7 +88,7 @@ const closeModal = () => {
                 </div>
 
                 <!-- Table -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-200">
+                <div class="bg-white overflow-hidden shadow-xs sm:rounded-lg border border-gray-200">
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
@@ -104,7 +104,7 @@ const closeModal = () => {
                                 <tr v-for="business in businesses.data" :key="business.id" class="hover:bg-gray-50">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
-                                            <div class="flex-shrink-0 h-10 w-10">
+                                            <div class="shrink-0 h-10 w-10">
                                                 <img v-if="business.logo_path" class="h-10 w-10 rounded-full object-cover" :src="'/storage/' + business.logo_path" alt="">
                                                 <div v-else class="h-10 w-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500">
                                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
@@ -153,10 +153,10 @@ const closeModal = () => {
                 
                 <!-- Pagination -->
                 <div v-if="businesses.links.length > 3" class="mt-6">
-                    <div class="flex shadow-sm rounded-md">
+                    <div class="flex shadow-xs rounded-md">
                         <template v-for="(link, p) in businesses.links" :key="p">
-                            <div v-if="link.url === null" class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded bg-white" v-html="link.label" />
-                            <Link v-else class="mr-1 mb-1 px-4 py-3 text-sm leading-4 border rounded hover:bg-white focus:border-indigo-500 focus:text-indigo-500 transition" :class="{ 'bg-indigo-50 border-indigo-500 text-indigo-600': link.active, 'bg-white': !link.active }" :href="link.url" v-html="link.label" />
+                            <div v-if="link.url === null" class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded-sm bg-white" v-html="link.label" />
+                            <Link v-else class="mr-1 mb-1 px-4 py-3 text-sm leading-4 border rounded-sm hover:bg-white focus:border-indigo-500 focus:text-indigo-500 transition" :class="{ 'bg-indigo-50 border-indigo-500 text-indigo-600': link.active, 'bg-white': !link.active }" :href="link.url" v-html="link.label" />
                         </template>
                     </div>
                 </div>
