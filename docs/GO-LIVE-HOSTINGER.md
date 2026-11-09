@@ -120,12 +120,23 @@ If it is still blank, purge the Hostinger CDN cache in hPanel.
 
 **`The Process class relies on proc_open` during `composer install`.** Hostinger
 disables `proc_open`, which Composer needs to run Laravel's post-install scripts.
-The deploy script installs with `--no-scripts` and runs
-`php artisan package:discover` itself. When running Composer by hand, use:
+The deploy script installs with `--no-scripts`, clears Laravel's cached manifests and
+runs `php artisan package:discover` itself. When running Composer by hand, use:
 
 ```bash
 composer install --no-dev --optimize-autoloader --no-scripts
+rm -f bootstrap/cache/config.php bootstrap/cache/services.php bootstrap/cache/packages.php
 php artisan package:discover
+```
+
+**`Class "...ServiceProvider" not found` (HTTP 500 everywhere).** Laravel's cached
+package list in `bootstrap/cache/packages.php` still names a package Composer removed
+(e.g. `Laravel\Pail\PailServiceProvider` after a `--no-dev` install). Delete the cached
+manifests and rebuild them:
+
+```bash
+rm -f bootstrap/cache/config.php bootstrap/cache/services.php bootstrap/cache/packages.php
+php artisan package:discover && php artisan optimize
 ```
 
 ## After Launch Checklist

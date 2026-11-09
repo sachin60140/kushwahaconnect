@@ -11,8 +11,13 @@ fi
 echo "Installing PHP dependencies..."
 # Hostinger shared hosting disables proc_open, which Composer needs to run Laravel's
 # post-install scripts ("The Process class relies on proc_open"). Install without
-# scripts, then run package discovery in-process through artisan.
+# scripts, then do what those scripts would have done:
+#  1. Delete Laravel's cached config/services/package manifests. They can list packages
+#     that `--no-dev` just removed (e.g. laravel/pail); left in place, every artisan
+#     command and web request dies with "Class ...ServiceProvider not found".
+#  2. Rebuild the package manifest in-process through artisan.
 composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction --no-scripts
+rm -f bootstrap/cache/config.php bootstrap/cache/services.php bootstrap/cache/packages.php
 php artisan package:discover --ansi
 
 # Frontend assets are built locally and committed in public/build. Building on the
