@@ -82,7 +82,7 @@ const submitSearch = () => {
                         </div>
                         <div class="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between">
                             <span class="text-xs text-gray-500 font-medium">Posted {{ new Date(job.created_at).toLocaleDateString() }}</span>
-                            <a :href="`mailto:${job.contact_email}?subject=Application for ${job.title}`" class="text-green-600 hover:text-green-800 font-bold text-sm flex items-center gap-1 transition-colors duration-200 bg-green-50 px-4 py-2 rounded-lg">
+                            <a :href="`mailto:${job.contact_email}?subject=${encodeURIComponent('Application for ' + job.title)}`" class="text-green-600 hover:text-green-800 font-bold text-sm flex items-center gap-1 transition-colors duration-200 bg-green-50 px-4 py-2 rounded-lg">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                                 Apply via Email
                             </a>

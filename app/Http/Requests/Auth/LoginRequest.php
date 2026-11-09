@@ -27,8 +27,10 @@ class LoginRequest extends FormRequest
      */
     public function rules(): array
     {
+        // The "email" field accepts an email address or a mobile number, because members
+        // can join without an email and would otherwise be unable to log back in.
         return [
-            'email' => ['required', 'string', 'email'],
+            'email' => ['required', 'string', 'max:255'],
             'password' => ['required', 'string'],
         ];
     }
@@ -42,7 +44,7 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        if (! $this->attemptLogin()) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
@@ -51,6 +53,37 @@ class LoginRequest extends FormRequest
         }
 
         RateLimiter::clear($this->throttleKey());
+    }
+
+    private function attemptLogin(): bool
+    {
+        $login = trim((string) $this->input('email'));
+        $password = (string) $this->input('password');
+        $remember = $this->boolean('remember');
+
+        if (str_contains($login, '@')) {
+            return Auth::attempt(['email' => $login, 'password' => $password], $remember);
+        }
+
+        $candidates = [$login];
+        $digits = preg_replace('/\D+/', '', $login);
+
+        // Accept "+91 98765 43210", "098765-43210" etc. for a stored 10-digit number.
+        if (strlen($digits) > 10 && (str_starts_with($digits, '91') || str_starts_with($digits, '0'))) {
+            $digits = substr($digits, -10);
+        }
+
+        if ($digits !== '' && $digits !== $login) {
+            $candidates[] = $digits;
+        }
+
+        foreach ($candidates as $mobile) {
+            if (Auth::attempt(['mobile' => $mobile, 'password' => $password], $remember)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

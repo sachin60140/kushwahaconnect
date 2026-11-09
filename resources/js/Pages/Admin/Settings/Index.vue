@@ -26,10 +26,10 @@ const form = useForm({
     about_intro_hi: props.settings.about_intro_hi || '',
     about_body_en: props.settings.about_body_en || '',
     about_body_hi: props.settings.about_body_hi || '',
-    stat_members: props.settings.stat_members || '0',
-    stat_districts: props.settings.stat_districts || '0',
-    stat_volunteers: props.settings.stat_volunteers || '0',
-    stat_matrimonial: props.settings.stat_matrimonial || '0',
+    stat_members: props.settings.stat_members || '',
+    stat_districts: props.settings.stat_districts || '',
+    stat_volunteers: props.settings.stat_volunteers || '',
+    stat_matrimonial: props.settings.stat_matrimonial || '',
     founder_name: props.settings.founder_name || 'Kumar Sachin',
     founder_photo_url: props.settings.founder_photo_url || '',
     founder_photo_upload: null,
@@ -195,7 +195,7 @@ const submit = () => {
                                         <input type="number" v-model="form.stat_matrimonial" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     </div>
                                 </div>
-                                <p class="text-sm text-gray-500 mt-2">These numbers are displayed on the trust cards on the main homepage.</p>
+                                <p class="text-sm text-gray-500 mt-2">These numbers are displayed on the trust cards on the main homepage. Leave a field blank to show the live count.</p>
                             </div>
 
                             <!-- Founder Message -->

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Support\AppVersion;
 use App\Support\Seo;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -44,6 +45,7 @@ class HandleInertiaRequests extends Middleware
             'websiteSettings' => fn () => \App\Models\WebsiteSetting::pluck('value', 'key')->toArray(),
             'locale' => app()->getLocale(),
             'seo' => fn () => Seo::forRequest($request),
+            'appVersion' => fn () => AppVersion::info(),
         ];
     }
 }

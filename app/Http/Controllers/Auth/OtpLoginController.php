@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\RateLimiter;
 
 class OtpLoginController extends Controller
 {
+    private const MAX_VERIFY_ATTEMPTS = 5;
+
     /**
      * Generate and send OTP to the given mobile number.
      */
@@ -35,30 +37,34 @@ class OtpLoginController extends Controller
 
         RateLimiter::hit('send-otp:'.$request->ip(), 60);
 
-        // Find or create the user (if registering via OTP)
-        $user = User::firstOrCreate(
-            ['mobile' => $mobile],
-            [
-                'name' => 'User ' . substr($mobile, -4),
-                'status' => 'profile_incomplete',
-                'language_preference' => 'en',
-            ]
-        );
+        // Only existing members can log in with OTP. Accounts are created through the
+        // Join form; auto-creating users here would reserve the number and block the
+        // real owner from joining later.
+        $user = User::where('mobile', $mobile)->first();
+
+        if (! $user) {
+            throw ValidationException::withMessages([
+                'mobile' => 'No account found with this mobile number. Please join the community first.',
+            ]);
+        }
 
         if ($user->status === 'blocked') {
             return back()->withErrors(['mobile' => 'This account has been blocked by the administrator.']);
         }
 
-        // Generate a 6-digit OTP
-        $otp = (app()->environment('local', 'testing')) ? '123456' : rand(100000, 999999);
+        $otp = app()->environment('local', 'testing') ? '123456' : (string) random_int(100000, 999999);
 
         $user->update([
             'otp_code' => $otp,
             'otp_expires_at' => Carbon::now()->addMinutes(10),
         ]);
 
-        // In a real scenario, integrate an SMS gateway here.
-        Log::info("OTP for mobile {$mobile} is {$otp}");
+        RateLimiter::clear($this->verifyThrottleKey($mobile));
+
+        // No SMS gateway is integrated yet. Never write real OTPs to production logs.
+        if (app()->environment('local', 'testing')) {
+            Log::info("OTP for mobile {$mobile} is {$otp}");
+        }
 
         return back()->with('status', 'OTP sent successfully to ' . $mobile);
     }
@@ -72,6 +78,14 @@ class OtpLoginController extends Controller
             'mobile' => ['required', 'string'],
             'otp' => ['required', 'string', 'size:6'],
         ]);
+
+        $throttleKey = $this->verifyThrottleKey($request->mobile);
+
+        if (RateLimiter::tooManyAttempts($throttleKey, self::MAX_VERIFY_ATTEMPTS)) {
+            throw ValidationException::withMessages([
+                'otp' => 'Too many incorrect attempts. Please request a new OTP.',
+            ]);
+        }
 
         $user = User::where('mobile', $request->mobile)->first();
 
@@ -87,18 +101,27 @@ class OtpLoginController extends Controller
             ]);
         }
 
-        if (!$user->otp_code || $user->otp_code !== $request->otp) {
+        if (!$user->otp_code || !hash_equals((string) $user->otp_code, (string) $request->otp)) {
+            RateLimiter::hit($throttleKey, 600);
+
+            // Burn the OTP once the attempt budget is spent so it can't be brute-forced.
+            if (RateLimiter::tooManyAttempts($throttleKey, self::MAX_VERIFY_ATTEMPTS)) {
+                $user->update(['otp_code' => null, 'otp_expires_at' => null]);
+            }
+
             $this->logLoginHistory($user->id, $request, 'failed');
             throw ValidationException::withMessages([
                 'otp' => 'The provided OTP is incorrect.',
             ]);
         }
 
-        if (Carbon::now()->greaterThan($user->otp_expires_at)) {
+        if (!$user->otp_expires_at || Carbon::now()->greaterThan($user->otp_expires_at)) {
             throw ValidationException::withMessages([
                 'otp' => 'The provided OTP has expired. Please request a new one.',
             ]);
         }
+
+        RateLimiter::clear($throttleKey);
 
         // OTP is correct and valid
         $user->update([
@@ -114,6 +137,11 @@ class OtpLoginController extends Controller
         $this->logLoginHistory($user->id, $request, 'success');
 
         return redirect()->intended(route('dashboard', absolute: false));
+    }
+
+    private function verifyThrottleKey(string $mobile): string
+    {
+        return 'verify-otp:'.$mobile;
     }
 
     protected function logLoginHistory($userId, Request $request, $status)

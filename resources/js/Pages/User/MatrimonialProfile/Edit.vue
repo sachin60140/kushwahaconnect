@@ -13,7 +13,8 @@ const props = defineProps({
 const form = useForm({
     profile_for: props.profile.profile_for || 'Self',
     full_name: props.profile.full_name || '',
-    gender: props.profile.gender || 'male',
+    // Public registration and the directory filter use 'Male'/'Female'; older saves from this form used lowercase.
+    gender: { male: 'Male', female: 'Female' }[String(props.profile.gender || 'male').toLowerCase()] || props.profile.gender,
     dob: props.profile.dob || '',
     height: props.profile.height || '',
     marital_status: props.profile.marital_status || 'Never Married',
@@ -98,8 +99,8 @@ const submit = () => {
                                     <div>
                                         <InputLabel for="gender" value="Gender *" />
                                         <select id="gender" class="mt-1 block w-full border-gray-300 focus:border-pink-500 focus:ring-pink-500 rounded-md shadow-sm" v-model="form.gender" required>
-                                            <option value="male">Male</option>
-                                            <option value="female">Female</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
                                         </select>
                                         <InputError class="mt-2" :message="form.errors.gender" />
                                     </div>

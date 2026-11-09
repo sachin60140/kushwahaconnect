@@ -3,7 +3,17 @@ import { computed, ref } from 'vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import AppVersionFooter from '@/Components/AppVersionFooter.vue';
+import FlashMessages from '@/Components/FlashMessages.vue';
 import { Link, usePage } from '@inertiajs/vue3';
+
+defineProps({
+    // Pages that render their own flash message pass :show-flash="false".
+    showFlash: {
+        type: Boolean,
+        default: true,
+    },
+});
 
 const showingNavigationDropdown = ref(false);
 const page = usePage();
@@ -33,8 +43,8 @@ const adminLinks = [
     { name: 'Representatives', route: 'admin.representatives.index', active: 'admin.representatives.*', icon: 'M12 3 4 7v6c0 4.4 3.4 8 8 8s8-3.6 8-8V7l-8-4Zm0 4v10m-4-5h8' },
     { name: 'Nominations', route: 'admin.nominations.index', active: 'admin.nominations.*', icon: 'M12 6v12m6-6H6M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Z' },
     { name: 'Corrections', route: 'admin.corrections.index', active: 'admin.corrections.*', icon: 'M16.9 3.6a2 2 0 0 1 2.8 2.8L8.6 17.5 4 19l1.5-4.6L16.9 3.6ZM4 21h16' },
-    { name: 'Members Directory', route: 'admin.members', active: 'admin.members.*', icon: 'M17 20h5v-2a4 4 0 0 0-7.6-1.7M9 20H4v-2a4 4 0 0 1 7.6-1.7M12 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0Zm8 0a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z' },
-    { name: 'Matrimonial', route: 'admin.matrimonial', active: 'admin.matrimonial.*', icon: 'M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z' },
+    { name: 'Members Directory', route: 'admin.members', active: 'admin.members*', icon: 'M17 20h5v-2a4 4 0 0 0-7.6-1.7M9 20H4v-2a4 4 0 0 1 7.6-1.7M12 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0Zm8 0a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z' },
+    { name: 'Matrimonial', route: 'admin.matrimonial', active: 'admin.matrimonial*', icon: 'M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z' },
     { name: 'Jobs', route: 'admin.jobs.index', active: 'admin.jobs.*', icon: 'M21 13.2A24 24 0 0 1 12 15a24 24 0 0 1-9-1.8M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2M5 20h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2Z' },
     { name: 'Education', route: 'admin.education.index', active: 'admin.education.*', icon: 'M12 14 3 9l9-5 9 5-9 5Zm0 0v7M6 11.5V16c0 1.7 2.7 3 6 3s6-1.3 6-3v-4.5' },
     { name: 'Medical', route: 'admin.medical.index', active: 'admin.medical.*', icon: 'M12 6v12m-6-6h12M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18Z' },
@@ -42,7 +52,7 @@ const adminLinks = [
     { name: 'Volunteers', route: 'admin.volunteers.index', active: 'admin.volunteers.*', icon: 'M12 4.5a4 4 0 1 1 0 8 4 4 0 0 1 0-8ZM4 21a8 8 0 0 1 16 0' },
     { name: 'Business Listings', route: 'admin.business.index', active: 'admin.business.*', icon: 'M3 21h18M5 21V7l8-4v18M19 21V11l-6-4M9 9h1m-1 4h1m-1 4h1m6-4h1m-1 4h1' },
     { name: 'Gallery', route: 'admin.gallery.index', active: 'admin.gallery.*', icon: 'M4 16l4.6-4.6a2 2 0 0 1 2.8 0L16 16m-2-2 1.6-1.6a2 2 0 0 1 2.8 0L20 14M6 20h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2Z' },
-    { name: 'Enquiries', route: 'admin.enquiries', active: 'admin.enquiries.*', icon: 'M3 8l7.9 5.3a2 2 0 0 0 2.2 0L21 8M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2Z' },
+    { name: 'Enquiries', route: 'admin.enquiries', active: 'admin.enquiries*', icon: 'M3 8l7.9 5.3a2 2 0 0 0 2.2 0L21 8M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2Z' },
     { name: 'Settings', route: 'admin.settings.index', active: 'admin.settings.*', icon: 'M10.3 4.3c.4-1.8 2.9-1.8 3.4 0a1.7 1.7 0 0 0 2.6 1.1c1.5-.9 3.3.8 2.4 2.4a1.7 1.7 0 0 0 1 2.5c1.8.5 1.8 3 0 3.4a1.7 1.7 0 0 0-1 2.6c.9 1.5-.9 3.3-2.4 2.4a1.7 1.7 0 0 0-2.6 1c-.5 1.8-3 1.8-3.4 0a1.7 1.7 0 0 0-2.6-1c-1.5.9-3.3-.9-2.4-2.4a1.7 1.7 0 0 0-1-2.6c-1.8-.4-1.8-2.9 0-3.4a1.7 1.7 0 0 0 1-2.5c-.9-1.6.9-3.3 2.4-2.4a1.7 1.7 0 0 0 2.6-1ZM15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z' },
 ];
 
@@ -190,8 +200,14 @@ const isActive = (link) => route().current(link.active);
             </section>
 
             <main class="min-h-[calc(100vh-5rem)]">
+                <FlashMessages v-if="showFlash" />
                 <slot />
             </main>
+
+            <footer class="border-t border-slate-200 bg-white px-4 py-4 text-center sm:px-6 lg:px-8">
+                <p class="text-xs text-slate-500">&copy; {{ new Date().getFullYear() }} KushwahaConnect.com</p>
+                <AppVersionFooter class="mt-1" />
+            </footer>
         </div>
     </div>
 </template>

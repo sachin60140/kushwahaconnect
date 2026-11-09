@@ -44,17 +44,17 @@ const submit = () => {
 
         <form @submit.prevent="submit" class="space-y-5">
             <div>
-                <InputLabel for="email" value="Email Address" class="text-gray-700 font-semibold" />
+                <InputLabel for="email" value="Email or Mobile Number" class="text-gray-700 font-semibold" />
 
                 <TextInput
                     id="email"
-                    type="email"
+                    type="text"
                     class="mt-1 block w-full border-gray-300 focus:border-orange-500 focus:ring-orange-500 rounded-lg shadow-sm px-4 py-3"
                     v-model="form.email"
                     required
                     autofocus
                     autocomplete="username"
-                    placeholder="Enter your email"
+                    placeholder="Enter your email or mobile number"
                 />
 
                 <InputError class="mt-2" :message="form.errors.email" />

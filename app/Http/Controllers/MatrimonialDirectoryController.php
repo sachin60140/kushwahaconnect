@@ -30,12 +30,16 @@ class MatrimonialDirectoryController extends Controller
             $query->where('current_city', 'like', '%' . $request->city . '%');
         }
 
-        if ($request->filled('min_age')) {
-            $query->whereDate('dob', '<=', now()->subYears($request->min_age));
+        // Non-numeric ages previously crashed with a TypeError (500).
+        $minAge = filter_var($request->input('min_age'), FILTER_VALIDATE_INT, ['options' => ['min_range' => 0, 'max_range' => 120]]);
+        $maxAge = filter_var($request->input('max_age'), FILTER_VALIDATE_INT, ['options' => ['min_range' => 0, 'max_range' => 120]]);
+
+        if ($minAge !== false) {
+            $query->whereDate('dob', '<=', now()->subYears($minAge));
         }
 
-        if ($request->filled('max_age')) {
-            $query->whereDate('dob', '>=', now()->subYears($request->max_age + 1));
+        if ($maxAge !== false) {
+            $query->whereDate('dob', '>', now()->subYears($maxAge + 1));
         }
 
         if ($request->filled('manglik')) {
@@ -51,7 +55,7 @@ class MatrimonialDirectoryController extends Controller
             ->pluck('matrimonial_profile_id')
             ->toArray();
 
-        $profiles = $query->latest()->paginate(12)->through(function ($profile) use ($request, $shortlistedIds) {
+        $profiles = $query->latest()->paginate(12)->withQueryString()->through(function ($profile) use ($request, $shortlistedIds) {
             $this->applyDisplayPrivacy($profile, $request);
             $profile->is_shortlisted = in_array($profile->id, $shortlistedIds);
             return $profile;
@@ -121,6 +125,20 @@ class MatrimonialDirectoryController extends Controller
         $profile->photo_url = $this->canViewPhoto($profile, $request)
             ? route('matrimonial.photo', $profile->id)
             : null;
+
+        // Directory cards never show contact details, documents or family names;
+        // don't ship them to every logged-in member's browser.
+        $profile->makeHidden([
+            'mobile',
+            'whatsapp',
+            'email',
+            'photo',
+            'id_proof',
+            'admin_note',
+            'father_name',
+            'mother_name',
+            'user',
+        ]);
     }
 
     private function canViewPhoto(MatrimonialProfile $profile, Request $request): bool

@@ -1,8 +1,8 @@
 <script setup>
-import { Link, useForm } from '@inertiajs/vue3';
+import { Link, useForm, usePage } from '@inertiajs/vue3';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import SeoMeta from '@/Components/SeoMeta.vue';
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import axios from 'axios';
 
 const props = defineProps({
@@ -27,32 +27,42 @@ const connectForm = useForm({
 });
 
 const districts = ref([]);
+const page = usePage();
 
 const sendConnectionRequest = (userId) => {
     connectForm.receiver_id = userId;
     connectForm.post(route('user.connections.store'), {
         preserveScroll: true,
         onSuccess: () => {
-            // Flash message will show via global layout if setup
-            alert('Connection request sent!');
+            // The controller redirects back with flash.error when the request is refused
+            // (already connected / pending / self), which still counts as a "success" visit.
+            const error = page.props.flash?.error;
+            alert(error || page.props.flash?.status || 'Connection request sent!');
         },
-        onError: (errors) => {
+        onError: () => {
             alert('Could not send request. You might already be connected or have a pending request.');
         }
     });
 };
 
 const fetchDistricts = async () => {
-    if (form.state_id) {
-        const response = await axios.get(`/api/states/${form.state_id}/districts`);
-        districts.value = response.data;
-    } else {
+    if (!form.state_id) {
         districts.value = [];
-        form.district_id = '';
+        return;
     }
+
+    const response = await axios.get(`/api/states/${form.state_id}/districts`);
+    districts.value = response.data;
 };
 
-watch(() => form.state_id, fetchDistricts);
+watch(() => form.state_id, () => {
+    // A district from the previous state is never valid for the new one.
+    form.district_id = '';
+    fetchDistricts();
+});
+
+// Load districts for a state that came from the URL so the district filter is usable.
+onMounted(fetchDistricts);
 
 const submitSearch = () => {
     form.get(route('directory'), {
@@ -79,7 +89,7 @@ const clearSearch = () => {
         description="Search and connect with thousands of Kushwaha community members. Find professionals, business owners, and local leaders."
     />
 
-    <PublicLayout>
+    <PublicLayout :show-flash="false">
         <template #header>
             <div class="max-w-3xl">
                 <p class="text-sm font-black uppercase tracking-[0.22em] text-orange-300">Community Network</p>
@@ -173,7 +183,7 @@ const clearSearch = () => {
                             </div>
                             
                             <!-- Connect Button -->
-                            <div class="mt-6 text-center" v-if="$page.props.auth.user && $page.props.auth.user.id !== member.user_id">
+                            <div class="mt-6 text-center" v-if="member.user_id && $page.props.auth.user && $page.props.auth.user.id !== member.user_id">
                                 <button 
                                     @click="sendConnectionRequest(member.user_id)" 
                                     :disabled="connectForm.processing && connectForm.receiver_id === member.user_id"

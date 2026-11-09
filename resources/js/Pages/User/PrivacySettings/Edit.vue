@@ -10,14 +10,15 @@ const props = defineProps({
 });
 
 const form = useForm({
-    public_profile_visible: props.settings.public_profile_visible ?? true,
+    // The model has no boolean casts, so stored values arrive as 0/1; checkboxes need real booleans.
+    public_profile_visible: Boolean(props.settings.public_profile_visible ?? true),
     mobile_visibility: props.settings.mobile_visibility || 'hidden',
     email_visibility: props.settings.email_visibility || 'hidden',
     photo_visibility: props.settings.photo_visibility || 'public',
     address_visibility: props.settings.address_visibility || 'city_only',
-    matrimonial_show_first_name_only: props.settings.matrimonial_show_first_name_only ?? false,
+    matrimonial_show_first_name_only: Boolean(props.settings.matrimonial_show_first_name_only),
     matrimonial_photo_visibility: props.settings.matrimonial_photo_visibility || 'public',
-    matrimonial_hide_income: props.settings.matrimonial_hide_income ?? false,
+    matrimonial_hide_income: Boolean(props.settings.matrimonial_hide_income),
 });
 
 const submit = () => {

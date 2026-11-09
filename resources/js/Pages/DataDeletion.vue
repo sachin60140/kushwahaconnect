@@ -24,7 +24,7 @@ const submit = () => {
 <template>
     <Head title="Data Deletion Request - KushwahaConnect" />
 
-    <PublicLayout>
+    <PublicLayout :show-flash="false">
         <section class="kc-hero">
             <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(249,115,22,0.24),_transparent_34%)]"></div>
             <div class="kc-hero-inner">

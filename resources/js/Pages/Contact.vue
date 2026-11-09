@@ -34,7 +34,7 @@ const submit = () => {
 <template>
     <Head title="Contact Us - KushwahaConnect" />
 
-    <PublicLayout>
+    <PublicLayout :show-flash="false">
         <section class="kc-hero">
             <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(249,115,22,0.26),_transparent_34%),radial-gradient(circle_at_bottom_right,_rgba(21,128,61,0.22),_transparent_34%)]"></div>
             <div class="kc-hero-inner text-center">
@@ -79,6 +79,12 @@ const submit = () => {
                     </div>
 
                     <form @submit.prevent="submit" class="space-y-6 p-6 sm:p-8">
+                        <div v-if="Object.keys(form.errors).length" class="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                            <ul class="list-disc space-y-1 pl-5">
+                                <li v-for="(message, field) in form.errors" :key="field">{{ message }}</li>
+                            </ul>
+                        </div>
+
                         <div class="grid gap-5 md:grid-cols-2">
                             <div>
                                 <label class="mb-1 block text-sm font-black text-blue-950">Name *</label>

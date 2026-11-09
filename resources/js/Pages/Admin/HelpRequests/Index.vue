@@ -1,5 +1,5 @@
 <script setup>
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm, router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
 const props = defineProps({
@@ -10,9 +10,10 @@ const props = defineProps({
 const form = useForm({});
 
 const updateStatus = (id, newStatus) => {
-    form.patch(route('admin.help-requests.status', id), {
+    // router.patch sends the payload; useForm({}).patch(url, { data }) silently drops it.
+    router.patch(route('admin.help-requests.status', id), { status: newStatus }, {
         preserveScroll: true,
-        data: { status: newStatus }
+        onError: (errors) => alert(errors.status || 'Unable to update status. Please try again.'),
     });
 };
 

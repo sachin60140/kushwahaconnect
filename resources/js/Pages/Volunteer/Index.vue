@@ -64,13 +64,12 @@ const clearSearch = () => {
                             <label class="block text-sm font-medium text-gray-700 mb-1">Area of Help</label>
                             <select v-model="form.help_area" class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200 sm:text-base py-3 transition-colors duration-200">
                                 <option value="">All Areas</option>
-                                <option value="Education Mentorship">Education Mentorship</option>
-                                <option value="Medical Assistance">Medical Assistance</option>
-                                <option value="Career Counseling">Career Counseling</option>
-                                <option value="Legal Aid">Legal Aid</option>
-                                <option value="Emergency Relief">Emergency Relief</option>
-                                <option value="Blood Donation">Blood Donation</option>
-                                <option value="Other">Other</option>
+                                <option value="education_support">Education Support</option>
+                                <option value="job_support">Job/Career Support</option>
+                                <option value="medical_support">Medical Support</option>
+                                <option value="event_support">Event Organizing</option>
+                                <option value="social_media_support">Social Media/IT Support</option>
+                                <option value="blood_donor">Blood Donor</option>
                             </select>
                         </div>
                         <div class="flex space-x-2">

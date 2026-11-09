@@ -35,9 +35,14 @@ const submitSearch = () => {
 
     <component :is="user ? AuthenticatedLayout : PublicLayout">
         <template #header v-if="user">
-            <div>
-                <p class="text-sm font-black uppercase tracking-[0.18em] text-orange-500">Community Support</p>
-                <h2 class="mt-1 text-2xl font-black text-blue-950">Help Each Other</h2>
+            <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+                <div>
+                    <p class="text-sm font-black uppercase tracking-[0.18em] text-orange-500">Community Support</p>
+                    <h2 class="mt-1 text-2xl font-black text-blue-950">Help Each Other</h2>
+                </div>
+                <Link :href="route('help.create')" class="kc-btn-primary shrink-0">
+                    Request Help
+                </Link>
             </div>
         </template>
         

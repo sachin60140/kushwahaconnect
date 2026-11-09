@@ -17,7 +17,7 @@ class AdminVolunteerController extends Controller
         }
 
         return Inertia::render('Admin/Volunteers/Index', [
-            'volunteers' => $query->latest()->paginate(15),
+            'volunteers' => $query->latest()->paginate(15)->withQueryString(),
             'filters' => $request->only(['status'])
         ]);
     }

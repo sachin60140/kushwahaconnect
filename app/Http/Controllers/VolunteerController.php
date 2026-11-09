@@ -25,7 +25,7 @@ class VolunteerController extends Controller
         }
 
         return Inertia::render('Volunteer/Index', [
-            'volunteers' => $query->latest()->paginate(12),
+            'volunteers' => $query->latest()->paginate(12)->withQueryString(),
             'filters' => $request->only(['state', 'district', 'help_area'])
         ]);
     }

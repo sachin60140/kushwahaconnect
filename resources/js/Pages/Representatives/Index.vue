@@ -195,6 +195,15 @@ const submitCorrection = () => {
                     </article>
                 </div>
                 <div v-else class="kc-surface p-10 text-center text-lg font-bold text-slate-600">{{ text.empty }}</div>
+
+                <div v-if="representatives.links && representatives.links.length > 3" class="mt-10 flex justify-center">
+                    <div class="flex flex-wrap shadow-sm rounded-lg bg-white overflow-hidden border border-gray-200">
+                        <template v-for="(link, p) in representatives.links" :key="p">
+                            <div v-if="link.url === null" class="px-4 py-3 text-sm leading-4 text-gray-400" v-html="link.label" />
+                            <Link v-else class="px-4 py-3 text-sm leading-4 hover:bg-gray-50" :class="{ 'bg-green-50 font-bold text-green-700': link.active }" :href="link.url" v-html="link.label" />
+                        </template>
+                    </div>
+                </div>
             </div>
         </section>
 

@@ -72,8 +72,10 @@ class MatrimonialProfileController extends Controller
             $validated
         );
 
-        // Auto approve if needed
-        $profile->status = 'approved';
+        // Auto-approve, but a re-save must not undo an admin's rejection.
+        if ($profile->status !== 'rejected') {
+            $profile->status = 'approved';
+        }
         $profile->is_public = true;
         $profile->save();
 

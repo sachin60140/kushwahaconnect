@@ -17,7 +17,7 @@ class AdminHelpController extends Controller
         }
 
         return Inertia::render('Admin/HelpRequests/Index', [
-            'requests' => $query->latest()->paginate(15),
+            'requests' => $query->latest()->paginate(15)->withQueryString(),
             'filters' => $request->only(['status'])
         ]);
     }

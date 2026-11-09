@@ -2,7 +2,17 @@
 import { Link, usePage } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 import AnnouncementBar from '@/Components/Home/AnnouncementBar.vue';
+import AppVersionFooter from '@/Components/AppVersionFooter.vue';
+import FlashMessages from '@/Components/FlashMessages.vue';
 import { useLanguage } from '@/composables/useLanguage';
+
+defineProps({
+    // Pages that render their own flash message next to a form pass :show-flash="false".
+    showFlash: {
+        type: Boolean,
+        default: true,
+    },
+});
 
 const { locale, __ } = useLanguage();
 const page = usePage();
@@ -169,6 +179,7 @@ const navLinks = computed(() => [
                     <slot name="header" />
                 </div>
             </section>
+            <FlashMessages v-if="showFlash" />
             <slot />
         </main>
 
@@ -248,6 +259,7 @@ const navLinks = computed(() => [
 
             <div class="border-t border-white/10 px-4 py-5 text-center text-sm text-blue-200">
                 &copy; {{ new Date().getFullYear() }} KushwahaConnect.com. {{ __('footer_rights') }}
+                <AppVersionFooter tone="dark" translate class="mt-1" />
             </div>
         </footer>
 

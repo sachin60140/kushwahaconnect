@@ -44,6 +44,7 @@ const form = useForm({
 const submit = () => {
     form.post(route('nominations.store'), {
         forceFormData: true,
+        onSuccess: () => form.reset(),
     });
 };
 </script>
@@ -51,7 +52,7 @@ const submit = () => {
 <template>
     <SeoMeta title="Nominate an Inspiring Person" description="Suggest a verified inspiring personality for Kushwaha Pride." />
 
-    <PublicLayout>
+    <PublicLayout :show-flash="false">
         <section class="kc-hero">
             <div class="kc-hero-inner">
                 <p class="text-sm font-black uppercase tracking-[0.22em] text-orange-300">Kushwaha Pride</p>
@@ -63,6 +64,16 @@ const submit = () => {
         <section class="kc-page">
             <div class="kc-container max-w-4xl">
                 <form @submit.prevent="submit" class="kc-surface space-y-6 p-6">
+                    <div v-if="$page.props.flash?.success" class="rounded-2xl border border-green-200 bg-green-50 p-4 text-sm font-bold text-green-800">
+                        {{ $page.props.flash.success }}
+                    </div>
+
+                    <div v-if="Object.keys(form.errors).length" class="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                        <ul class="list-disc space-y-1 pl-5">
+                            <li v-for="(message, field) in form.errors" :key="field">{{ message }}</li>
+                        </ul>
+                    </div>
+
                     <div class="grid gap-5 md:grid-cols-2">
                         <div>
                             <label class="text-sm font-black text-blue-950">Person name</label>

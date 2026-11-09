@@ -103,7 +103,7 @@ const closeModal = () => {
 <template>
     <Head title="Members Management" />
 
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :show-flash="false">
         <template #header>
             <div class="flex justify-between items-center">
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
