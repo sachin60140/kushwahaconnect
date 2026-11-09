@@ -10,8 +10,7 @@ class HelpController extends Controller
 {
     public function index(Request $request)
     {
-        $query = HelpRequest::where('is_public', true)
-            ->whereIn('status', ['Approved', 'Assigned', 'In Progress', 'Resolved']);
+        $query = HelpRequest::publiclyVisible();
 
         if ($request->filled('category')) {
             $query->where('category', $request->category);
@@ -38,6 +37,33 @@ class HelpController extends Controller
         return Inertia::render('Help/Index', [
             'requests' => $query->latest()->paginate(12)->withQueryString(),
             'filters' => $request->only(['category', 'urgency', 'state', 'city'])
+        ]);
+    }
+
+    /**
+     * A single public help request, so it can be shared on social media with its
+     * own link and preview (title/description in the og: tags).
+     */
+    public function show(int $id)
+    {
+        $helpRequest = HelpRequest::publiclyVisible()->findOrFail($id);
+
+        $location = collect([$helpRequest->city, $helpRequest->district, $helpRequest->state])
+            ->filter()
+            ->unique()
+            ->implode(', ');
+
+        return Inertia::render('Help/Show', [
+            'helpRequest' => $helpRequest->only([
+                'id', 'title', 'category', 'urgency', 'status', 'description',
+                'name', 'mobile', 'whatsapp', 'city', 'district', 'state', 'created_at',
+            ]),
+            'seo' => [
+                'title' => $helpRequest->title.' - Help Request',
+                'description' => trim("{$helpRequest->urgency} {$helpRequest->category}".($location ? " in {$location}" : '').': '.$helpRequest->description),
+                'image_alt' => 'Help request on KushwahaConnect',
+                'type' => 'article',
+            ],
         ]);
     }
 
