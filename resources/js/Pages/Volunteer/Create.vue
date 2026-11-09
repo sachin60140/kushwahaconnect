@@ -30,7 +30,7 @@ const submit = () => {
 <template>
     <Head title="Become a Volunteer" />
 
-    <component :is="user ? AuthenticatedLayout : PublicLayout">
+    <component :is="user ? AuthenticatedLayout : PublicLayout" :show-flash="false">
         <template #header v-if="user">
             <div>
                 <p class="text-sm font-black uppercase tracking-[0.18em] text-orange-500">Volunteer Network</p>

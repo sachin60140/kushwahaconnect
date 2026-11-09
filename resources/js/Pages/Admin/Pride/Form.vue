@@ -51,6 +51,13 @@ const submit = () => {
 
         <div class="p-4 sm:p-6 lg:p-8">
             <form @submit.prevent="submit" class="kc-surface mx-auto max-w-5xl space-y-8 p-6">
+                <div v-if="Object.keys(form.errors).length" class="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                    <p class="font-black">Please fix the following and save again.</p>
+                    <ul class="mt-2 list-disc space-y-1 pl-5">
+                        <li v-for="(message, field) in form.errors" :key="field">{{ message }}</li>
+                    </ul>
+                </div>
+
                 <section>
                     <h3 class="text-lg font-black text-blue-950">Identity</h3>
                     <div class="mt-4 grid gap-5 md:grid-cols-2">

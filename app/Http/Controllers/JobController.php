@@ -24,7 +24,7 @@ class JobController extends Controller
         }
 
         return Inertia::render('Jobs/Index', [
-            'jobs' => $query->latest()->paginate(10),
+            'jobs' => $query->latest()->paginate(10)->withQueryString(),
             'filters' => $request->only(['search', 'location'])
         ]);
     }

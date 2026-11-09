@@ -257,9 +257,8 @@ class PublicController extends Controller
     }
     public function directory(Request $request)
     {
-        $query = MemberProfile::with(['state', 'district'])
-            ->where('status', 'approved')
-            ->where('is_public', true);
+        $query = MemberProfile::with(['state', 'district', 'user.privacySetting'])
+            ->visibleInDirectory();
 
         if ($request->filled('search')) {
             $query->where('full_name', 'like', '%' . $request->search . '%');
@@ -285,11 +284,45 @@ class PublicController extends Controller
             $query->where('skills', 'like', '%' . $request->skills . '%');
         }
 
+        $viewer = $request->user();
+        $connectedUserIds = $viewer ? $this->acceptedConnectionUserIds($viewer->id) : [];
+
+        // Only expose directory-safe fields: the public directory must not leak
+        // mobile numbers, emails, dates of birth or addresses.
+        $members = $query->latest()
+            ->paginate(12)
+            ->withQueryString()
+            ->through(fn (MemberProfile $member) => [
+                'id' => $member->id,
+                'user_id' => $member->user_id,
+                'full_name' => $member->full_name,
+                'gender' => $member->gender,
+                'occupation' => $member->occupation,
+                'skills' => $member->skills,
+                'profile_photo' => $member->photoVisibleTo($viewer, $connectedUserIds) ? $member->profile_photo : null,
+                'state' => $member->state ? $member->state->only(['id', 'name_en', 'name_hi']) : null,
+                'district' => $member->district ? $member->district->only(['id', 'name_en', 'name_hi']) : null,
+            ]);
+
         return Inertia::render('Directory', [
-            'members' => $query->latest()->paginate(12),
+            'members' => $members,
             'states' => State::where('status', true)->get(),
             'filters' => $request->only(['search', 'state_id', 'district_id', 'occupation', 'gender', 'skills'])
         ]);
+    }
+
+    /**
+     * @return array<int>
+     */
+    private function acceptedConnectionUserIds(int $userId): array
+    {
+        return \App\Models\Connection::where('status', 'accepted')
+            ->where(fn ($q) => $q->where('sender_id', $userId)->orWhere('receiver_id', $userId))
+            ->get(['sender_id', 'receiver_id'])
+            ->map(fn ($connection) => (int) ((int) $connection->sender_id === $userId ? $connection->receiver_id : $connection->sender_id))
+            ->unique()
+            ->values()
+            ->all();
     }
 
     private function privacyPolicyContent(): string

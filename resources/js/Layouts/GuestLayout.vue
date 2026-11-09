@@ -1,5 +1,6 @@
 <script setup>
 import { Link } from '@inertiajs/vue3';
+import AppVersionFooter from '@/Components/AppVersionFooter.vue';
 </script>
 
 <template>
@@ -58,6 +59,8 @@ import { Link } from '@inertiajs/vue3';
                     <div class="rounded-3xl border border-slate-100 bg-white p-6 shadow-2xl shadow-blue-950/10 sm:p-8">
                         <slot />
                     </div>
+
+                    <AppVersionFooter class="mt-6 text-center" />
                 </div>
             </section>
         </div>

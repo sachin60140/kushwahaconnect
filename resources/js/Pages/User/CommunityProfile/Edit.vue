@@ -17,7 +17,8 @@ const props = defineProps({
 const form = useForm({
     full_name: props.profile.full_name || '',
     father_husband_name: props.profile.father_husband_name || '',
-    gender: props.profile.gender || 'male',
+    // Join/Directory use 'Male'/'Female'/'Other'; older saves from this form used lowercase.
+    gender: { male: 'Male', female: 'Female', other: 'Other' }[String(props.profile.gender || 'male').toLowerCase()] || props.profile.gender,
     dob: props.profile.dob || '',
     mobile: props.profile.mobile || '',
     whatsapp: props.profile.whatsapp || '',
@@ -34,8 +35,9 @@ const form = useForm({
     company_name: props.profile.company_name || '',
     skills: props.profile.skills || '',
     gotra: props.profile.gotra || '',
-    volunteer_interest: props.profile.volunteer_interest || false,
-    join_district_team: props.profile.join_district_team || false,
+    // Stored as 0/1 (no model casts); checkboxes need real booleans to render checked.
+    volunteer_interest: Boolean(props.profile.volunteer_interest),
+    join_district_team: Boolean(props.profile.join_district_team),
 });
 
 const availableDistricts = ref(props.districts.filter(d => d.state_id === form.state_id));
@@ -90,9 +92,9 @@ const submit = () => {
                                     <div>
                                         <InputLabel for="gender" value="Gender *" />
                                         <select id="gender" class="mt-1 block w-full border-gray-300 focus:border-orange-500 focus:ring-orange-500 rounded-md shadow-sm" v-model="form.gender" required>
-                                            <option value="male">Male</option>
-                                            <option value="female">Female</option>
-                                            <option value="other">Other</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                            <option value="Other">Other</option>
                                         </select>
                                         <InputError class="mt-2" :message="form.errors.gender" />
                                     </div>

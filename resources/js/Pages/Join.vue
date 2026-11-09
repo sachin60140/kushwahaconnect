@@ -79,7 +79,7 @@ const submit = () => {
         title="Join the Community" 
         description="Register and become a member of the KushwahaConnect community. Connect, network, and grow together."
     />
-    <PublicLayout>
+    <PublicLayout :show-flash="false">
         <template #header>
             <div class="max-w-3xl">
                 <p class="text-sm font-black uppercase tracking-[0.22em] text-orange-300">Join Community</p>

@@ -159,6 +159,8 @@ export const dictionary = {
         footer_terms: 'Terms & Conditions',
         footer_deletion: 'Data Deletion',
         footer_rights: 'All Rights Reserved.',
+        footer_version: 'Version',
+        footer_last_updated: 'Last updated',
     },
     hi: {
         menu_home: 'होम',
@@ -320,5 +322,7 @@ export const dictionary = {
         footer_terms: 'नियम और शर्तें',
         footer_deletion: 'डेटा हटाने का अनुरोध',
         footer_rights: 'सर्वाधिकार सुरक्षित।',
+        footer_version: 'संस्करण',
+        footer_last_updated: 'अंतिम अपडेट',
     },
 };

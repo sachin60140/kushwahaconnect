@@ -17,7 +17,7 @@ class MedicalController extends Controller
         }
 
         return Inertia::render('Medical/Index', [
-            'resources' => $query->latest()->paginate(12),
+            'resources' => $query->latest()->paginate(12)->withQueryString(),
             'filters' => $request->only(['type'])
         ]);
     }

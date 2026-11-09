@@ -1,5 +1,5 @@
 <script setup>
-import { useForm } from '@inertiajs/vue3';
+import { Link, useForm } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
 const props = defineProps({
@@ -89,6 +89,13 @@ const updateRequest = (requestItem) => {
                     </div>
                 </article>
                 <div v-if="requests.data.length === 0" class="kc-surface p-8 text-center font-bold text-slate-500">No correction requests found.</div>
+            </div>
+
+            <div v-if="requests.links && requests.links.length > 3" class="mt-6 flex flex-wrap">
+                <template v-for="(link, p) in requests.links" :key="p">
+                    <div v-if="link.url === null" class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded bg-white" v-html="link.label" />
+                    <Link v-else class="mr-1 mb-1 px-4 py-3 text-sm leading-4 border rounded hover:bg-white" :class="{ 'bg-indigo-50 border-indigo-500 text-indigo-600': link.active, 'bg-white': !link.active }" :href="link.url" v-html="link.label" />
+                </template>
             </div>
         </div>
     </AuthenticatedLayout>

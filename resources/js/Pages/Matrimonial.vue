@@ -35,7 +35,7 @@ const submit = () => {
 
 <template>
     <Head title="Matrimonial - KushwahaConnect" />
-    <PublicLayout>
+    <PublicLayout :show-flash="false">
         <template #header>
             <div class="max-w-3xl">
                 <p class="text-sm font-black uppercase tracking-[0.22em] text-orange-300">Matrimonial Services</p>
@@ -57,6 +57,13 @@ const submit = () => {
                     </div>
 
                     <form @submit.prevent="submit" class="p-6 md:p-10 space-y-8">
+                        <div v-if="Object.keys(form.errors).length" class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
+                            <p class="font-bold">Please fix the highlighted details and submit again.</p>
+                            <ul class="mt-2 list-disc space-y-1 pl-5 text-sm">
+                                <li v-for="(message, field) in form.errors" :key="field">{{ message }}</li>
+                            </ul>
+                        </div>
+
                         <div>
                             <h3 class="text-xl font-bold text-gray-800 border-b pb-2 mb-4">Basic Information</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

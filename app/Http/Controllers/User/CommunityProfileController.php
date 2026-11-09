@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\MemberProfile;
 use App\Models\State;
 use App\Models\District;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class CommunityProfileController extends Controller
@@ -41,7 +43,8 @@ class CommunityProfileController extends Controller
             'father_husband_name' => 'nullable|string|max:255',
             'gender' => 'required|string',
             'dob' => 'nullable|date',
-            'mobile' => 'required|string|max:20',
+            // Synced to users.mobile (unique) below, so validate uniqueness instead of failing with a 500.
+            'mobile' => ['required', 'string', 'max:20', Rule::unique(User::class, 'mobile')->ignore($request->user()->id)],
             'whatsapp' => 'nullable|string',
             'email' => 'nullable|email|max:255',
             'state_id' => 'nullable|exists:states,id',
@@ -71,9 +74,10 @@ class CommunityProfileController extends Controller
             $validated
         );
 
-        // Auto-approve user profile logic can be added here if needed based on the previous request
-        // "proceed with auto approved no approval required from my side"
-        $profile->status = 'approved';
+        // Profiles are auto-approved, but a re-save must not undo an admin's rejection.
+        if ($profile->status !== 'rejected') {
+            $profile->status = 'approved';
+        }
         $profile->is_public = true;
         $profile->save();
 

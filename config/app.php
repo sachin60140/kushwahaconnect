@@ -17,6 +17,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Application Version / Last Updated
+    |--------------------------------------------------------------------------
+    |
+    | Shown in the footer of every page. Bump APP_VERSION when you release.
+    | APP_UPDATED_AT is optional (e.g. "2026-11-09 18:30"); when empty the
+    | time the deployed code last changed is detected automatically.
+    |
+    */
+
+    'version' => env('APP_VERSION', '1.0.0'),
+
+    'updated_at' => env('APP_UPDATED_AT'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |

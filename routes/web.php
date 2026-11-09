@@ -21,9 +21,8 @@ use App\Http\Controllers\MatrimonialDirectoryController;
 
 Route::get('/', function (Request $request) {
     $settings = WebsiteSetting::pluck('value', 'key')->toArray();
-    $publicMembers = MemberProfile::with(['district'])
-        ->where('status', 'approved')
-        ->where('is_public', true)
+    $publicMembers = MemberProfile::with(['district', 'user.privacySetting'])
+        ->visibleInDirectory()
         ->whereNotNull('user_id')
         ->latest()
         ->take(4)
@@ -37,7 +36,7 @@ Route::get('/', function (Request $request) {
                 'first_name' => str($profile->full_name)->before(' ')->toString() ?: $profile->full_name,
                 'profession' => $profile->occupation,
                 'district' => $district ? (app()->getLocale() === 'hi' ? $district->name_hi : $district->name_en) : null,
-                'photo_url' => $profile->profile_photo ? asset('storage/' . $profile->profile_photo) : null,
+                'photo_url' => $profile->photoVisibleTo(null) ? asset('storage/' . $profile->profile_photo) : null,
                 'verified' => true,
             ];
         });
@@ -77,8 +76,9 @@ Route::get('/', function (Request $request) {
             ];
         });
 
+    // Blank or "0" means "use the live count" (older settings forms saved "0" by default).
     $override = function (string $key, int $fallback) use ($settings) {
-        return isset($settings[$key]) && $settings[$key] !== '' ? (int) $settings[$key] : $fallback;
+        return isset($settings[$key]) && (int) $settings[$key] > 0 ? (int) $settings[$key] : $fallback;
     };
 
     $prideHighlights = collect();
@@ -233,6 +233,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
     Route::get('/admin/matrimonial', [AdminController::class, 'matrimonial'])->name('admin.matrimonial');
     Route::get('/admin/matrimonial/export', [AdminController::class, 'exportMatrimonial'])->name('admin.matrimonial.export');
+    Route::get('/admin/matrimonial/{id}/id-proof', [AdminController::class, 'matrimonialIdProof'])->name('admin.matrimonial.id-proof');
     Route::patch('/admin/matrimonial/{id}/status', [AdminController::class, 'updateMatrimonialStatus'])->name('admin.matrimonial.status');
     Route::delete('/admin/matrimonial/{id}', [AdminController::class, 'deleteMatrimonial'])->name('admin.matrimonial.destroy');
     
@@ -332,7 +333,7 @@ Route::middleware('auth')->group(function () {
         }
 
         return response()->file($fullPath);
-    })->where('path', '.*')->name('secure.file');
+    })->where('path', '.*')->middleware('admin')->name('secure.file'); // private uploads (e.g. ID proofs) are admin-only
 
     Route::get('/matrimonial-directory', [MatrimonialDirectoryController::class, 'index'])->name('matrimonial-directory.index');
     Route::post('/matrimonial-directory/{id}/shortlist', [MatrimonialDirectoryController::class, 'toggleShortlist'])->name('matrimonial-directory.shortlist');

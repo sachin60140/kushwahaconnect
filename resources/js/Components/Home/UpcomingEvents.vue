@@ -15,7 +15,10 @@ const formatDate = (value) => {
         return '';
     }
 
+    // event_date is the admin-entered wall-clock time stored as-is with APP timezone UTC,
+    // so render it in UTC; using the viewer's zone would shift IST viewers by +5:30.
     return new Date(value).toLocaleDateString(undefined, {
+        timeZone: 'UTC',
         month: 'short',
         day: 'numeric',
         year: 'numeric',
@@ -28,6 +31,7 @@ const formatTime = (value) => {
     }
 
     return new Date(value).toLocaleTimeString(undefined, {
+        timeZone: 'UTC',
         hour: 'numeric',
         minute: '2-digit',
     });

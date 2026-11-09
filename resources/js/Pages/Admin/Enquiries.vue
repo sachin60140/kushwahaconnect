@@ -51,6 +51,13 @@ const props = defineProps({
                         </div>
                     </div>
                 </div>
+
+                <div v-if="enquiries.links && enquiries.links.length > 3" class="mt-6 flex flex-wrap">
+                    <template v-for="(link, p) in enquiries.links" :key="p">
+                        <div v-if="link.url === null" class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded bg-white" v-html="link.label" />
+                        <Link v-else class="mr-1 mb-1 px-4 py-3 text-sm leading-4 border rounded hover:bg-white" :class="{ 'bg-indigo-50 border-indigo-500 text-indigo-600': link.active, 'bg-white': !link.active }" :href="link.url" v-html="link.label" />
+                    </template>
+                </div>
             </div>
         </div>
     </AuthenticatedLayout>

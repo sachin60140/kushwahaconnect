@@ -1,7 +1,7 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 const form = useForm({
     title: '',
@@ -11,6 +11,11 @@ const form = useForm({
 });
 
 const previewImages = ref([]);
+
+// Laravel reports per-file failures as `images.0`, `images.1`, ...
+const imageErrors = computed(() => Object.entries(form.errors)
+    .filter(([field]) => field === 'images' || field.startsWith('images.'))
+    .map(([, message]) => message));
 
 const handleImageUpload = (event) => {
     const files = Array.from(event.target.files);
@@ -61,7 +66,9 @@ const submit = () => {
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Upload Photos <span class="text-gray-500 text-xs">(Select multiple files)</span></label>
                                 <input type="file" @change="handleImageUpload" multiple accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 border border-gray-300 rounded-md p-2">
-                                <div v-if="form.errors.images" class="text-red-500 text-xs mt-1">{{ form.errors.images }}</div>
+                                <div v-if="imageErrors.length" class="text-red-500 text-xs mt-1">
+                                    <p v-for="(message, index) in imageErrors" :key="index">{{ message }}</p>
+                                </div>
                                 
                                 <div v-if="previewImages.length > 0" class="mt-4 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
                                     <div v-for="(preview, index) in previewImages" :key="index" class="relative aspect-w-1 aspect-h-1 rounded-lg overflow-hidden border border-gray-200 shadow-sm h-24">

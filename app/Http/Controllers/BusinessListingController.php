@@ -55,7 +55,7 @@ class BusinessListingController extends Controller
         }
 
         return Inertia::render('Business/Index', [
-            'businesses' => $query->latest()->paginate(12),
+            'businesses' => $query->latest()->paginate(12)->withQueryString(),
             'states' => State::where('status', true)->get(),
             'categories' => self::$categories,
             'filters' => $request->only(['search', 'category', 'state_id', 'district_id'])

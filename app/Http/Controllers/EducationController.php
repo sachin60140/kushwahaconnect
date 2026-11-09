@@ -17,7 +17,7 @@ class EducationController extends Controller
         }
 
         return Inertia::render('Education/Index', [
-            'resources' => $query->latest()->paginate(12),
+            'resources' => $query->latest()->paginate(12)->withQueryString(),
             'filters' => $request->only(['category'])
         ]);
     }

@@ -79,7 +79,7 @@ const typeTone = (type) => ({
                                 <span>{{ new Date(item.created_at).toLocaleDateString() }}</span>
                                 <span v-if="item.event_date && item.type === 'event'" class="text-orange-600 flex items-center">
                                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                    {{ new Date(item.event_date).toLocaleDateString() }}
+                                    {{ new Date(item.event_date).toLocaleDateString(undefined, { timeZone: 'UTC' }) }}
                                 </span>
                             </div>
                             <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-orange-600 transition-colors">{{ item.title }}</h3>
@@ -126,7 +126,7 @@ const typeTone = (type) => ({
                         <span>{{ new Date(selectedItem.created_at).toLocaleDateString() }}</span>
                         <span v-if="selectedItem.event_date && selectedItem.type === 'event'" class="text-orange-600 font-bold flex items-center">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                            Date: {{ new Date(selectedItem.event_date).toLocaleDateString() }}
+                            Date: {{ new Date(selectedItem.event_date).toLocaleDateString(undefined, { timeZone: 'UTC' }) }}
                         </span>
                     </div>
                     <h3 class="text-3xl font-extrabold text-gray-900 mb-6 leading-tight">{{ selectedItem.title }}</h3>

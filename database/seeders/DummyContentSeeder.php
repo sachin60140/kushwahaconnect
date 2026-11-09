@@ -114,8 +114,8 @@ class DummyContentSeeder extends Seeder
             'city' => 'Bhopal',
             'skills' => 'Event Management, Teaching',
             'available_time' => 'Weekends',
-            'help_areas' => '["Education", "Events"]',
-            'status' => 'approved'
+            'help_areas' => ['education_support', 'event_support'],
+            'status' => 'Approved'
         ]);
 
         // 6. Gallery

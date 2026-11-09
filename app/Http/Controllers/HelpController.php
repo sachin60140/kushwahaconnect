@@ -26,11 +26,17 @@ class HelpController extends Controller
         }
 
         if ($request->filled('city')) {
-            $query->where('city', 'like', '%' . $request->city . '%');
+            // The page's single "Location (State/City)" box sends `city`; match any location column.
+            $location = '%' . $request->city . '%';
+            $query->where(function ($q) use ($location) {
+                $q->where('city', 'like', $location)
+                    ->orWhere('district', 'like', $location)
+                    ->orWhere('state', 'like', $location);
+            });
         }
 
         return Inertia::render('Help/Index', [
-            'requests' => $query->latest()->paginate(12),
+            'requests' => $query->latest()->paginate(12)->withQueryString(),
             'filters' => $request->only(['category', 'urgency', 'state', 'city'])
         ]);
     }

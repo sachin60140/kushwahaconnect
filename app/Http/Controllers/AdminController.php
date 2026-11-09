@@ -15,6 +15,7 @@ use App\Notifications\ProfileApprovedNotification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 class AdminController extends Controller
@@ -50,9 +51,9 @@ class AdminController extends Controller
             'pending_personality_nominations' => $hasNominations ? \App\Models\PersonalityNomination::whereIn('status', ['submitted', 'under_review', 'more_information_required'])->count() : 0,
             'pending_corrections' => $hasCorrections ? \App\Models\ProfileCorrectionRequest::whereIn('status', ['submitted', 'under_review'])->count() : 0,
             
-            // New this month
-            'new_members_this_month' => MemberProfile::whereMonth('created_at', now()->month)->count(),
-            'new_matrimonial_this_month' => MatrimonialProfile::whereMonth('created_at', now()->month)->count(),
+            // New this month (current calendar month of the current year only)
+            'new_members_this_month' => MemberProfile::where('created_at', '>=', now()->startOfMonth())->count(),
+            'new_matrimonial_this_month' => MatrimonialProfile::where('created_at', '>=', now()->startOfMonth())->count(),
         ];
 
         // Recent Activity Feed
@@ -254,11 +255,48 @@ class AdminController extends Controller
     }
 
     // Matrimonial
-    public function matrimonial()
+    public function matrimonial(Request $request)
     {
+        $query = MatrimonialProfile::with('user:id,name,email,mobile')->latest();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('full_name', 'like', "%{$search}%")
+                  ->orWhere('mobile', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('current_city', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $profiles = $query->paginate(15)->withQueryString()->through(function (MatrimonialProfile $profile) {
+            $profile->setAttribute(
+                'id_proof_url',
+                $profile->id_proof ? route('admin.matrimonial.id-proof', $profile->id) : null
+            );
+
+            return $profile;
+        });
+
         return Inertia::render('Admin/Matrimonial', [
-            'profiles' => MatrimonialProfile::latest()->paginate(15)
+            'profiles' => $profiles,
+            'filters' => $request->only(['search', 'status']),
         ]);
+    }
+
+    public function matrimonialIdProof($id)
+    {
+        $profile = MatrimonialProfile::findOrFail($id);
+
+        if (!$profile->id_proof || !Storage::disk('local')->exists($profile->id_proof)) {
+            abort(404);
+        }
+
+        return response()->file(Storage::disk('local')->path($profile->id_proof));
     }
 
     public function exportMatrimonial()
@@ -278,10 +316,10 @@ class AdminController extends Controller
     {
         $profile = MatrimonialProfile::findOrFail($id);
         if ($profile->photo) {
-            \Illuminate\Support\Facades\Storage::disk('local')->delete($profile->photo);
+            Storage::disk('local')->delete($profile->photo);
         }
         if ($profile->id_proof) {
-            \Illuminate\Support\Facades\Storage::disk('local')->delete($profile->id_proof);
+            Storage::disk('local')->delete($profile->id_proof);
         }
         $profile->delete();
         return redirect()->back()->with('success', 'Profile deleted.');
