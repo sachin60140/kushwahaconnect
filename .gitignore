@@ -21,3 +21,6 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Web-root copy of public/build when the project itself is the web root (Hostinger)
+/build/

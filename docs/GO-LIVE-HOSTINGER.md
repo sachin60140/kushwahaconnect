@@ -96,10 +96,37 @@ Steps:
 5. Run the deploy script from the Laravel project folder.
 
 When using this fallback, browser assets must exist in `public_html/build`.
-The deploy script copies `kushwahaconnect/public/build` to `public_html/build`
-automatically when `public_html` is beside the project folder. If you deploy
-with Hostinger Git without running the script, manually copy the `public/build`
-folder to `public_html/build` after each frontend build.
+The deploy script copies `public/build` to the web root automatically, both when
+`public_html` is beside the project folder and when the project itself lives in
+`public_html`. If you deploy with Hostinger Git without running the script,
+copy `public/build` into the web root's `build` folder after each deploy.
+Laravel also serves any `/build` file missing from the web root straight from
+`public/build`, so a skipped copy no longer blanks the site, but copying keeps
+assets served directly by the web server.
+
+## Troubleshooting
+
+**Blank white page after a deploy.** The browser console shows 404s for
+`/build/assets/...` files: the web root's `build` folder is older than
+`public/build`. From the project folder run:
+
+```bash
+cp -R public/build/. build/          # project inside public_html
+# or: cp -R public/build/. ../public_html/build/   (project beside public_html)
+php artisan optimize:clear && php artisan optimize
+```
+
+If it is still blank, purge the Hostinger CDN cache in hPanel.
+
+**`The Process class relies on proc_open` during `composer install`.** Hostinger
+disables `proc_open`, which Composer needs to run Laravel's post-install scripts.
+The deploy script installs with `--no-scripts` and runs
+`php artisan package:discover` itself. When running Composer by hand, use:
+
+```bash
+composer install --no-dev --optimize-autoloader --no-scripts
+php artisan package:discover
+```
 
 ## After Launch Checklist
 
