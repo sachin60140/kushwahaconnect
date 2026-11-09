@@ -45,6 +45,11 @@ Set these values in `.env`:
 - `MAIL_PASSWORD` for `no_reply@kushwahaconnect.com`.
 - `APP_DEBUG=false`.
 - `APP_ENV=production`.
+- `APP_VERSION=1.0` (major.minor). The footer shows `1.0.<build>`, where the build
+  number is the git commit count recorded by the deploy script on every run, so the
+  version increases on each deploy without editing `.env`. Change `APP_VERSION`
+  only for a bigger release (e.g. `2.0`), then run the deploy script or
+  `php artisan optimize` so the cached config picks it up.
 
 3. Run the deploy script:
 
