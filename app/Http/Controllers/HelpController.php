@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\HelpRequest;
+use App\Support\HelpPreviewImage;
 use Inertia\Inertia;
 
 class HelpController extends Controller
@@ -58,12 +59,34 @@ class HelpController extends Controller
                 'id', 'title', 'category', 'urgency', 'status', 'description',
                 'name', 'mobile', 'whatsapp', 'city', 'district', 'state', 'created_at',
             ]),
-            'seo' => [
+            'seo' => array_filter([
                 'title' => $helpRequest->title.' - Help Request',
                 'description' => trim("{$helpRequest->urgency} {$helpRequest->category}".($location ? " in {$location}" : '').': '.$helpRequest->description),
-                'image_alt' => 'Help request on KushwahaConnect',
+                // Per-request preview card; ?v= busts social media caches when the request changes.
+                'image' => HelpPreviewImage::isSupported()
+                    ? route('help.preview', ['id' => $helpRequest->id, 'v' => HelpPreviewImage::fingerprint($helpRequest)])
+                    : null,
+                'image_alt' => 'Help request: '.$helpRequest->title,
                 'type' => 'article',
-            ],
+            ]),
+        ]);
+    }
+
+    /**
+     * The 1200x630 social preview card (og:image) for a public help request.
+     */
+    public function preview(int $id)
+    {
+        $helpRequest = HelpRequest::publiclyVisible()->findOrFail($id);
+        $path = HelpPreviewImage::path($helpRequest);
+
+        if (! $path) {
+            return redirect()->to(asset('images/kushwahaconnect-social-preview.png'));
+        }
+
+        return response()->file($path, [
+            'Content-Type' => 'image/png',
+            'Cache-Control' => 'public, max-age=86400',
         ]);
     }
 
