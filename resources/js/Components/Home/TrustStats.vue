@@ -11,13 +11,15 @@ const props = defineProps({
 
 const { __ } = useLanguage();
 const progress = ref(0);
+// Tiny counts (e.g. "1+") undermine trust on the homepage; hide a stat until it reaches this.
+const MIN_PUBLIC_STAT = 10;
 
 const cards = computed(() => [
     { key: 'members', label: __('stat_members'), value: Number(props.stats.members || 0), tone: 'text-orange-600' },
     { key: 'districts', label: __('stat_districts'), value: Number(props.stats.districts || 0), tone: 'text-blue-950' },
     { key: 'volunteers', label: __('stat_volunteers'), value: Number(props.stats.volunteers || 0), tone: 'text-green-700' },
     { key: 'matrimonial', label: __('stat_matrimonial'), value: Number(props.stats.matrimonial || 0), tone: 'text-orange-600' },
-]);
+].filter((card) => card.value >= MIN_PUBLIC_STAT));
 
 const displayedValue = (value) => {
     const current = Math.round(value * progress.value);
@@ -40,9 +42,9 @@ onMounted(() => {
 </script>
 
 <template>
-    <section class="-mt-8 relative z-10 px-4 sm:px-6 lg:px-8">
+    <section v-if="cards.length" class="-mt-8 relative z-10 px-4 sm:px-6 lg:px-8">
         <div class="mx-auto max-w-7xl rounded-3xl border border-slate-100 bg-white p-4 shadow-xl shadow-blue-950/10">
-            <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
+            <div class="grid grid-cols-2 gap-3" :class="cards.length === 4 ? 'lg:grid-cols-4' : cards.length === 3 ? 'lg:grid-cols-3' : ''">
                 <div
                     v-for="card in cards"
                     :key="card.key"

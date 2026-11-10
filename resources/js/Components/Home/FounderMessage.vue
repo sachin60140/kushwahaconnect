@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import { useLanguage } from '@/composables/useLanguage';
 
@@ -11,6 +11,7 @@ const props = defineProps({
 });
 
 const { locale, __ } = useLanguage();
+const expanded = ref(false);
 
 const localized = (key, fallback) => {
     const localizedKey = `${key}_${locale.value}`;
@@ -40,7 +41,7 @@ const links = computed(() => [
     <section class="bg-blue-950 px-4 py-16 text-white sm:px-6 lg:px-8">
         <div class="mx-auto grid max-w-5xl items-center gap-8 lg:grid-cols-[auto_1fr]">
             <div class="mx-auto">
-                <div class="flex h-40 w-40 items-center justify-center overflow-hidden rounded-4xl border-4 border-orange-400 bg-orange-100 text-4xl font-black text-orange-700 shadow-2xl">
+                <div class="flex h-28 w-28 items-center justify-center overflow-hidden rounded-4xl sm:h-40 sm:w-40 border-4 border-orange-400 bg-orange-100 text-4xl font-black text-orange-700 shadow-2xl">
                     <img v-if="founderPhoto" :src="founderPhoto" :alt="founderName" class="h-full w-full object-cover" loading="lazy">
                     <span v-else>KS</span>
                 </div>
@@ -53,12 +54,18 @@ const links = computed(() => [
                 <p class="mt-3 text-base leading-8 text-blue-100">
                     {{ localized('founder_intro', __('founder_p1')) }}
                 </p>
-                <p class="mt-3 text-base leading-8 text-blue-100">
-                    {{ localized('founder_message', __('founder_p2')) }}
-                </p>
-                <p class="mt-3 text-base font-bold leading-8 text-white">
-                    {{ localized('founder_note', __('founder_p3')) }}
-                </p>
+                <!-- Phones show the first paragraph until "Read more" is tapped. -->
+                <div :class="expanded ? 'block' : 'hidden sm:block'">
+                    <p class="mt-3 text-base leading-8 text-blue-100">
+                        {{ localized('founder_message', __('founder_p2')) }}
+                    </p>
+                    <p class="mt-3 text-base font-bold leading-8 text-white">
+                        {{ localized('founder_note', __('founder_p3')) }}
+                    </p>
+                </div>
+                <button v-if="!expanded" type="button" class="mt-2 min-h-11 text-sm font-black text-orange-300 underline sm:hidden" @click="expanded = true">
+                    {{ __('btn_read_more') }}
+                </button>
 
                 <div class="mt-7 flex flex-wrap gap-3">
                     <a
