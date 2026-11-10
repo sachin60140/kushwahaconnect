@@ -2,6 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { useLanguage } from '@/composables/useLanguage';
+import SmsHealthCard from '@/Components/SmsHealthCard.vue';
 
 const props = defineProps({
     settings: { type: Object, required: true },
@@ -12,6 +13,8 @@ const props = defineProps({
     configured: { type: Boolean, default: false },
     // { ok, http, state, status_code, description } from the last "Send test SMS".
     testResult: { type: Object, default: null },
+    // SmsHealth::usage(): status, counters, degraded episode.
+    smsHealth: { type: Object, default: null },
 });
 
 const { __ } = useLanguage();
@@ -65,6 +68,8 @@ const errorClass = 'mt-1 text-sm font-semibold text-red-700';
                         {{ configured ? __('sms_settings_otp_enforced') : __('sms_settings_otp_not_enforced') }}
                     </span>
                 </p>
+
+                <SmsHealthCard v-if="smsHealth" :health="smsHealth" can-retry />
 
                 <form class="space-y-5 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6" @submit.prevent="save">
                     <label class="flex min-h-11 cursor-pointer items-center gap-3">

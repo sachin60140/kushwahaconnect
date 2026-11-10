@@ -7,6 +7,7 @@ use App\Models\SmsSetting;
 use App\Services\Otp\OtpService;
 use App\Services\Sms\SmartPingSms;
 use App\Services\Sms\SmsConfig;
+use App\Services\Sms\SmsHealth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -48,6 +49,7 @@ class SmsSettingsController extends Controller
             'hasEnvPassword' => filled($defaults['password'] ?? null),
             'configured' => SmsConfig::configured($effective),
             'testResult' => $request->session()->get('sms_test_result'),
+            'smsHealth' => SmsHealth::usage(),
         ]);
     }
 
@@ -110,5 +112,16 @@ class SmsSettingsController extends Controller
         ]);
 
         return redirect()->route('admin.sms-settings.show')->with('sms_test_result', $result);
+    }
+
+    /**
+     * "Retry SMS now": end a degraded episode early so OTP is enforced again
+     * and the next send goes to SmartPing normally.
+     */
+    public function retry(Request $request): RedirectResponse
+    {
+        SmsHealth::clear('manual retry by user #'.$request->user()->id);
+
+        return redirect()->route('admin.sms-settings.show')->with('success', 'sms_health_retry_done');
     }
 }
