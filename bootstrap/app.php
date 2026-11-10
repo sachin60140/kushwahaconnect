@@ -28,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => \App\Http\Middleware\IsAdmin::class,
             'super_admin' => \App\Http\Middleware\IsSuperAdmin::class,
+            'mobile.verified' => \App\Http\Middleware\EnsureMobileIsVerified::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

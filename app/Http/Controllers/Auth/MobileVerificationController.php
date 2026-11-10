@@ -79,7 +79,7 @@ class MobileVerificationController extends Controller
 
         $user->forceFill(['mobile_verified_at' => now()])->save();
 
-        return redirect()->route('dashboard')->with('success', 'otp_verified_success');
+        return redirect()->intended(route('dashboard', absolute: false))->with('success', 'otp_verified_success');
     }
 
     public static function errorKey(OtpException $e): string

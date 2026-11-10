@@ -1,4 +1,5 @@
 <script setup>
+import MobileOtpField from '@/Components/MobileOtpField.vue';
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
@@ -89,7 +90,7 @@ const submit = () => {
                                     class="mt-2 block w-full"
                                     placeholder="Mobile number"
                                 >
-                                <p v-if="form.errors.mobile" class="mt-2 text-sm font-bold text-red-600">{{ form.errors.mobile }}</p>
+                                <MobileOtpField :mobile="form.mobile" :error="form.errors.mobile" id-prefix="deletion-mobile-otp" />
                             </div>
 
                             <div>

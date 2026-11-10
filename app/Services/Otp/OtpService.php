@@ -21,6 +21,7 @@ class OtpService
 
     public const PURPOSE_LOGIN = 'login';
     public const PURPOSE_VERIFY = 'verify';
+    public const PURPOSE_FORM = 'form'; // inline check on public forms (FormOtpController)
 
     public const COOLDOWN = 'cooldown';
     public const RATE_LIMITED = 'rate_limited';

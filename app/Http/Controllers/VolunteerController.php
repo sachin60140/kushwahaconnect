@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Rules\VerifiedMobile;
 use Illuminate\Http\Request;
 use App\Models\Volunteer;
 use Inertia\Inertia;
@@ -39,7 +40,7 @@ class VolunteerController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'mobile' => 'required|string|max:20',
+            'mobile' => ['required', 'string', 'max:20', new VerifiedMobile],
             'whatsapp' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:255',
             'state' => 'required|string|max:255',

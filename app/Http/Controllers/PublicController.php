@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Rules\VerifiedMobile;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\State;
@@ -50,7 +51,7 @@ class PublicController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'mobile' => 'required|string|max:20',
+            'mobile' => ['required', 'string', 'max:20', new VerifiedMobile],
             'email' => 'nullable|email|max:255',
             'reason' => 'nullable|string|max:2000',
         ]);
@@ -74,7 +75,7 @@ class PublicController extends Controller
             'father_husband_name' => 'nullable|string|max:255',
             'gender' => 'required|string',
             'dob' => 'nullable|date',
-            'mobile' => ['required', 'string', 'max:20', Rule::unique(User::class, 'mobile')],
+            'mobile' => ['required', 'string', 'max:20', Rule::unique(User::class, 'mobile'), new VerifiedMobile],
             'whatsapp' => 'nullable|string|max:20',
             'email' => ['nullable', 'email', 'max:255', Rule::unique(User::class, 'email')],
             'state_id' => 'required|exists:states,id',
@@ -133,7 +134,14 @@ class PublicController extends Controller
         // Auto-login the user
         Auth::login($user);
 
-        // Send the first mobile verification code right away. Joining never fails
+        // Number already confirmed by OTP on the join form: the account starts verified.
+        if (\App\Services\Otp\VerifiedMobiles::has($user->mobile)) {
+            $user->forceFill(['mobile_verified_at' => now()])->save();
+
+            return redirect()->route('dashboard')->with('success', 'otp_verified_success');
+        }
+
+        // OTP not enforced (SMS off): send the first code right away. Joining never fails
         // because of SMS: the member can resend from the verification page.
         try {
             app(\App\Services\Otp\OtpService::class)->send($user->mobile, \App\Services\Otp\OtpService::PURPOSE_VERIFY, $request->ip());
@@ -157,6 +165,7 @@ class PublicController extends Controller
         // Complete profile: same detail rules as the member's own profile page.
         $validated = $request->validate([
             ...\App\Models\MatrimonialProfile::detailRules(),
+            'mobile' => ['required', 'string', 'max:20', new VerifiedMobile],
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'id_proof' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'consent' => 'accepted',
@@ -238,7 +247,7 @@ class PublicController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'mobile' => 'required|string|max:20',
+            'mobile' => ['required', 'string', 'max:20', new VerifiedMobile],
             'whatsapp' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:255',
             'state_id' => 'nullable|exists:states,id',

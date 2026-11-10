@@ -1,4 +1,5 @@
 <script setup>
+import MobileOtpField from '@/Components/MobileOtpField.vue';
 import { computed, ref } from 'vue';
 import { Link, useForm } from '@inertiajs/vue3';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
@@ -233,7 +234,10 @@ const submitCorrection = () => {
                 <h2 class="text-2xl font-black text-blue-950">{{ text.report }}</h2>
                 <p class="text-sm font-bold text-slate-600">{{ correctionForm.profile_name }}</p>
                 <input v-model="correctionForm.requester_name" type="text" placeholder="Your name" required>
-                <input v-model="correctionForm.requester_mobile" type="text" placeholder="Mobile">
+                <div>
+                    <input v-model="correctionForm.requester_mobile" type="tel" inputmode="numeric" autocomplete="tel" placeholder="Mobile *" required class="w-full">
+                    <MobileOtpField :mobile="correctionForm.requester_mobile" :error="correctionForm.errors.requester_mobile" id-prefix="correction-mobile-otp" />
+                </div>
                 <input v-model="correctionForm.requester_email" type="email" placeholder="Email">
                 <textarea v-model="correctionForm.correction_details" rows="5" placeholder="Correction details" required></textarea>
                 <textarea v-model="correctionForm.source_links" rows="3" placeholder="Source links"></textarea>

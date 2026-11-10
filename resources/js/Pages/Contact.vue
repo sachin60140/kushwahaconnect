@@ -1,4 +1,5 @@
 <script setup>
+import MobileOtpField from '@/Components/MobileOtpField.vue';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
@@ -81,7 +82,7 @@ const submit = () => {
                     <form @submit.prevent="submit" class="space-y-6 p-6 sm:p-8">
                         <div v-if="Object.keys(form.errors).length" class="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
                             <ul class="list-disc space-y-1 pl-5">
-                                <li v-for="(message, field) in form.errors" :key="field">{{ message }}</li>
+                                <li v-for="(message, field) in form.errors" :key="field">{{ __(message) }}</li>
                             </ul>
                         </div>
 
@@ -96,7 +97,8 @@ const submit = () => {
                             </div>
                             <div>
                                 <label class="mb-1 block text-sm font-black text-blue-950">Mobile Number *</label>
-                                <input v-model="form.mobile" type="text" class="w-full" required>
+                                <input v-model="form.mobile" type="tel" inputmode="numeric" autocomplete="tel" class="w-full" required>
+                                <MobileOtpField :mobile="form.mobile" :error="form.errors.mobile" id-prefix="contact-mobile-otp" />
                             </div>
                             <div>
                                 <label class="mb-1 block text-sm font-black text-blue-950">WhatsApp Number</label>

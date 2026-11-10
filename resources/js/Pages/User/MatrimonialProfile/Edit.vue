@@ -1,4 +1,5 @@
 <script setup>
+import MobileOtpField from '@/Components/MobileOtpField.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -316,7 +317,7 @@ const submit = () => {
                                         <InputLabel for="mobile" value="Contact Mobile Number *" />
                                         <!-- Locked to the account's mobile when it has one; editable otherwise, or the required field could never be filled. -->
                                         <TextInput id="mobile" type="text" class="mt-1 block w-full" :class="{ 'bg-gray-100': !!profile.mobile }" v-model="form.mobile" required :readonly="!!profile.mobile" />
-                                        <InputError class="mt-2" :message="form.errors.mobile" />
+                                        <MobileOtpField :mobile="form.mobile" :error="form.errors.mobile" :unchanged="profile.mobile" id-prefix="matrimonial-profile-mobile-otp" />
                                     </div>
                                     <div>
                                         <InputLabel for="whatsapp" value="WhatsApp Number" />

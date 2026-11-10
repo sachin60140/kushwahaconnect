@@ -116,6 +116,7 @@ class PublicFiguresModuleTest extends TestCase
             'profile_type' => 'personality',
             'profile_name' => 'Inspiring Person',
             'requester_name' => 'Verifier',
+            'requester_mobile' => '9000000001', // now required (verified by OTP while SMS is on)
             'requester_email' => 'verifier@example.com',
             'correction_details' => 'Please update the designation.',
             'source_links' => 'https://example.com/correction',

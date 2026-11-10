@@ -1,4 +1,5 @@
 <script setup>
+import MobileOtpField from '@/Components/MobileOtpField.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -118,7 +119,7 @@ const submit = () => {
                                     <div>
                                         <InputLabel for="mobile" value="Mobile Number *" />
                                         <TextInput id="mobile" type="text" class="mt-1 block w-full" v-model="form.mobile" required />
-                                        <InputError class="mt-2" :message="form.errors.mobile" />
+                                        <MobileOtpField :mobile="form.mobile" :error="form.errors.mobile" :unchanged="$page.props.auth.user?.mobile" id-prefix="profile-mobile-otp" />
                                     </div>
                                     <div>
                                         <InputLabel for="whatsapp" value="WhatsApp Number" />

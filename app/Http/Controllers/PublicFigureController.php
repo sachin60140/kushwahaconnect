@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Rules\VerifiedMobile;
 use App\Models\KushwahaPrideProfile;
 use App\Models\PersonalityNomination;
 use App\Models\ProfileCorrectionRequest;
@@ -158,7 +159,7 @@ class PublicFigureController extends Controller
             'source_links' => 'nullable|string|max:5000',
             'social_links' => 'nullable|string|max:5000',
             'nominator_name' => 'required|string|max:255',
-            'nominator_mobile' => 'required|string|max:30',
+            'nominator_mobile' => ['required', 'string', 'max:30', new VerifiedMobile],
             'relationship' => 'nullable|string|max:255',
             'consent' => 'accepted',
         ]);
@@ -186,7 +187,7 @@ class PublicFigureController extends Controller
             'profile_id' => 'nullable|integer',
             'profile_name' => 'nullable|string|max:255',
             'requester_name' => 'required|string|max:255',
-            'requester_mobile' => 'nullable|string|max:30',
+            'requester_mobile' => ['required', 'string', 'max:30', new VerifiedMobile],
             'requester_email' => 'nullable|email|max:255',
             'correction_details' => 'required|string|max:5000',
             'source_links' => 'nullable|string|max:5000',
