@@ -280,6 +280,8 @@ class MobileOtpVerificationTest extends TestCase
 
     public function test_otp_login_marks_mobile_verified(): void
     {
+        // OTP login is offered only while SMS is on.
+        config(['services.sms.driver' => 'smartping', 'services.smartping.username' => 'test-user', 'services.smartping.password' => 'test-pass']);
         $user = $this->member();
 
         $this->post(route('login.otp.generate'), ['mobile' => '9876500001'])->assertSessionHasNoErrors();
