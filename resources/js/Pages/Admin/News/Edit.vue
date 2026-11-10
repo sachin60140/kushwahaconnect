@@ -11,7 +11,7 @@ const form = useForm({
     title: props.item.title,
     content: props.item.content,
     type: props.item.type,
-    event_date: props.item.event_date ? new Date(props.item.event_date).toISOString().slice(0, 16) : '',
+    event_date: props.item.event_date_local || '',
     event_location: props.item.event_location || '',
     registration_url: props.item.registration_url || '',
     image: null,
@@ -55,7 +55,7 @@ const submit = () => {
                             
                             <div v-if="form.type === 'event'" class="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700">Event Date & Time</label>
+                                    <label class="block text-sm font-medium text-gray-700">Event Date & Time <span class="font-normal text-gray-500">(India time, IST)</span></label>
                                     <input type="datetime-local" v-model="form.event_date" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                     <div v-if="form.errors.event_date" class="text-red-500 text-xs mt-1">{{ form.errors.event_date }}</div>
                                 </div>

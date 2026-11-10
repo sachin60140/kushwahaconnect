@@ -85,6 +85,9 @@ return [
 
     'timezone' => 'UTC',
 
+    // Zone used to enter and show local times (e.g. event dates); stored values stay UTC.
+    'display_timezone' => env('APP_DISPLAY_TIMEZONE', 'Asia/Kolkata'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration

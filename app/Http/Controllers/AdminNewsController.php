@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Support\ImageUpload;
 use Illuminate\Http\Request;
 use App\Models\NewsEvent;
+use Carbon\Carbon;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
 
@@ -48,6 +49,8 @@ class AdminNewsController extends Controller
             $validated['registration_url'] = null;
         }
 
+        $validated['event_date'] = self::eventDateToUtc($validated['event_date'] ?? null);
+
         if ($request->hasFile('image')) {
             $validated['image'] = ImageUpload::storeCover($request->file('image'), 'news_events');
         }
@@ -63,9 +66,24 @@ class AdminNewsController extends Controller
         if ($item->image) {
             $item->image_url = asset('storage/' . $item->image);
         }
+        // Prefill the datetime-local input in India time.
+        $item->event_date_local = $item->event_date
+            ?->copy()->setTimezone(self::displayZone())->format('Y-m-d\TH:i');
+
         return Inertia::render('Admin/News/Edit', [
             'item' => $item
         ]);
+    }
+
+    private static function displayZone(): string
+    {
+        return config('app.display_timezone', 'Asia/Kolkata');
+    }
+
+    /** Admins type the event time in India time; store the real moment in UTC. */
+    private static function eventDateToUtc(?string $value): ?Carbon
+    {
+        return $value ? Carbon::parse($value, self::displayZone())->utc() : null;
     }
 
     public function update(Request $request, $id)
@@ -88,6 +106,8 @@ class AdminNewsController extends Controller
             $validated['event_location'] = null;
             $validated['registration_url'] = null;
         }
+
+        $validated['event_date'] = self::eventDateToUtc($validated['event_date'] ?? null);
 
         if ($request->hasFile('image')) {
             if ($item->image) {
