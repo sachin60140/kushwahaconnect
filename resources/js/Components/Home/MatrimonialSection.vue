@@ -7,23 +7,23 @@ const points = ['matrimonial_point_1', 'matrimonial_point_2', 'matrimonial_point
 </script>
 
 <template>
-    <section class="bg-[#fffaf0] px-4 py-16 sm:px-6 lg:px-8">
+    <section class="bg-[#fffaf0] px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         <div class="mx-auto grid max-w-7xl items-center gap-10 rounded-3xl bg-white p-6 shadow-xl shadow-blue-950/10 sm:p-8 lg:grid-cols-[0.9fr_1.1fr] lg:p-10">
-            <div class="relative min-h-[360px] overflow-hidden rounded-3xl bg-linear-to-br from-blue-950 via-blue-900 to-orange-600 p-6 text-white">
+            <div class="relative hidden min-h-[360px] overflow-hidden rounded-3xl bg-linear-to-br from-blue-950 via-blue-900 to-orange-600 p-6 text-white md:block">
                 <div class="absolute -right-12 -top-12 h-48 w-48 rounded-full bg-white/10 blur-2xl"></div>
                 <div class="absolute -bottom-10 -left-10 h-44 w-44 rounded-full bg-green-400/20 blur-2xl"></div>
                 <div class="relative space-y-4">
                     <div class="rounded-3xl bg-white/12 p-5 backdrop-blur-sm">
                         <span class="rounded-full bg-orange-400 px-3 py-1 text-xs font-black text-blue-950">{{ __('verified') }}</span>
-                        <div class="mt-5 h-4 w-3/4 rounded-full bg-white/30"></div>
-                        <div class="mt-3 h-4 w-1/2 rounded-full bg-white/20"></div>
+                        <p class="mt-4 text-base font-black text-white">{{ __('matrimonial_title') }}</p>
+                        <p class="mt-1 text-sm font-semibold text-blue-100">{{ __('matrimonial_point_1') }}</p>
                     </div>
                     <div class="ml-auto max-w-xs rounded-3xl bg-white p-5 text-blue-950 shadow-xl">
                         <p class="text-sm font-black">{{ __('matrimonial_desc') }}</p>
                         <div class="mt-4 grid grid-cols-3 gap-2">
-                            <div class="h-14 rounded-2xl bg-orange-100"></div>
-                            <div class="h-14 rounded-2xl bg-green-100"></div>
-                            <div class="h-14 rounded-2xl bg-blue-100"></div>
+                            <div class="flex h-14 items-center justify-center rounded-2xl bg-orange-100 text-xl" aria-hidden="true">♥</div>
+                            <div class="flex h-14 items-center justify-center rounded-2xl bg-green-100 text-xl text-green-700" aria-hidden="true">✓</div>
+                            <div class="flex h-14 items-center justify-center rounded-2xl bg-blue-100 text-xl" aria-hidden="true">🔒</div>
                         </div>
                     </div>
                     <div class="max-w-sm rounded-3xl bg-green-500/20 p-5 backdrop-blur-sm">

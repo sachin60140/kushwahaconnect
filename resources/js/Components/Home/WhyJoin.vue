@@ -14,7 +14,7 @@ const cards = [
 </script>
 
 <template>
-    <section class="bg-[#fffaf0] px-4 py-16 sm:px-6 lg:px-8">
+    <section class="bg-[#fffaf0] px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         <div class="mx-auto max-w-7xl">
             <div class="relative overflow-hidden rounded-4xl bg-linear-to-br from-blue-950 via-cyan-950 to-green-900 px-5 py-8 shadow-2xl shadow-blue-950/20 sm:rounded-[2.5rem] sm:px-8 sm:py-10 lg:px-12 lg:py-12">
                 <div class="pointer-events-none absolute -left-24 -top-24 h-64 w-64 rounded-full bg-orange-300/20 blur-3xl"></div>
@@ -24,35 +24,35 @@ const cards = [
                 <div class="relative mx-auto max-w-3xl text-center">
                     <p class="text-sm font-black uppercase tracking-[0.22em] text-orange-300">KushwahaConnect</p>
                     <h2 class="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl">{{ __('why_title') }}</h2>
-                    <p class="mt-4 text-lg leading-8 text-blue-100">{{ __('why_subtitle') }}</p>
+                    <p class="mt-4 text-base leading-7 text-blue-100 sm:text-lg sm:leading-8">{{ __('why_subtitle') }}</p>
                 </div>
 
-                <div class="relative mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                <div class="relative mt-8 grid grid-cols-2 gap-3 sm:mt-10 sm:gap-5 xl:grid-cols-3">
                     <article
                         v-for="(card, index) in cards"
                         :key="card.title"
-                        class="group relative min-h-64 overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/12 p-6 shadow-lg shadow-blue-950/10 backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:border-orange-300/70 hover:bg-white/18 hover:shadow-2xl hover:shadow-blue-950/20"
+                        class="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/12 p-4 sm:min-h-64 sm:rounded-[1.75rem] sm:p-6 shadow-lg shadow-blue-950/10 backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:border-orange-300/70 hover:bg-white/18 hover:shadow-2xl hover:shadow-blue-950/20"
                         :class="index === 0 || index === 2 ? 'xl:min-h-72' : ''"
                     >
-                        <div class="absolute inset-x-6 bottom-6 h-20 rounded-3xl bg-white/12 transition group-hover:bg-white/18"></div>
+                        <div class="absolute inset-x-6 bottom-6 hidden h-20 rounded-3xl bg-white/12 transition group-hover:bg-white/18 sm:block"></div>
                         <div class="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-white/10 blur-2xl"></div>
 
                         <div class="relative flex h-full flex-col">
                             <div class="flex items-start justify-between gap-4">
-                                <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br text-blue-950 shadow-xs" :class="card.accent">
+                                <span class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-linear-to-br text-blue-950 shadow-xs sm:h-14 sm:w-14" :class="card.accent">
                                     <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path :d="card.icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
                                     </svg>
                                 </span>
-                                <span class="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-black text-blue-100">
+                                <span class="hidden rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-black text-blue-100 sm:inline">
                                     0{{ index + 1 }}
                                 </span>
                             </div>
 
-                            <h3 class="mt-6 text-2xl font-black leading-tight text-white">{{ __(card.title) }}</h3>
-                            <p class="mt-3 max-w-sm text-sm font-medium leading-6 text-blue-100">{{ __(card.desc) }}</p>
+                            <h3 class="mt-4 text-base font-black leading-tight text-white sm:mt-6 sm:text-2xl">{{ __(card.title) }}</h3>
+                            <p class="mt-2 line-clamp-3 max-w-sm text-xs font-medium leading-5 text-blue-100 sm:mt-3 sm:line-clamp-none sm:text-sm sm:leading-6">{{ __(card.desc) }}</p>
 
-                            <div class="mt-auto pt-7">
+                            <div class="mt-auto hidden pt-7 sm:block">
                                 <span class="inline-flex h-2 w-24 rounded-full bg-linear-to-r" :class="card.accent"></span>
                             </div>
                         </div>
