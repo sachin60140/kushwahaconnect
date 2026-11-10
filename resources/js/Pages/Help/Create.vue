@@ -1,4 +1,5 @@
 <script setup>
+import MobileOtpField from '@/Components/MobileOtpField.vue';
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import HelpExtraFields from '@/Components/HelpExtraFields.vue';
@@ -60,7 +61,7 @@ const submit = () => {
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Mobile Number <span class="text-red-500">*</span></label>
                                     <input type="text" v-model="form.mobile" required class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                                    <div v-if="form.errors.mobile" class="text-red-500 text-xs mt-1">{{ form.errors.mobile }}</div>
+                                    <MobileOtpField :mobile="form.mobile" :error="form.errors.mobile" id-prefix="help-mobile-otp" />
                                 </div>
                             </div>
 

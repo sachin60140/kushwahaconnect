@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Rules\VerifiedMobile;
 use Illuminate\Http\Request;
 use App\Models\HelpRequest;
 use App\Models\HelpRequestDocument;
@@ -157,7 +158,7 @@ class HelpController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'mobile' => 'required|string|max:20',
+            'mobile' => ['required', 'string', 'max:20', new VerifiedMobile],
             'whatsapp' => 'nullable|string|max:20',
             'state' => 'required|string|max:255',
             'district' => 'required|string|max:255',

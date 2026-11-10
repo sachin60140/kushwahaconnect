@@ -1,4 +1,5 @@
 <script setup>
+import MobileOtpField from '@/Components/MobileOtpField.vue';
 import { computed } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
@@ -9,7 +10,7 @@ defineProps({
     categories: Array,
 });
 
-const { locale } = useLanguage();
+const { locale, __ } = useLanguage();
 const isHindi = computed(() => locale.value === 'hi');
 
 const text = computed(() => ({
@@ -70,7 +71,7 @@ const submit = () => {
 
                     <div v-if="Object.keys(form.errors).length" class="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
                         <ul class="list-disc space-y-1 pl-5">
-                            <li v-for="(message, field) in form.errors" :key="field">{{ message }}</li>
+                            <li v-for="(message, field) in form.errors" :key="field">{{ __(message) }}</li>
                         </ul>
                     </div>
 
@@ -145,7 +146,8 @@ const submit = () => {
                         </div>
                         <div>
                             <label class="text-sm font-black text-blue-950">Nominator mobile</label>
-                            <input v-model="form.nominator_mobile" type="text" required class="mt-1 w-full">
+                            <input v-model="form.nominator_mobile" type="tel" inputmode="numeric" autocomplete="tel" required class="mt-1 w-full">
+                            <MobileOtpField :mobile="form.nominator_mobile" :error="form.errors.nominator_mobile" id-prefix="nominator-mobile-otp" />
                         </div>
                     </div>
 

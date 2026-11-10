@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Rules\VerifiedMobile;
 use App\Http\Controllers\Controller;
 use App\Models\MatrimonialProfile;
 use App\Support\ImageUpload;
@@ -39,6 +40,8 @@ class MatrimonialProfileController extends Controller
 
         $validated = $request->validate([
             ...MatrimonialProfile::detailRules(),
+            // A changed contact number must be confirmed by OTP; the saved one may be re-submitted.
+            'mobile' => ['required', 'string', 'max:20', new VerifiedMobile($existing?->mobile)],
             'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
             // Mandatory when creating a profile; existing profiles may add it later.
             'biodata' => [$existing ? 'nullable' : 'required', ...MatrimonialProfile::BIODATA_RULES],

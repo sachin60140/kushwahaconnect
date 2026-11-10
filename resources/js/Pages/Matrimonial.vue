@@ -1,6 +1,10 @@
 <script setup>
+import MobileOtpField from '@/Components/MobileOtpField.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { __ } = useLanguage();
 
 defineProps({
     states: Array,
@@ -122,7 +126,7 @@ const inputClass = 'w-full border-gray-300 rounded-lg shadow-xs focus:border-gre
                         <div v-if="Object.keys(form.errors).length" class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
                             <p class="font-bold">Please fix the highlighted details and submit again.</p>
                             <ul class="mt-2 list-disc space-y-1 pl-5 text-sm">
-                                <li v-for="(message, field) in form.errors" :key="field">{{ message }}</li>
+                                <li v-for="(message, field) in form.errors" :key="field">{{ __(message) }}</li>
                             </ul>
                         </div>
 
@@ -150,7 +154,8 @@ const inputClass = 'w-full border-gray-300 rounded-lg shadow-xs focus:border-gre
                                         :placeholder="field.placeholder"
                                         :class="inputClass"
                                     >
-                                    <div v-if="form.errors[field.key]" class="text-red-500 text-sm mt-1">{{ form.errors[field.key] }}</div>
+                                    <MobileOtpField v-if="field.key === 'mobile'" :mobile="form.mobile" :error="form.errors.mobile" id-prefix="matrimonial-mobile-otp" />
+                                    <div v-else-if="form.errors[field.key]" class="text-red-500 text-sm mt-1">{{ form.errors[field.key] }}</div>
                                 </div>
                             </div>
                         </div>

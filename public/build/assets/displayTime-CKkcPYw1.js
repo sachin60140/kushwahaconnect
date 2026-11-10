@@ -1,0 +1,1 @@
+import{i as e}from"./app-clk1eMbH.js";var t=()=>e().props.displayTimeZone||`Asia/Kolkata`;export{t};

@@ -47,6 +47,12 @@ class HandleInertiaRequests extends Middleware
             'seo' => fn () => Seo::forRequest($request),
             'appVersion' => fn () => AppVersion::info(),
             'displayTimeZone' => config('app.display_timezone', 'Asia/Kolkata'),
+            // Inline mobile OTP on forms: whether it is required, and this visitor's own verified numbers.
+            'mobileOtp' => fn () => [
+                'required' => \App\Services\Otp\VerifiedMobiles::enforced(),
+                'verified' => \App\Services\Otp\VerifiedMobiles::forBrowser(),
+                'codeLength' => \App\Services\Otp\OtpService::LENGTH,
+            ],
         ];
     }
 }

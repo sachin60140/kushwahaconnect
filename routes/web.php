@@ -172,6 +172,14 @@ Route::get('/nominate-inspiring-person', [\App\Http\Controllers\PublicFigureCont
 Route::post('/nominate-inspiring-person', [\App\Http\Controllers\PublicFigureController::class, 'storeNomination'])->name('nominations.store');
 Route::post('/profile-correction-requests', [\App\Http\Controllers\PublicFigureController::class, 'storeCorrection'])->name('corrections.store');
 
+// Inline mobile OTP on public forms (MobileOtpField.vue). OtpService adds its own per-number / per-IP limits.
+Route::post('/mobile-otp/send', [\App\Http\Controllers\FormOtpController::class, 'send'])
+    ->middleware('throttle:10,1')
+    ->name('mobile-otp.send');
+Route::post('/mobile-otp/verify', [\App\Http\Controllers\FormOtpController::class, 'verify'])
+    ->middleware('throttle:20,1')
+    ->name('mobile-otp.verify');
+
 Route::get('/privacy', [PublicController::class, 'privacy'])->name('privacy');
 Route::get('/terms', [PublicController::class, 'terms'])->name('terms');
 Route::get('/data-deletion', [PublicController::class, 'dataDeletion'])->name('data-deletion');
@@ -200,6 +208,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
     })->name('dashboard');
     
+    // Member pages below need a verified mobile number (redirects to verify-mobile and back).
+    Route::middleware('mobile.verified')->group(function () {
     // User Community Profile Routes
     Route::get('/my-community-profile', [\App\Http\Controllers\User\CommunityProfileController::class, 'edit'])->name('user.member-profile.edit');
     Route::post('/my-community-profile', [\App\Http\Controllers\User\CommunityProfileController::class, 'update'])->name('user.member-profile.update');
@@ -222,6 +232,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Business Listings User Routes
     Route::get('/my-business/create', [\App\Http\Controllers\BusinessListingController::class, 'create'])->name('businesses.create');
     Route::post('/my-business', [\App\Http\Controllers\BusinessListingController::class, 'store'])->name('businesses.store');
+    });
 
     // Connection Routes
     Route::get('/my-notifications', [\App\Http\Controllers\User\NotificationController::class, 'index'])->name('user.notifications.index');
@@ -359,8 +370,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/matrimonial-photo/{id}', [PublicController::class, 'showMatrimonialPhoto'])->name('matrimonial.photo');
     Route::get('/matrimonial-biodata/{id}', [MatrimonialDirectoryController::class, 'biodata'])->whereNumber('id')->name('matrimonial.biodata');
     
-    Route::get('/jobs/create', [\App\Http\Controllers\JobController::class, 'create'])->name('jobs.create');
-    Route::post('/jobs', [\App\Http\Controllers\JobController::class, 'store'])->name('jobs.store');
+    Route::middleware('mobile.verified')->group(function () {
+        Route::get('/jobs/create', [\App\Http\Controllers\JobController::class, 'create'])->name('jobs.create');
+        Route::post('/jobs', [\App\Http\Controllers\JobController::class, 'store'])->name('jobs.store');
+    });
 
 });
 

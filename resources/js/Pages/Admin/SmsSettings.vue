@@ -61,6 +61,9 @@ const errorClass = 'mt-1 text-sm font-semibold text-red-700';
                     :class="configured ? 'border-green-200 bg-green-50 text-green-800' : 'border-amber-200 bg-amber-50 text-amber-900'"
                 >
                     {{ configured ? __('sms_settings_status_live') : __('sms_settings_status_off') }}
+                    <span class="mt-1 block font-normal">
+                        {{ configured ? __('sms_settings_otp_enforced') : __('sms_settings_otp_not_enforced') }}
+                    </span>
                 </p>
 
                 <form class="space-y-5 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6" @submit.prevent="save">

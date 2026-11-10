@@ -1,4 +1,5 @@
 <script setup>
+import MobileOtpField from '@/Components/MobileOtpField.vue';
 import { useForm } from '@inertiajs/vue3';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import SeoMeta from '@/Components/SeoMeta.vue';
@@ -108,7 +109,7 @@ const submit = () => {
                         >
                             <p class="font-bold">Please fix the highlighted details and submit again.</p>
                             <ul class="mt-2 list-disc space-y-1 pl-5 text-sm">
-                                <li v-for="(message, field) in form.errors" :key="field">{{ message }}</li>
+                                <li v-for="(message, field) in form.errors" :key="field">{{ __(message) }}</li>
                             </ul>
                         </div>
 
@@ -156,7 +157,7 @@ const submit = () => {
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Mobile Number *</label>
                                     <input v-model="form.mobile" type="text" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200" required>
-                                    <div v-if="form.errors.mobile" class="text-red-500 text-sm mt-1">{{ form.errors.mobile }}</div>
+                                    <MobileOtpField :mobile="form.mobile" :error="form.errors.mobile" id-prefix="join-mobile-otp" />
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">WhatsApp Number</label>

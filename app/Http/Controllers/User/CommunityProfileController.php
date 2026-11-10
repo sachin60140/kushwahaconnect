@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Rules\VerifiedMobile;
 use App\Http\Controllers\Controller;
 use App\Models\MemberProfile;
 use App\Models\State;
@@ -44,7 +45,8 @@ class CommunityProfileController extends Controller
             'gender' => 'required|string',
             'dob' => 'nullable|date',
             // Synced to users.mobile (unique) below, so validate uniqueness instead of failing with a 500.
-            'mobile' => ['required', 'string', 'max:20', Rule::unique(User::class, 'mobile')->ignore($request->user()->id)],
+            // A new number must be confirmed by OTP first (the account number may be re-submitted).
+            'mobile' => ['required', 'string', 'max:20', Rule::unique(User::class, 'mobile')->ignore($request->user()->id), new VerifiedMobile($request->user()->mobile)],
             'whatsapp' => 'nullable|string',
             'email' => 'nullable|email|max:255',
             'state_id' => 'nullable|exists:states,id',
@@ -87,10 +89,17 @@ class CommunityProfileController extends Controller
         }
         
         // Sync mobile number to user record
-        if ($user->mobile !== $validated['mobile']) {
+        // (User::booted() clears mobile_verified_at when the number changes.)
+        $mobileChanged = $user->mobile !== $validated['mobile'];
+        if ($mobileChanged) {
             $user->mobile = $validated['mobile'];
         }
         $user->save();
+
+        // The new number was confirmed inline by OTP: keep the account verified.
+        if ($mobileChanged && \App\Services\Otp\VerifiedMobiles::enforced() && \App\Services\Otp\VerifiedMobiles::has($user->mobile)) {
+            $user->forceFill(['mobile_verified_at' => now()])->save();
+        }
 
         return redirect()->route('dashboard')->with('status', 'Community profile updated successfully.');
     }
