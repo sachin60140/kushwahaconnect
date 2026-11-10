@@ -223,20 +223,22 @@ class HelpRequestExtras
         } else {
             $width = imagesx($image);
             $height = imagesy($image);
+            $scale = min(1, self::QR_MAX_SIDE / max($width, $height));
+            $targetWidth = max(1, (int) round($width * $scale));
+            $targetHeight = max(1, (int) round($height * $scale));
 
-            if (max($width, $height) > self::QR_MAX_SIDE) {
-                $scale = self::QR_MAX_SIDE / max($width, $height);
-                $scaled = imagescale($image, max(1, (int) round($width * $scale)), max(1, (int) round($height * $scale)));
-                if ($scaled !== false) {
-                    imagedestroy($image);
-                    $image = $scaled;
-                }
-            }
+            // Flatten onto white: a transparent QR background would otherwise turn black
+            // (black-on-black, unscannable). Also scales down and normalises palette images.
+            $canvas = imagecreatetruecolor($targetWidth, $targetHeight);
+            imagefilledrectangle($canvas, 0, 0, $targetWidth, $targetHeight, imagecolorallocate($canvas, 255, 255, 255));
+            imagealphablending($canvas, true);
+            imagecopyresampled($canvas, $image, 0, 0, 0, 0, $targetWidth, $targetHeight, $width, $height);
+            imagedestroy($image);
 
             ob_start();
-            imagepng($image, null, 9);
+            imagepng($canvas, null, 9);
             $png = (string) ob_get_clean();
-            imagedestroy($image);
+            imagedestroy($canvas);
 
             $path = 'help_upi_qr/'.Str::uuid().'.png';
             if (! $disk->put($path, $png)) {

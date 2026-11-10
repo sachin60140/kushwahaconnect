@@ -236,6 +236,29 @@ class HelpRequestAttachmentsTest extends TestCase
         $this->assertLessThanOrEqual(1200, max($size[0], $size[1]), 'Large photos are scaled down.');
     }
 
+    public function test_transparent_upi_qr_keeps_a_white_background_so_it_stays_scannable(): void
+    {
+        $image = imagecreatetruecolor(200, 200);
+        imagesavealpha($image, true);
+        imagealphablending($image, false);
+        imagefill($image, 0, 0, imagecolorallocatealpha($image, 0, 0, 0, 127));
+        imagefilledrectangle($image, 20, 20, 80, 80, imagecolorallocate($image, 0, 0, 0));
+        ob_start();
+        imagepng($image);
+        $png = (string) ob_get_clean();
+
+        $this->post(route('help.store'), $this->base([
+            'upi_qr' => UploadedFile::fake()->createWithContent('qr.png', $png),
+        ]))->assertSessionHasNoErrors();
+
+        $stored = imagecreatefromstring(Storage::disk('local')->get(HelpRequest::firstOrFail()->upi_qr));
+        $background = imagecolorsforindex($stored, imagecolorat($stored, 150, 150));
+        $module = imagecolorsforindex($stored, imagecolorat($stored, 50, 50));
+
+        $this->assertSame([255, 255, 255], [$background['red'], $background['green'], $background['blue']], 'Transparent background flattened to white, not black.');
+        $this->assertSame([0, 0, 0], [$module['red'], $module['green'], $module['blue']]);
+    }
+
     public function test_images_with_huge_pixel_dimensions_are_rejected_before_processing(): void
     {
         // A tiny file whose header claims 10000 x 10000 pixels (would exhaust memory in GD).
