@@ -23,13 +23,19 @@ class SmartPingSms implements SmsSender
     public const MAX_PER_HOUR = 300;
     public const MAX_PER_DAY = 1500;
 
+    /**
+     * Guest form OTPs may use at most this share of the hourly / daily cap, so
+     * anonymous traffic cannot use up the SMS needed for login and verification.
+     */
+    public const FORM_SHARE = 0.6;
+
     public function __construct(private array $config)
     {
     }
 
-    public function send(string $mobile, string $message): void
+    public function send(string $mobile, string $message, string $purpose = 'other'): void
     {
-        $result = $this->deliver($mobile, $message);
+        $result = $this->deliver($mobile, $message, $purpose);
 
         if (! $result['ok']) {
             throw new SmsException($result['description'] ?: 'SMS was not accepted by the gateway.');
@@ -41,12 +47,16 @@ class SmartPingSms implements SmsSender
      *
      * @return array{ok: bool, http: ?int, state: ?string, status_code: ?int, description: string, transaction_id: ?string, hint: ?string}
      */
-    public function deliver(string $mobile, string $message): array
+    public function deliver(string $mobile, string $message, string $purpose = 'other'): array
     {
         $to = self::normalizeMobile($mobile);
 
         if ($to === null) {
             return self::result(false, description: 'Invalid mobile number. Use a 10-digit Indian number.');
+        }
+
+        if (! self::allowedBaseUrl($this->config['base_url'] ?? null)) {
+            return self::result(false, description: 'SmartPing API URL must be an https://….smartping.io address.');
         }
 
         foreach (['base_url' => 'API URL', 'username' => 'user ID', 'password' => 'password', 'sender_id' => 'sender ID'] as $key => $label) {
@@ -55,7 +65,7 @@ class SmartPingSms implements SmsSender
             }
         }
 
-        if (! $this->takePlatformBudget()) {
+        if (! $this->takePlatformBudget($purpose)) {
             return self::result(false, description: 'Platform SMS limit reached. Please try again later.');
         }
 
@@ -147,7 +157,26 @@ class SmartPingSms implements SmsSender
 
     public static function stripQuery(string $text): string
     {
+        // user:password@ in a URL, then any query string.
+        $text = preg_replace('~(https?://)[^\s/@]+@~i', '$1[credentials removed]@', $text);
+
         return preg_replace('~(https?://[^\s?#]+)\?\S*~i', '$1?[query removed]', $text);
+    }
+
+    /** Only SmartPing's own HTTPS endpoints may be used as the API URL (no SSRF to other hosts). */
+    public static function allowedBaseUrl(?string $url): bool
+    {
+        if (! is_string($url) || $url === '') {
+            return false;
+        }
+
+        $parts = parse_url($url);
+        $host = strtolower((string) ($parts['host'] ?? ''));
+
+        return ($parts['scheme'] ?? '') === 'https'
+            && ! isset($parts['user'])
+            && ! isset($parts['port'])
+            && ($host === 'smartping.io' || str_ends_with($host, '.smartping.io'));
     }
 
     public static function mask(string $mobile): string
@@ -159,18 +188,33 @@ class SmartPingSms implements SmsSender
      * Platform-wide cap on real SMS so abuse of public forms cannot run up the bill.
      * Fails open if the cache store is unavailable.
      */
-    private function takePlatformBudget(): bool
+    private function takePlatformBudget(string $purpose = 'other'): bool
     {
         try {
-            $hour = RateLimiter::hit('sms-platform:hour', 3600);
-            $day = RateLimiter::hit('sms-platform:day', 86400);
+            // [key, window seconds, limit]: the whole platform, plus the guest-form share.
+            $buckets = [
+                ['sms-platform:hour', 3600, self::MAX_PER_HOUR],
+                ['sms-platform:day', 86400, self::MAX_PER_DAY],
+            ];
+            if ($purpose === 'form') {
+                $buckets[] = ['sms-platform:form:hour', 3600, (int) floor(self::MAX_PER_HOUR * self::FORM_SHARE)];
+                $buckets[] = ['sms-platform:form:day', 86400, (int) floor(self::MAX_PER_DAY * self::FORM_SHARE)];
+            }
 
-            if ($hour > self::MAX_PER_HOUR || $day > self::MAX_PER_DAY) {
-                RateLimiter::decrement('sms-platform:hour');
-                RateLimiter::decrement('sms-platform:day');
-                Log::warning('Platform SMS budget exceeded; SMS refused.', ['hour' => $hour, 'day' => $day]);
+            $taken = [];
+            foreach ($buckets as [$key, $seconds, $limit]) {
+                $count = RateLimiter::hit($key, $seconds);
+                $taken[] = $key;
 
-                return false;
+                if ($count > $limit) {
+                    foreach ($taken as $undo) {
+                        RateLimiter::decrement($undo);
+                    }
+                    Log::warning('SMS budget exceeded; SMS refused.', ['bucket' => $key, 'limit' => $limit]);
+                    SmsHealth::capReached($key);
+
+                    return false;
+                }
             }
         } catch (Throwable $e) {
             Log::warning('SMS budget check unavailable; allowing send.', ['error' => $e->getMessage()]);

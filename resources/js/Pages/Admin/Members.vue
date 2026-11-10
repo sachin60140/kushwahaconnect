@@ -18,6 +18,8 @@ const props = defineProps({
     filters: Object,
     // Members whose account mobile is not verified by OTP yet.
     unverifiedMobileCount: { type: Number, default: 0 },
+    // Only super admins may change a member's mobile.
+    canEditMobile: { type: Boolean, default: false },
 });
 
 const page = usePage();
@@ -377,10 +379,10 @@ const closeModal = () => {
                                     </span>
                                 </dd>
                             </div>
-                            <div v-if="!editingMobile" class="flex justify-end">
+                            <div v-if="canEditMobile && !editingMobile" class="flex justify-end">
                                 <button type="button" class="min-h-11 text-sm font-bold text-indigo-600 hover:underline" @click="startMobileEdit">{{ __('admin_mobile_edit') }}</button>
                             </div>
-                            <form v-else class="space-y-2" @submit.prevent="saveMobile">
+                            <form v-else-if="canEditMobile" class="space-y-2" @submit.prevent="saveMobile">
                                 <input v-model="mobileForm.mobile" type="tel" inputmode="numeric" maxlength="10" class="block min-h-11 w-full rounded-lg border-gray-300 text-base" aria-label="Mobile" />
                                 <p v-if="mobileForm.errors.mobile" class="text-sm font-semibold text-red-700">{{ __(mobileForm.errors.mobile) }}</p>
                                 <p class="text-xs text-gray-500">{{ __('admin_mobile_edit_hint') }}</p>

@@ -19,7 +19,6 @@ const user = usePage().props.auth.user;
 const form = useForm({
     name: user.name,
     email: user.email,
-    mobile: user.mobile,
     language_preference: user.language_preference || 'en',
 });
 </script>
@@ -73,19 +72,11 @@ const form = useForm({
             <div>
                 <InputLabel for="mobile" value="Mobile Number" />
 
-                <div class="flex items-center mt-1">
-                    <span class="px-3 py-2 bg-gray-100 border border-r-0 border-gray-300 rounded-l-md text-gray-500">+91</span>
-                    <TextInput
-                        id="mobile"
-                        type="text"
-                        class="block w-full rounded-l-none"
-                        v-model="form.mobile"
-                        autocomplete="tel"
-                        maxlength="10"
-                    />
-                </div>
-
-                <InputError class="mt-2" :message="form.errors.mobile" />
+                <!-- Changed only on the community profile page, where the new number is confirmed by OTP. -->
+                <p id="mobile" class="mt-1 rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-base text-gray-700">+91 {{ user.mobile || '—' }}</p>
+                <Link :href="route('user.member-profile.edit')" class="mt-1 inline-flex min-h-11 items-center text-sm font-semibold text-orange-600 hover:underline">
+                    Change mobile number (needs OTP) &rarr;
+                </Link>
             </div>
 
             <div>

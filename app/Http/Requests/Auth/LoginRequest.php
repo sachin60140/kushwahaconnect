@@ -52,6 +52,15 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        // A blocked account must not get in with its password either.
+        if (Auth::user()?->status === 'blocked') {
+            Auth::guard('web')->logout();
+
+            throw ValidationException::withMessages([
+                'email' => 'otp_login_blocked',
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 

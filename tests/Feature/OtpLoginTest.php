@@ -100,8 +100,9 @@ class OtpLoginTest extends TestCase
             ->assertSessionHasErrors(['mobile' => 'otp_login_blocked']);
         $this->assertCount(0, $this->sms->sent);
 
+        // No code was requested in this session: a generic answer only.
         $this->post(route('login.otp.verify'), ['mobile' => '9876500001', 'otp' => '123456'])
-            ->assertSessionHasErrors(['mobile' => 'otp_login_blocked']);
+            ->assertSessionHasErrors(['otp' => 'otp_error_invalid']);
         $this->assertGuest();
     }
 
@@ -187,7 +188,7 @@ class OtpLoginTest extends TestCase
     public function test_otp_login_unavailable_while_sms_is_degraded(): void
     {
         Http::fake(['*' => Http::response(['state' => 'SUBMIT_FAILED', 'statusCode' => 6001])]);
-        config(['services.smartping.base_url' => 'https://sms.example.test/send', 'services.smartping.sender_id' => 'TESTID']);
+        config(['services.smartping.base_url' => 'https://pgapi.sparc.smartping.io/fe/api/v1/send', 'services.smartping.sender_id' => 'TESTID']);
         (new \App\Services\Sms\SmartPingSms(\App\Services\Sms\SmsConfig::resolve()))->deliver('9876500002', 'x');
         $this->assertTrue(SmsHealth::isDegraded());
         $this->member();

@@ -9,5 +9,6 @@ interface SmsSender
      *
      * @throws SmsException when the gateway refuses or cannot be reached.
      */
-    public function send(string $mobile, string $message): void;
+    /** $purpose: OTP purpose (login / verify / form) or 'other'; used for SMS budgets. */
+    public function send(string $mobile, string $message, string $purpose = 'other'): void;
 }

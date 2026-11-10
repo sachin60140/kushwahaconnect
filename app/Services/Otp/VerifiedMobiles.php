@@ -43,6 +43,17 @@ class VerifiedMobiles
         return $mobile === null ? null : SmartPingSms::normalizeMobile($mobile);
     }
 
+    /**
+     * Replace a request's mobile with its bare 10-digit form before validation.
+     * Unparseable input is left as typed so the format rule can reject it.
+     */
+    public static function normalizeRequest(\Illuminate\Http\Request $request, string $field = 'mobile'): void
+    {
+        if ($request->filled($field) && ($normal = self::normalize((string) $request->input($field)))) {
+            $request->merge([$field => $normal]);
+        }
+    }
+
     public static function remember(string $mobile): void
     {
         $normalized = self::normalize($mobile);

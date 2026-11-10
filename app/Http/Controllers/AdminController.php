@@ -228,6 +228,7 @@ class AdminController extends Controller
             'states' => \App\Models\State::with('districts')->orderBy('name_en')->get(),
             'filters' => $request->only(['search', 'status', 'state_id', 'district_id', 'mobile']),
             'unverifiedMobileCount' => \App\Support\MobileVerifyReminder::unverifiedCount(),
+            'canEditMobile' => $request->user()?->role === 'super_admin',
         ]);
     }
 
@@ -237,7 +238,12 @@ class AdminController extends Controller
      */
     public function updateMemberMobile(Request $request, $id)
     {
+        // Route is behind the super_admin middleware; checked again here as a safeguard.
+        abort_unless($request->user()?->role === 'super_admin', 403);
+
         $member = MemberProfile::with('user')->findOrFail($id);
+
+        $request->merge(['mobile' => \App\Services\Otp\VerifiedMobiles::normalize((string) $request->input('mobile')) ?? $request->input('mobile')]);
 
         $validated = $request->validate([
             'mobile' => [
@@ -253,6 +259,8 @@ class AdminController extends Controller
             $member->update(['mobile' => $validated['mobile']]);
 
             if ($member->user && $member->user->mobile !== $validated['mobile']) {
+                // A super admin's change is trusted for OTP login; verification is cleared
+                // (User::booted()) and set again by the member's next OTP login or verify.
                 $member->user->mobile = $validated['mobile'];
                 $member->user->save();
             }

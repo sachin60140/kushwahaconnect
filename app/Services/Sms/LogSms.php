@@ -10,8 +10,9 @@ use Illuminate\Support\Facades\Log;
  */
 class LogSms implements SmsSender
 {
-    public function send(string $mobile, string $message): void
+    public function send(string $mobile, string $message, string $purpose = 'other'): void
     {
+        // Codes and full numbers only ever reach the log on a developer machine or in tests.
         if (app()->environment('local', 'testing')) {
             Log::info("SMS to {$mobile}: {$message}");
 

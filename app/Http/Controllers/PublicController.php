@@ -76,12 +76,15 @@ class PublicController extends Controller
         // off or failing (no OTP login) it is required, or the member could not sign in again.
         $passwordRequired = ! \App\Services\Otp\VerifiedMobiles::enforced();
 
+        // Store bare 10-digit numbers so the unique check and OTP login see one format.
+        \App\Services\Otp\VerifiedMobiles::normalizeRequest($request);
+
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
             'father_husband_name' => 'nullable|string|max:255',
             'gender' => 'required|string',
             'dob' => 'nullable|date',
-            'mobile' => ['required', 'string', 'max:20', Rule::unique(User::class, 'mobile'), new VerifiedMobile],
+            'mobile' => ['required', 'string', 'regex:/^[6-9]\d{9}$/', Rule::unique(User::class, 'mobile'), new VerifiedMobile],
             'whatsapp' => 'nullable|string|max:20',
             'email' => ['nullable', 'email', 'max:255', Rule::unique(User::class, 'email')],
             'state_id' => 'required|exists:states,id',
@@ -110,6 +113,8 @@ class PublicController extends Controller
             'consent' => 'accepted',
             'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'password' => [$passwordRequired ? 'required' : 'nullable', 'confirmed', Rules\Password::defaults()],
+        ], [
+            'mobile.regex' => 'otp_error_mobile_format',
         ]);
 
         if ($request->hasFile('profile_photo')) {

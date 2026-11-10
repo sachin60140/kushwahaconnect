@@ -68,6 +68,14 @@ const tiles = computed(() => [
             </button>
         </div>
 
+        <p
+            v-if="health.cap_hit"
+            class="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-900"
+            role="status"
+        >
+            {{ __('sms_health_cap_hit') }} · {{ formatTime(health.cap_hit.at) }}
+        </p>
+
         <section class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6" :aria-label="__('sms_health_title')">
             <div class="flex flex-wrap items-center justify-between gap-2">
                 <h3 class="text-lg font-black text-blue-950">{{ __('sms_health_title') }}</h3>

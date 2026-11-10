@@ -39,6 +39,9 @@ class CommunityProfileController extends Controller
 
     public function update(Request $request)
     {
+        // Store bare 10-digit numbers so the unique check and OTP login see one format.
+        \App\Services\Otp\VerifiedMobiles::normalizeRequest($request);
+
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
             'father_husband_name' => 'nullable|string|max:255',
@@ -46,7 +49,7 @@ class CommunityProfileController extends Controller
             'dob' => 'nullable|date',
             // Synced to users.mobile (unique) below, so validate uniqueness instead of failing with a 500.
             // A new number must be confirmed by OTP first (the account number may be re-submitted).
-            'mobile' => ['required', 'string', 'max:20', Rule::unique(User::class, 'mobile')->ignore($request->user()->id), new VerifiedMobile($request->user()->mobile)],
+            'mobile' => ['required', 'string', 'regex:/^[6-9]\d{9}$/', Rule::unique(User::class, 'mobile')->ignore($request->user()->id), new VerifiedMobile($request->user()->mobile)],
             'whatsapp' => 'nullable|string',
             'email' => 'nullable|email|max:255',
             'state_id' => 'nullable|exists:states,id',
@@ -71,6 +74,8 @@ class CommunityProfileController extends Controller
             'youtube' => 'nullable|url',
             // Join no longer asks for a photo, so members add it here.
             'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ], [
+            'mobile.regex' => 'otp_error_mobile_format',
         ]);
 
         unset($validated['profile_photo']);
@@ -103,7 +108,8 @@ class CommunityProfileController extends Controller
         
         // Sync mobile number to user record
         // (User::booted() clears mobile_verified_at when the number changes.)
-        $mobileChanged = $user->mobile !== $validated['mobile'];
+        // Same number in another format (e.g. +91 prefix) is not a change: keep it verified.
+        $mobileChanged = \App\Services\Otp\VerifiedMobiles::normalize((string) $user->mobile) !== $validated['mobile'];
         if ($mobileChanged) {
             $user->mobile = $validated['mobile'];
         }

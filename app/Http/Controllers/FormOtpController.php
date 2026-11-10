@@ -31,6 +31,13 @@ class FormOtpController extends Controller
             return response()->json(['verified' => true]);
         }
 
+        // While SMS is degraded, guest form codes never reach the gateway: no balance is
+        // spent and guest traffic cannot keep the failure state going. Recovery comes
+        // from the timed retry window or "Retry SMS now".
+        if (\App\Services\Sms\SmsConfig::configured() && \App\Services\Sms\SmsHealth::isDegraded()) {
+            return response()->json(['message' => 'otp_field_degraded', 'retry_after' => 0, 'degraded' => true], 422);
+        }
+
         try {
             $this->otp->send($mobile, OtpService::PURPOSE_FORM, $request->ip());
         } catch (OtpException $e) {

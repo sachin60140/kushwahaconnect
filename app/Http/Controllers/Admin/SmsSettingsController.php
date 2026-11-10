@@ -62,7 +62,11 @@ class SmsSettingsController extends Controller
             'sender_id' => ['nullable', 'string', 'max:20'],
             'dlt_content_id' => ['nullable', 'regex:/^\d{10,30}$/'],
             'dlt_principal_entity_id' => ['nullable', 'regex:/^\d{10,30}$/'],
-            'base_url' => ['nullable', 'url:https', 'max:255'],
+            'base_url' => ['nullable', 'url:https', 'max:255', function ($attribute, $value, $fail) {
+                if (filled($value) && ! SmartPingSms::allowedBaseUrl($value)) {
+                    $fail('sms_settings_error_url');
+                }
+            }],
             'otp_message' => ['nullable', 'string', 'max:500', 'regex:/\{otp\}/'],
         ], [
             'dlt_content_id.regex' => 'sms_settings_error_dlt_id',

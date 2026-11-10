@@ -12,7 +12,7 @@ class FakeSms implements SmsSender
 
     public bool $shouldFail = false;
 
-    public function send(string $mobile, string $message): void
+    public function send(string $mobile, string $message, string $purpose = 'other'): void
     {
         if ($this->shouldFail) {
             throw new SmsException('Fake SMS failure.');

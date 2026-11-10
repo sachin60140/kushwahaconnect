@@ -28,6 +28,7 @@ class SmsDegradedAlert extends Mailable
             '2070' => ['SmartPing rejected the user ID / password. Please update them in SMS Settings.', 'SmartPing ने यूज़र ID / पासवर्ड अस्वीकार किया — SMS सेटिंग्स में अपडेट करें।'],
             '2051' => ['The sender ID is not registered with SmartPing.', 'Sender ID SmartPing पर रजिस्टर्ड नहीं है।'],
             '7001' => ['The DLT template (content) ID was not accepted.', 'DLT टेम्पलेट (content) ID स्वीकार नहीं हुआ।'],
+            'cap' => ['The hourly or daily SMS limit was reached; new OTP SMS are refused until it resets.', 'SMS की घंटे/दिन की सीमा पूरी हो गई; सीमा रीसेट होने तक नए OTP SMS नहीं भेजे जाएँगे।'],
             default => ['SmartPing could not be reached several times in a row.', 'SmartPing से बार-बार कनेक्शन नहीं हो पाया।'],
         };
 
