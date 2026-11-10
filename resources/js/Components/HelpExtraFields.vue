@@ -1,5 +1,6 @@
 <script setup>
 import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import { useLanguage } from '@/composables/useLanguage';
 
 // Supporting documents/photos + donation details (bank, UPI) for a help request.
 // Shared by the public "Request Help" form and the admin create/edit form.
@@ -11,6 +12,8 @@ const props = defineProps({
     existingUpiQrUrl: { type: String, default: null },
     maxDocuments: { type: Number, default: 5 },
 });
+
+const { __ } = useLanguage();
 
 const fileInput = ref(null);
 const qrInput = ref(null);
@@ -77,10 +80,9 @@ const inputClass = 'mt-1 block w-full rounded-md border-gray-300 shadow-xs sm:te
     <div class="space-y-8">
         <!-- Documents / photos -->
         <section>
-            <h3 class="text-xs font-bold uppercase tracking-widest text-orange-600 mb-1">Medical / supporting documents &amp; photos</h3>
+            <h3 class="text-xs font-bold uppercase tracking-widest text-orange-600 mb-1">{{ __('help_docs_title') }}</h3>
             <p class="text-xs text-gray-500 mb-3">
-                Optional. Up to {{ maxDocuments }} files (PDF, JPG, PNG, WebP; max 5 MB each), e.g. medical reports, hospital bills, estimates or photos.
-                Shown on the public request page once it is approved.
+                {{ __('help_docs_hint').replace(':max', maxDocuments) }}
             </p>
 
             <ul v-if="existingDocuments.length" class="mb-3 divide-y divide-gray-100 rounded-lg border border-gray-200">
@@ -88,9 +90,9 @@ const inputClass = 'mt-1 block w-full rounded-md border-gray-300 shadow-xs sm:te
                     <a :href="doc.url" target="_blank" rel="noopener" class="min-w-0 truncate font-medium text-indigo-700 hover:underline">
                         {{ doc.is_image ? '🖼️' : '📄' }} {{ doc.original_name }}
                     </a>
-                    <label class="flex shrink-0 items-center gap-1 text-xs font-bold text-red-600">
+                    <label class="flex min-h-11 shrink-0 cursor-pointer items-center gap-2 text-xs font-bold text-red-600">
                         <input type="checkbox" class="rounded-sm border-gray-300 text-red-600 focus:ring-red-500" :checked="(form.remove_documents || []).includes(doc.id)" @change="toggleExisting(doc.id)">
-                        Remove
+                        {{ __('help_docs_remove') }}
                     </label>
                 </li>
             </ul>
@@ -98,7 +100,7 @@ const inputClass = 'mt-1 block w-full rounded-md border-gray-300 shadow-xs sm:te
             <ul v-if="(form.documents || []).length" class="mb-3 divide-y divide-gray-100 rounded-lg border border-green-200 bg-green-50">
                 <li v-for="(file, index) in form.documents" :key="`${file.name}-${index}`" class="flex items-center justify-between gap-3 px-3 py-2 text-sm">
                     <span class="min-w-0 truncate">{{ file.type?.startsWith('image/') ? '🖼️' : '📄' }} {{ file.name }} <span class="text-xs text-gray-500">({{ formatSize(file.size) }})</span></span>
-                    <button type="button" class="shrink-0 text-xs font-bold text-red-600 hover:underline" @click="removeNewDocument(index)">Remove</button>
+                    <button type="button" class="inline-flex min-h-11 shrink-0 items-center px-2 text-xs font-bold text-red-600 hover:underline" @click="removeNewDocument(index)">{{ __('help_docs_remove') }}</button>
                 </li>
             </ul>
 
@@ -114,71 +116,70 @@ const inputClass = 'mt-1 block w-full rounded-md border-gray-300 shadow-xs sm:te
                 <button
                     type="button"
                     :disabled="slotsLeft === 0"
-                    class="rounded-lg border border-dashed border-gray-300 bg-white px-4 py-2 text-sm font-bold text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                    class="min-h-11 rounded-lg border border-dashed border-gray-300 bg-white px-4 py-2 text-sm font-bold text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
                     @click="fileInput?.click()"
                 >
-                    + Add documents / photos
+                    {{ __('help_docs_add') }}
                 </button>
-                <span class="text-xs text-gray-500">{{ total }} of {{ maxDocuments }} attached</span>
+                <span class="text-xs text-gray-500">{{ __('help_docs_count').replace(':count', total).replace(':max', maxDocuments) }}</span>
             </div>
-            <p v-for="(message, index) in documentErrors" :key="index" class="mt-1 text-sm text-red-600">{{ message }}</p>
+            <p v-for="(message, index) in documentErrors" :key="index" class="mt-1 text-sm text-red-600">{{ __(message) }}</p>
         </section>
 
         <!-- Donation details -->
         <section>
-            <h3 class="text-xs font-bold uppercase tracking-widest text-orange-600 mb-1">Bank account &amp; UPI for donations</h3>
+            <h3 class="text-xs font-bold uppercase tracking-widest text-orange-600 mb-1">{{ __('help_bank_title') }}</h3>
             <p class="text-xs text-gray-500 mb-3">
-                Optional. If you add a bank account, the account holder name, account number and IFSC are all needed.
-                Shown publicly only after the request is approved, with a note asking donors to verify before paying.
+                {{ __('help_bank_hint') }}
             </p>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div class="sm:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700">Account Holder Name</label>
+                    <label class="block text-sm font-medium text-gray-700">{{ __('help_account_holder') }}</label>
                     <input v-model="form.account_holder_name" type="text" autocomplete="off" :class="inputClass">
-                    <p v-if="form.errors.account_holder_name" class="mt-1 text-sm text-red-600">{{ form.errors.account_holder_name }}</p>
+                    <p v-if="form.errors.account_holder_name" class="mt-1 text-sm text-red-600">{{ __(form.errors.account_holder_name) }}</p>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Account Number</label>
+                    <label class="block text-sm font-medium text-gray-700">{{ __('help_account_number') }}</label>
                     <input v-model="form.bank_account_number" type="text" inputmode="numeric" autocomplete="off" :class="inputClass">
-                    <p v-if="form.errors.bank_account_number" class="mt-1 text-sm text-red-600">{{ form.errors.bank_account_number }}</p>
+                    <p v-if="form.errors.bank_account_number" class="mt-1 text-sm text-red-600">{{ __(form.errors.bank_account_number) }}</p>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">IFSC Code</label>
-                    <input v-model="form.bank_ifsc" type="text" maxlength="11" autocomplete="off" placeholder="e.g. SBIN0001234" :class="[inputClass, 'uppercase']">
-                    <p v-if="form.errors.bank_ifsc" class="mt-1 text-sm text-red-600">{{ form.errors.bank_ifsc }}</p>
+                    <label class="block text-sm font-medium text-gray-700">{{ __('help_ifsc') }}</label>
+                    <input v-model="form.bank_ifsc" type="text" maxlength="11" autocomplete="off" :placeholder="__('help_ifsc_placeholder')" :class="[inputClass, 'uppercase']">
+                    <p v-if="form.errors.bank_ifsc" class="mt-1 text-sm text-red-600">{{ __(form.errors.bank_ifsc) }}</p>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Bank Name</label>
+                    <label class="block text-sm font-medium text-gray-700">{{ __('help_bank_name') }}</label>
                     <input v-model="form.bank_name" type="text" :class="inputClass">
-                    <p v-if="form.errors.bank_name" class="mt-1 text-sm text-red-600">{{ form.errors.bank_name }}</p>
+                    <p v-if="form.errors.bank_name" class="mt-1 text-sm text-red-600">{{ __(form.errors.bank_name) }}</p>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Branch</label>
+                    <label class="block text-sm font-medium text-gray-700">{{ __('help_branch') }}</label>
                     <input v-model="form.bank_branch" type="text" :class="inputClass">
-                    <p v-if="form.errors.bank_branch" class="mt-1 text-sm text-red-600">{{ form.errors.bank_branch }}</p>
+                    <p v-if="form.errors.bank_branch" class="mt-1 text-sm text-red-600">{{ __(form.errors.bank_branch) }}</p>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">UPI ID</label>
-                    <input v-model="form.upi_id" type="text" autocomplete="off" placeholder="e.g. name@okicici" :class="inputClass">
-                    <p v-if="form.errors.upi_id" class="mt-1 text-sm text-red-600">{{ form.errors.upi_id }}</p>
+                    <label class="block text-sm font-medium text-gray-700">{{ __('help_upi_id') }}</label>
+                    <input v-model="form.upi_id" type="text" autocomplete="off" :placeholder="__('help_upi_id_placeholder')" :class="inputClass">
+                    <p v-if="form.errors.upi_id" class="mt-1 text-sm text-red-600">{{ __(form.errors.upi_id) }}</p>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">UPI QR Code (image, max 2 MB)</label>
-                    <input ref="qrInput" type="file" accept="image/png,image/jpeg,image/webp" class="mt-1 block w-full text-sm text-gray-700 file:mr-3 file:rounded-md file:border-0 file:bg-gray-100 file:px-3 file:py-2 file:font-semibold file:text-gray-800 hover:file:bg-gray-200" @change="pickQr">
-                    <p v-if="form.errors.upi_qr" class="mt-1 text-sm text-red-600">{{ form.errors.upi_qr }}</p>
+                    <label class="block text-sm font-medium text-gray-700">{{ __('help_upi_qr') }}</label>
+                    <input ref="qrInput" type="file" accept="image/png,image/jpeg,image/webp" class="mt-1 block min-h-11 w-full text-sm text-gray-700 file:mr-3 file:rounded-md file:border-0 file:bg-gray-100 file:px-3 file:py-2 file:font-semibold file:text-gray-800 hover:file:bg-gray-200" @change="pickQr">
+                    <p v-if="form.errors.upi_qr" class="mt-1 text-sm text-red-600">{{ __(form.errors.upi_qr) }}</p>
                 </div>
                 <div v-if="qrPreview || (existingUpiQrUrl && !form.remove_upi_qr)" class="sm:col-span-2 flex items-center gap-4">
-                    <img :src="qrPreview || existingUpiQrUrl" alt="UPI QR code" class="h-32 w-32 rounded-lg border border-gray-200 bg-white object-contain p-1">
-                    <button v-if="qrPreview" type="button" class="text-xs font-bold text-red-600 hover:underline" @click="clearQr">Don't upload this QR</button>
-                    <label v-else class="flex items-center gap-1 text-xs font-bold text-red-600">
+                    <img :src="qrPreview || existingUpiQrUrl" :alt="__('help_upi_qr_alt')" class="h-32 w-32 rounded-lg border border-gray-200 bg-white object-contain p-1">
+                    <button v-if="qrPreview" type="button" class="inline-flex min-h-11 items-center text-xs font-bold text-red-600 hover:underline" @click="clearQr">{{ __('help_qr_dont_upload') }}</button>
+                    <label v-else class="flex min-h-11 cursor-pointer items-center gap-2 text-xs font-bold text-red-600">
                         <input v-model="form.remove_upi_qr" type="checkbox" class="rounded-sm border-gray-300 text-red-600 focus:ring-red-500">
-                        Remove current QR
+                        {{ __('help_qr_remove_current') }}
                     </label>
                 </div>
                 <p v-else-if="existingUpiQrUrl && form.remove_upi_qr" class="sm:col-span-2 text-xs font-bold text-red-600">
-                    Current QR will be removed on save.
-                    <button type="button" class="ml-2 text-gray-600 underline" @click="form.remove_upi_qr = false">Undo</button>
+                    {{ __('help_qr_will_remove') }}
+                    <button type="button" class="ml-2 inline-flex min-h-11 items-center text-gray-600 underline" @click="form.remove_upi_qr = false">{{ __('help_undo') }}</button>
                 </p>
             </div>
         </section>

@@ -25,16 +25,16 @@ const userInitial = computed(() => userName.value.charAt(0).toUpperCase());
 const userContact = computed(() => user.value?.mobile || user.value?.email || 'KushwahaConnect member');
 
 const userLinks = [
-    { name: 'Dashboard', route: 'dashboard', active: 'dashboard', icon: 'M3 12 12 3l9 9M5 10v10h5v-6h4v6h5V10' },
-    { name: 'My Profile', route: 'profile.edit', active: 'profile.*', icon: 'M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0ZM12 14a7 7 0 0 0-7 7h14a7 7 0 0 0-7-7Z' },
-    { name: 'Community Profile', route: 'user.member-profile.edit', active: 'user.member-profile.*', icon: 'M17 20h5v-2a4 4 0 0 0-7.6-1.7M9 20H4v-2a4 4 0 0 1 7.6-1.7M12 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0Zm8 0a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z' },
-    { name: 'My Connections', route: 'user.connections.index', active: 'user.connections.*', icon: 'M13.8 10.2a4 4 0 0 0-5.6 0l-4 4a4 4 0 1 0 5.6 5.6l1.1-1.1m-.7-4.9a4 4 0 0 0 5.6 0l4-4a4 4 0 1 0-5.6-5.6l-1.1 1.1' },
-    { name: 'Matrimonial Profile', route: 'user.matrimonial-profile.edit', active: 'user.matrimonial-profile.*', icon: 'M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z' },
-    { name: 'Help Requests', route: 'help.index', active: 'help.*', icon: 'M12 8v8m-4-4h8m5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z' },
-    { name: 'Volunteering', route: 'volunteer.create', active: 'volunteer.*', icon: 'M12 4.5a4 4 0 1 1 0 8 4 4 0 0 1 0-8ZM4 21a8 8 0 0 1 16 0' },
-    { name: 'Notifications', route: 'user.notifications.index', active: 'user.notifications.*', icon: 'M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 0 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5m6 0v1a3 3 0 1 1-6 0v-1' },
-    { name: 'Privacy Settings', route: 'user.privacy-settings.edit', active: 'user.privacy-settings.*', icon: 'M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2Zm10-10V7a4 4 0 0 0-8 0v4h8Z' },
-    { name: 'My Business', route: 'businesses.create', active: 'businesses.create', icon: 'M3 21h18M5 21V7l8-4v18M19 21V11l-6-4M9 9h1m-1 4h1m-1 4h1m6-4h1m-1 4h1' },
+    { name: 'Dashboard', key: 'menu_dashboard', route: 'dashboard', active: 'dashboard', icon: 'M3 12 12 3l9 9M5 10v10h5v-6h4v6h5V10' },
+    { name: 'My Profile', key: 'nav_my_profile', route: 'profile.edit', active: 'profile.*', icon: 'M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0ZM12 14a7 7 0 0 0-7 7h14a7 7 0 0 0-7-7Z' },
+    { name: 'Community Profile', key: 'nav_community_profile', route: 'user.member-profile.edit', active: 'user.member-profile.*', icon: 'M17 20h5v-2a4 4 0 0 0-7.6-1.7M9 20H4v-2a4 4 0 0 1 7.6-1.7M12 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0Zm8 0a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z' },
+    { name: 'My Connections', key: 'nav_my_connections', route: 'user.connections.index', active: 'user.connections.*', icon: 'M13.8 10.2a4 4 0 0 0-5.6 0l-4 4a4 4 0 1 0 5.6 5.6l1.1-1.1m-.7-4.9a4 4 0 0 0 5.6 0l4-4a4 4 0 1 0-5.6-5.6l-1.1 1.1' },
+    { name: 'Matrimonial Profile', key: 'nav_matrimonial_profile', route: 'user.matrimonial-profile.edit', active: 'user.matrimonial-profile.*', icon: 'M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z' },
+    { name: 'Help Requests', key: 'nav_help_requests', route: 'help.index', active: 'help.*', icon: 'M12 8v8m-4-4h8m5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z' },
+    { name: 'Volunteering', key: 'nav_volunteering', route: 'volunteer.create', active: 'volunteer.*', icon: 'M12 4.5a4 4 0 1 1 0 8 4 4 0 0 1 0-8ZM4 21a8 8 0 0 1 16 0' },
+    { name: 'Notifications', key: 'nav_notifications', route: 'user.notifications.index', active: 'user.notifications.*', icon: 'M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 0 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5m6 0v1a3 3 0 1 1-6 0v-1' },
+    { name: 'Privacy Settings', key: 'nav_privacy_settings', route: 'user.privacy-settings.edit', active: 'user.privacy-settings.*', icon: 'M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2Zm10-10V7a4 4 0 0 0-8 0v4h8Z' },
+    { name: 'My Business', key: 'nav_my_business', route: 'businesses.create', active: 'businesses.create', icon: 'M3 21h18M5 21V7l8-4v18M19 21V11l-6-4M9 9h1m-1 4h1m-1 4h1m6-4h1m-1 4h1' },
 ];
 
 const adminLinks = [
@@ -106,7 +106,7 @@ const isActive = (link) => route().current(link.active);
                         >
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" :d="link.icon" />
                         </svg>
-                        {{ link.name }}
+                        {{ link.key ? __(link.key) : link.name }}
                     </Link>
                 </nav>
             </div>
@@ -118,7 +118,7 @@ const isActive = (link) => route().current(link.active);
                     </span>
                     <span class="ml-3 min-w-0">
                         <span class="block truncate text-sm font-black text-white">{{ userName }}</span>
-                        <span class="block text-xs font-bold text-blue-200">View profile</span>
+                        <span class="block text-xs font-bold text-blue-200">{{ __('nav_view_profile') }}</span>
                     </span>
                 </Link>
             </div>
@@ -142,20 +142,20 @@ const isActive = (link) => route().current(link.active);
                         </button>
                         <Link :href="route('welcome')" class="flex items-center gap-2">
                             <span class="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-950 text-sm font-black text-orange-300">KC</span>
-                            <span class="text-base font-black text-blue-950">KushwahaConnect</span>
+                            <span class="text-base font-black text-blue-950 max-[399px]:hidden">KushwahaConnect</span>
                         </Link>
                     </div>
 
                     <div class="hidden md:block">
                         <p class="text-sm font-black uppercase tracking-[0.18em] text-orange-500">
-                            {{ isAdmin ? 'Administration' : 'Member Area' }}
+                            {{ isAdmin ? 'Administration' : __('nav_member_area') }}
                         </p>
-                        <p class="mt-1 text-sm font-bold text-slate-500">Welcome, {{ userName }}</p>
+                        <p class="mt-1 text-sm font-bold text-slate-500">{{ __('nav_welcome').replace(':name', userName) }}</p>
                     </div>
 
-                    <div class="ml-auto flex items-center gap-3">
+                    <div class="ml-auto flex items-center gap-2 sm:gap-3">
                         <Link :href="route('welcome')" class="hidden min-h-11 items-center justify-center rounded-full border border-blue-950/15 px-5 text-sm font-black text-blue-950 transition hover:border-blue-950 hover:bg-blue-50 sm:inline-flex">
-                            Public Site
+                            {{ __('nav_public_site') }}
                         </Link>
                         <Link :href="route('user.notifications.index')" class="relative inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 text-blue-950 transition hover:bg-orange-50">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
@@ -179,8 +179,8 @@ const isActive = (link) => route().current(link.active);
                                 </button>
                             </template>
                             <template #content>
-                                <DropdownLink :href="route('profile.edit')">Profile Settings</DropdownLink>
-                                <DropdownLink :href="route('logout')" method="post" as="button">Log Out</DropdownLink>
+                                <DropdownLink :href="route('profile.edit')">{{ __('nav_profile_settings') }}</DropdownLink>
+                                <DropdownLink :href="route('logout')" method="post" as="button">{{ __('nav_log_out') }}</DropdownLink>
                             </template>
                         </Dropdown>
                     </div>
@@ -194,7 +194,7 @@ const isActive = (link) => route().current(link.active);
                             :href="route(link.route)"
                             :active="isActive(link)"
                         >
-                            {{ link.name }}
+                            {{ link.key ? __(link.key) : link.name }}
                         </ResponsiveNavLink>
                     </div>
                     <div class="border-t border-slate-100 px-4 py-4">

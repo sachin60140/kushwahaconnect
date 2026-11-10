@@ -3,8 +3,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { usePage } from '@inertiajs/vue3';
 import { useLanguage } from '@/composables/useLanguage';
+import { ACCOUNT_STATUSES, BUSINESS_CATEGORIES, optionLabel } from '@/utils/optionLabels';
 
-const { __ } = useLanguage();
+const { __, locale } = useLanguage();
 
 const props = defineProps({
     businessListings: {
@@ -31,7 +32,8 @@ const statusColor = user.status === 'approved' ? 'bg-green-100 text-green-800' :
                     user.status === 'blocked' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800';
 
 const formatStatus = (status) => {
-    return status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+    const known = ACCOUNT_STATUSES.some((item) => item.value === status);
+    return known ? optionLabel(__, ACCOUNT_STATUSES, status) : status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
 };
 
 const businessStatusClass = (status) => {
@@ -43,7 +45,7 @@ const businessStatusClass = (status) => {
 };
 
 const formatDate = (date) => {
-    return new Date(date).toLocaleDateString('en-IN', {
+    return new Date(date).toLocaleDateString(locale.value === 'hi' ? 'hi-IN' : 'en-IN', {
         day: '2-digit',
         month: 'short',
         year: 'numeric',
@@ -57,7 +59,7 @@ const formatDate = (date) => {
     <AuthenticatedLayout>
         <template #header>
             <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                Dashboard Overview
+                {{ __('dash_title') }}
             </h2>
         </template>
 
@@ -79,12 +81,12 @@ const formatDate = (date) => {
                 <div class="overflow-hidden bg-white shadow-xs sm:rounded-lg">
                     <div class="p-6 text-gray-900 flex flex-col md:flex-row justify-between items-center">
                         <div>
-                            <h3 class="text-2xl font-bold mb-2">Welcome back, {{ user.name }}!</h3>
-                            <p class="text-gray-600">Here's what's happening with your account today.</p>
+                            <h3 class="text-2xl font-bold mb-2">{{ __('dash_welcome').replace(':name', user.name) }}</h3>
+                            <p class="text-gray-600">{{ __('dash_welcome_sub') }}</p>
                         </div>
                         <div class="mt-4 md:mt-0 flex items-center space-x-4">
                             <div class="text-right">
-                                <p class="text-sm text-gray-500 mb-1">Account Status</p>
+                                <p class="text-sm text-gray-500 mb-1">{{ __('dash_account_status') }}</p>
                                 <span :class="statusColor" class="px-3 py-1 rounded-full text-sm font-bold shadow-xs">
                                     {{ formatStatus(user.status) }}
                                 </span>
@@ -137,9 +139,9 @@ const formatDate = (date) => {
                                     <div class="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-3">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                                     </div>
-                                    <h4 class="text-lg font-bold text-gray-800 mb-1">Community Members</h4>
-                                    <p class="text-sm text-gray-500 mb-4">Connect with Kushwaha community members worldwide.</p>
-                                    <Link :href="route('directory')" class="text-sm text-green-600 font-semibold hover:underline">View Directory</Link>
+                                    <h4 class="text-lg font-bold text-gray-800 mb-1">{{ __('dash_members_title') }}</h4>
+                                    <p class="text-sm text-gray-500 mb-4">{{ __('dash_members_desc') }}</p>
+                                    <Link :href="route('directory')" class="inline-flex min-h-11 items-center text-sm text-green-600 font-semibold hover:underline">{{ __('btn_view_directory') }}</Link>
                                 </div>
                             </div>
 
@@ -149,9 +151,9 @@ const formatDate = (date) => {
                                     <div class="w-10 h-10 bg-pink-100 text-pink-600 rounded-full flex items-center justify-center mb-3">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
                                     </div>
-                                    <h4 class="text-lg font-bold text-gray-800 mb-1">Matrimonial</h4>
-                                    <p class="text-sm text-gray-500 mb-4">Manage your matrimonial profile and search for matches.</p>
-                                    <Link :href="route('matrimonial-directory.index')" class="text-sm text-pink-600 font-semibold hover:underline">Find Matches</Link>
+                                    <h4 class="text-lg font-bold text-gray-800 mb-1">{{ __('menu_matrimonial') }}</h4>
+                                    <p class="text-sm text-gray-500 mb-4">{{ __('dash_mat_desc') }}</p>
+                                    <Link :href="route('matrimonial-directory.index')" class="inline-flex min-h-11 items-center text-sm text-pink-600 font-semibold hover:underline">{{ __('dash_find_matches') }}</Link>
                                 </div>
                             </div>
 
@@ -161,9 +163,9 @@ const formatDate = (date) => {
                                     <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-3">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                                     </div>
-                                    <h4 class="text-lg font-bold text-gray-800 mb-1">Volunteer & Help</h4>
-                                    <p class="text-sm text-gray-500 mb-4">Offer your skills or request help from the community.</p>
-                                    <Link :href="route('volunteer.create')" class="text-sm text-blue-600 font-semibold hover:underline">Get Involved</Link>
+                                    <h4 class="text-lg font-bold text-gray-800 mb-1">{{ __('dash_vol_title') }}</h4>
+                                    <p class="text-sm text-gray-500 mb-4">{{ __('dash_vol_desc') }}</p>
+                                    <Link :href="route('volunteer.create')" class="inline-flex min-h-11 items-center text-sm text-blue-600 font-semibold hover:underline">{{ __('dash_get_involved') }}</Link>
                                 </div>
                             </div>
 
@@ -175,11 +177,11 @@ const formatDate = (date) => {
                                             <div class="w-10 h-10 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mb-3">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m3-4h1m-1 4h1m-5 8h8"></path></svg>
                                             </div>
-                                            <h4 class="text-lg font-bold text-gray-800 mb-1">My Business</h4>
-                                            <p class="text-sm text-gray-500">Track submitted business listing approval status.</p>
+                                            <h4 class="text-lg font-bold text-gray-800 mb-1">{{ __('dash_my_business') }}</h4>
+                                            <p class="text-sm text-gray-500">{{ __('dash_my_business_desc') }}</p>
                                         </div>
-                                        <Link :href="route('businesses.create')" class="shrink-0 rounded-full bg-orange-500 px-4 py-2 text-xs font-black text-white shadow-xs transition hover:bg-orange-600">
-                                            Add Business
+                                        <Link :href="route('businesses.create')" class="inline-flex min-h-11 shrink-0 items-center rounded-full bg-orange-500 px-4 py-2 text-xs font-black text-white shadow-xs transition hover:bg-orange-600">
+                                            {{ __('dash_add_business') }}
                                         </Link>
                                     </div>
 
@@ -193,7 +195,7 @@ const formatDate = (date) => {
                                                 <div>
                                                     <p class="text-base font-black text-blue-950">{{ business.business_name }}</p>
                                                     <p class="mt-1 text-xs font-bold text-slate-500">
-                                                        {{ business.category }} - Submitted {{ formatDate(business.created_at) }}
+                                                        {{ optionLabel(__, BUSINESS_CATEGORIES, business.category) }} - {{ __('dash_submitted') }} {{ formatDate(business.created_at) }}
                                                     </p>
                                                 </div>
                                                 <span class="inline-flex w-fit items-center rounded-full border px-3 py-1 text-xs font-black" :class="businessStatusClass(business.status)">
@@ -201,21 +203,21 @@ const formatDate = (date) => {
                                                 </span>
                                             </div>
                                             <p v-if="business.status === 'pending'" class="mt-3 text-xs font-semibold text-yellow-700">
-                                                Waiting for admin review. It will appear publicly after approval.
+                                                {{ __('dash_biz_pending') }}
                                             </p>
                                             <p v-else-if="business.status === 'approved'" class="mt-3 text-xs font-semibold text-green-700">
-                                                Approved and visible in the community business directory.
+                                                {{ __('dash_biz_approved') }}
                                             </p>
                                             <p v-else-if="business.status === 'rejected'" class="mt-3 text-xs font-semibold text-red-700">
-                                                Rejected by admin. Please contact support or submit updated details.
+                                                {{ __('dash_biz_rejected') }}
                                             </p>
                                         </div>
                                     </div>
 
                                     <div v-else class="mt-5 rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-5 text-center">
-                                        <p class="text-sm font-bold text-gray-700">No business submitted yet.</p>
-                                        <p class="mt-1 text-xs text-gray-500">Submit your business to promote it in the KushwahaConnect directory after admin approval.</p>
-                                        <Link :href="route('businesses.create')" class="mt-4 inline-flex text-sm text-purple-600 font-semibold hover:underline">List Your Business</Link>
+                                        <p class="text-sm font-bold text-gray-700">{{ __('dash_no_business') }}</p>
+                                        <p class="mt-1 text-xs text-gray-500">{{ __('dash_no_business_hint') }}</p>
+                                        <Link :href="route('businesses.create')" class="mt-2 inline-flex min-h-11 items-center text-sm text-purple-600 font-semibold hover:underline">{{ __('biz_list_your_business') }}</Link>
                                     </div>
                                 </div>
                             </div>
@@ -227,30 +229,30 @@ const formatDate = (date) => {
                         <!-- Recent Activity / Notifications -->
                         <div class="bg-white p-5 shadow-xs rounded-lg border border-gray-100">
                             <div class="flex items-center justify-between mb-4 border-b pb-2">
-                                <h4 class="text-lg font-bold text-gray-800">Recent Activity</h4>
-                                <span class="text-xs text-orange-600 font-bold bg-orange-100 px-2 py-1 rounded-sm">New</span>
+                                <h4 class="text-lg font-bold text-gray-800">{{ __('dash_recent_activity') }}</h4>
+                                <span class="text-xs text-orange-600 font-bold bg-orange-100 px-2 py-1 rounded-sm">{{ __('dash_new') }}</span>
                             </div>
                             <div class="rounded-lg bg-gray-50 border border-gray-100 px-4 py-6 text-center">
                                 <div class="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-orange-100 text-orange-600">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
                                 </div>
-                                <p class="text-sm font-medium text-gray-800">No recent notifications yet.</p>
-                                <p class="mt-1 text-xs text-gray-500">Community updates and connection requests will appear here.</p>
+                                <p class="text-sm font-medium text-gray-800">{{ __('dash_no_notifications') }}</p>
+                                <p class="mt-1 text-xs text-gray-500">{{ __('dash_no_notifications_hint') }}</p>
                             </div>
-                            <Link :href="route('user.notifications.index')" class="block text-center w-full mt-4 py-2 border border-gray-200 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 transition">
-                                View All Notifications
+                            <Link :href="route('user.notifications.index')" class="flex min-h-11 items-center justify-center text-center w-full mt-4 py-2 border border-gray-200 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 transition">
+                                {{ __('dash_view_all_notifications') }}
                             </Link>
                         </div>
 
                         <!-- Connections Snippet -->
                         <div class="bg-white p-5 shadow-xs rounded-lg border border-gray-100">
-                            <h4 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">My Connections</h4>
+                            <h4 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">{{ __('dash_my_connections') }}</h4>
                             <div class="text-center py-6">
                                 <div class="mx-auto w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 mb-3">
                                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                                 </div>
-                                <p class="text-sm text-gray-500">You don't have any connections yet.</p>
-                                <Link :href="route('directory')" class="mt-3 inline-block text-sm text-green-600 font-bold hover:underline">Find People</Link>
+                                <p class="text-sm text-gray-500">{{ __('dash_no_connections') }}</p>
+                                <Link :href="route('directory')" class="mt-1 inline-flex min-h-11 items-center text-sm text-green-600 font-bold hover:underline">{{ __('dash_find_people') }}</Link>
                             </div>
                         </div>
                     </div>

@@ -1,1 +1,0 @@
-import{B as e,N as t,d as n,g as r,q as i,y as a}from"./app-BtnjetBq.js";var o={class:`text-sm text-red-600`},s={__name:`InputError`,props:{message:{type:String}},setup(s){return(c,l)=>e((t(),a(`div`,null,[r(`p`,o,i(s.message),1)],512)),[[n,s.message]])}};export{s as t};
