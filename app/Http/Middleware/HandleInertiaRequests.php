@@ -46,6 +46,7 @@ class HandleInertiaRequests extends Middleware
             'locale' => app()->getLocale(),
             'seo' => fn () => Seo::forRequest($request),
             'appVersion' => fn () => AppVersion::info(),
+            'displayTimeZone' => config('app.display_timezone', 'Asia/Kolkata'),
         ];
     }
 }

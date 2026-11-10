@@ -1,5 +1,6 @@
 <script setup>
 import { useLanguage } from '@/composables/useLanguage';
+import { displayTimeZone } from '@/utils/displayTime';
 
 defineProps({
     events: {
@@ -15,10 +16,10 @@ const formatDate = (value) => {
         return '';
     }
 
-    // event_date is the admin-entered wall-clock time stored as-is with APP timezone UTC,
-    // so render it in UTC; using the viewer's zone would shift IST viewers by +5:30.
+    // event_date is stored in UTC; show it in the site's display zone (India time)
+    // so every visitor sees the same event time.
     return new Date(value).toLocaleDateString(undefined, {
-        timeZone: 'UTC',
+        timeZone: displayTimeZone(),
         month: 'short',
         day: 'numeric',
         year: 'numeric',
@@ -31,7 +32,7 @@ const formatTime = (value) => {
     }
 
     return new Date(value).toLocaleTimeString(undefined, {
-        timeZone: 'UTC',
+        timeZone: displayTimeZone(),
         hour: 'numeric',
         minute: '2-digit',
     });

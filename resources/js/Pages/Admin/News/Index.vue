@@ -1,6 +1,7 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { displayTimeZone } from '@/utils/displayTime';
 
 const props = defineProps({
     items: Object
@@ -53,7 +54,7 @@ const typeLabel = (type) => ({
                                 <tr v-for="item in items.data" :key="item.id">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ typeLabel(item.type) }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.title }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ item.event_date ? new Date(item.event_date).toLocaleDateString() : 'N/A' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ item.event_date ? new Date(item.event_date).toLocaleDateString(undefined, { timeZone: displayTimeZone() }) : 'N/A' }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full" :class="item.is_published ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'">
                                           {{ item.is_published ? 'Published' : 'Draft' }}
