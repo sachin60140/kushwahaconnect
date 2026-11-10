@@ -204,6 +204,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('Dashboard', [
             // Reminder to verify the mobile once by OTP, shown only while SMS can deliver codes.
             'mobileVerifyReminder' => $user->mobile && ! $user->mobile_verified_at && \App\Services\Otp\VerifiedMobiles::enforced(),
+            // Details the short Join form leaves for later ("complete your profile" card).
+            'profileChecklist' => \App\Models\MemberProfile::checklistFor($user),
             'businessListings' => auth()->user()
                 ->businessListings()
                 ->latest()

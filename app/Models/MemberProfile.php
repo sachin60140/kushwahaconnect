@@ -50,6 +50,39 @@ class MemberProfile extends Model
             });
     }
 
+    /** Optional details the short Join form skips, in the order the dashboard lists them. */
+    public const CHECKLIST_FIELDS = [
+        'profile_photo',
+        'father_husband_name',
+        'dob',
+        'whatsapp',
+        'city_village',
+        'current_address',
+        'pin_code',
+        'email',
+    ];
+
+    /**
+     * Which optional profile details are still empty for $user.
+     *
+     * @return array{missing: list<string>, percent: int}
+     */
+    public static function checklistFor(User $user): array
+    {
+        $profile = self::where('user_id', $user->id)->first();
+        $total = count(self::CHECKLIST_FIELDS);
+
+        $missing = array_values(array_filter(
+            self::CHECKLIST_FIELDS,
+            fn (string $field) => ! $profile || blank($profile->{$field}),
+        ));
+
+        return [
+            'missing' => $missing,
+            'percent' => (int) round(($total - count($missing)) / $total * 100),
+        ];
+    }
+
     /**
      * Whether the profile photo may be shown to the given viewer, honouring the
      * owner's photo_visibility privacy setting. Expects user.privacySetting loaded.
