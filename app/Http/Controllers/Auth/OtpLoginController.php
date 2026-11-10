@@ -7,29 +7,65 @@ use App\Models\LoginHistory;
 use App\Models\User;
 use App\Services\Otp\OtpException;
 use App\Services\Otp\OtpService;
+use App\Services\Otp\VerifiedMobiles;
 use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
 
+/**
+ * Sign in with a one-time SMS code sent to the member's registered mobile.
+ *
+ * Errors are dictionary keys (resources/js/dictionary.js) so the login page
+ * shows them in Hindi or English. Available only while SMS is on and healthy
+ * (VerifiedMobiles::enforced()); otherwise members use their password.
+ */
 class OtpLoginController extends Controller
 {
+    /** Number lookups per IP per hour: "no account found" must not become a number scanner. */
+    public const MAX_LOOKUPS_PER_IP_PER_HOUR = 20;
+
+    /** Session key holding the number a login code was sent to (the visitor's own input). */
+    public const SESSION_KEY = 'otp_login_mobile';
+
     public function __construct(private OtpService $otp)
     {
     }
 
     /**
-     * Generate and send OTP to the given mobile number.
+     * Login page data for the OTP option.
+     *
+     * @return array{available: bool, mobile: ?string, resend_in: int, expires_in: int, codeLength: int}
      */
-    public function generateOtp(Request $request)
+    public static function pageState(Request $request): array
     {
-        $request->validate([
-            'mobile' => ['required', 'string', 'regex:/^[6-9]\d{9}$/'],
-        ], [
-            'mobile.regex' => 'Please enter a valid 10-digit Indian mobile number.',
-        ]);
+        $mobile = $request->session()->get(self::SESSION_KEY);
+        $status = $mobile ? app(OtpService::class)->status($mobile, OtpService::PURPOSE_LOGIN) : ['resend_in' => 0, 'expires_in' => 0];
 
-        $mobile = $request->mobile;
+        return [
+            'available' => VerifiedMobiles::enforced(),
+            'mobile' => $mobile,
+            'resend_in' => $status['resend_in'],
+            'expires_in' => $status['expires_in'],
+            'codeLength' => OtpService::LENGTH,
+        ];
+    }
+
+    public function generateOtp(Request $request): RedirectResponse
+    {
+        if (! VerifiedMobiles::enforced()) {
+            throw ValidationException::withMessages(['mobile' => 'otp_login_unavailable']);
+        }
+
+        $mobile = $this->mobile($request);
+
+        $lookupKey = 'otp-login-lookup:'.$request->ip();
+        if (RateLimiter::tooManyAttempts($lookupKey, self::MAX_LOOKUPS_PER_IP_PER_HOUR)) {
+            throw ValidationException::withMessages(['mobile' => 'otp_error_rate_limited']);
+        }
+        RateLimiter::hit($lookupKey, 3600);
 
         // Only existing members can log in with OTP. Accounts are created through the
         // Join form; auto-creating users here would reserve the number and block the
@@ -37,54 +73,51 @@ class OtpLoginController extends Controller
         $user = User::where('mobile', $mobile)->first();
 
         if (! $user) {
-            throw ValidationException::withMessages([
-                'mobile' => 'No account found with this mobile number. Please join the community first.',
-            ]);
+            throw ValidationException::withMessages(['mobile' => 'otp_login_no_account']);
         }
 
         if ($user->status === 'blocked') {
-            return back()->withErrors(['mobile' => 'This account has been blocked by the administrator.']);
+            throw ValidationException::withMessages(['mobile' => 'otp_login_blocked']);
         }
 
         try {
-            $this->otp->send($mobile, OtpService::PURPOSE_LOGIN, $request->ip());
+            $this->otp->send($user->mobile, OtpService::PURPOSE_LOGIN, $request->ip());
         } catch (OtpException $e) {
-            throw ValidationException::withMessages(['mobile' => self::message($e)]);
+            throw ValidationException::withMessages(['mobile' => MobileVerificationController::errorKey($e)]);
         }
 
-        return back()->with('status', 'otp_sent');
+        $request->session()->put(self::SESSION_KEY, $mobile);
+
+        return back()->with('status', 'otp_login_sent');
     }
 
-    /**
-     * Verify the OTP and login.
-     */
-    public function verifyOtp(Request $request)
+    public function verifyOtp(Request $request): RedirectResponse
     {
+        $mobile = $this->mobile($request);
+
         $request->validate([
-            'mobile' => ['required', 'string'],
-            'otp' => ['required', 'string', 'size:6'],
+            'otp' => ['required', 'string', 'regex:/^\d{'.OtpService::LENGTH.'}$/'],
+        ], [
+            'otp.required' => 'otp_error_code_format',
+            'otp.regex' => 'otp_error_code_format',
         ]);
 
-        $user = User::where('mobile', $request->mobile)->first();
+        $user = User::where('mobile', $mobile)->first();
 
         if (! $user) {
-            throw ValidationException::withMessages([
-                'mobile' => 'No account found with this mobile number.',
-            ]);
+            throw ValidationException::withMessages(['mobile' => 'otp_login_no_account']);
         }
 
         if ($user->status === 'blocked') {
-            throw ValidationException::withMessages([
-                'mobile' => 'This account has been blocked by the administrator.',
-            ]);
+            throw ValidationException::withMessages(['mobile' => 'otp_login_blocked']);
         }
 
         try {
-            $this->otp->verify($user->mobile, OtpService::PURPOSE_LOGIN, (string) $request->otp);
+            $this->otp->verify($user->mobile, OtpService::PURPOSE_LOGIN, (string) $request->input('otp'));
         } catch (OtpException $e) {
             $this->logLoginHistory($user->id, $request, 'failed');
 
-            throw ValidationException::withMessages(['otp' => self::message($e)]);
+            throw ValidationException::withMessages(['otp' => MobileVerificationController::errorKey($e)]);
         }
 
         // Receiving the code proves the member holds this number.
@@ -95,21 +128,30 @@ class OtpLoginController extends Controller
         Auth::login($user, $request->boolean('remember'));
 
         $request->session()->regenerate();
+        $request->session()->forget(self::SESSION_KEY);
 
         $this->logLoginHistory($user->id, $request, 'success');
 
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
-    private static function message(OtpException $e): string
+    /** "Use a different number": forget the pending login number. */
+    public function reset(Request $request): RedirectResponse
     {
-        return match ($e->reason) {
-            OtpService::COOLDOWN, OtpService::RATE_LIMITED => "Too many attempts. Please try again in {$e->retryAfter} seconds.",
-            OtpService::SEND_FAILED => 'We could not send the OTP right now. Please try again later.',
-            OtpService::EXPIRED => 'The provided OTP has expired. Please request a new one.',
-            OtpService::TOO_MANY_ATTEMPTS => 'Too many incorrect attempts. Please request a new OTP.',
-            default => 'The provided OTP is incorrect.',
-        };
+        $request->session()->forget(self::SESSION_KEY);
+
+        return back();
+    }
+
+    private function mobile(Request $request): string
+    {
+        $mobile = VerifiedMobiles::normalize((string) $request->input('mobile'));
+
+        if ($mobile === null) {
+            throw ValidationException::withMessages(['mobile' => 'otp_error_mobile_format']);
+        }
+
+        return $mobile;
     }
 
     protected function logLoginHistory($userId, Request $request, $status)

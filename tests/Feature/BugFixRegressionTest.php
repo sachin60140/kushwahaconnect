@@ -150,12 +150,15 @@ class BugFixRegressionTest extends TestCase
 
     public function test_otp_request_does_not_create_accounts_and_verify_is_throttled(): void
     {
+        // OTP login is offered only while SMS is on.
+        config(['services.sms.driver' => 'smartping', 'services.smartping.username' => 'test-user', 'services.smartping.password' => 'test-pass']);
+        $sms = new \App\Services\Sms\FakeSms;
+        $this->app->instance(\App\Services\Sms\SmsSender::class, $sms);
+
         $this->post(route('login.otp.generate'), ['mobile' => '9123456789'])
             ->assertSessionHasErrors('mobile');
         $this->assertDatabaseMissing('users', ['mobile' => '9123456789']);
 
-        $sms = new \App\Services\Sms\FakeSms;
-        $this->app->instance(\App\Services\Sms\SmsSender::class, $sms);
 
         User::factory()->create(['mobile' => '9123456780']);
         $this->post(route('login.otp.generate'), ['mobile' => '9123456780'])
