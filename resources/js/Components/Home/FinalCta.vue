@@ -31,9 +31,6 @@ const whatsappHref = computed(() => {
                 <Link :href="route('join')" class="inline-flex min-h-14 items-center justify-center rounded-full bg-orange-500 px-7 text-base font-black text-white transition hover:bg-orange-600">
                     {{ __('btn_join') }}
                 </Link>
-                <Link :href="route('join')" class="inline-flex min-h-14 items-center justify-center rounded-full bg-white px-7 text-base font-black text-blue-950 transition hover:bg-orange-50">
-                    {{ __('btn_submit_details') }}
-                </Link>
                 <a :href="whatsappHref" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-14 items-center justify-center rounded-full border border-white/20 bg-white/10 px-7 text-base font-black text-white transition hover:bg-white/15">
                     {{ __('btn_whatsapp') }}
                 </a>

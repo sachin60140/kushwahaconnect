@@ -39,7 +39,7 @@ const formatTime = (value) => {
 </script>
 
 <template>
-    <section class="bg-white px-4 py-16 sm:px-6 lg:px-8">
+    <section v-if="events.length" class="bg-white px-4 py-16 sm:px-6 lg:px-8">
         <div class="mx-auto max-w-7xl">
             <div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
                 <div>

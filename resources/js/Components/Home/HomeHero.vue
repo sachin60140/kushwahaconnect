@@ -96,8 +96,8 @@ const intro = computed(() => {
                             <div class="flex items-center gap-3">
                                 <div class="h-12 w-12 rounded-full bg-linear-to-br from-blue-900 to-green-700"></div>
                                 <div class="min-w-0 flex-1">
-                                    <p class="truncate text-sm font-black text-blue-950">{{ __('why_connections_title') }}</p>
-                                    <p class="truncate text-xs font-semibold text-slate-500">{{ __('hero_tagline') }}</p>
+                                    <p class="truncate text-sm font-black text-blue-950">{{ __('hero_card_directory') }}</p>
+                                    <p class="truncate text-xs font-semibold text-slate-500">{{ __('hero_card_directory_desc') }}</p>
                                 </div>
                                 <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-black text-green-800">{{ __('btn_connect') }}</span>
                             </div>
