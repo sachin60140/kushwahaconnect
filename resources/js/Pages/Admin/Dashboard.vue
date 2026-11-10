@@ -2,11 +2,13 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import ApexChart from 'vue3-apexcharts';
+import SmsHealthCard from '@/Components/SmsHealthCard.vue';
 
 const props = defineProps({
     stats: Object,
     recentActivity: Array,
-    chartData: Object
+    chartData: Object,
+    smsHealth: { type: Object, default: null },
 });
 
 const statCards = [
@@ -151,7 +153,11 @@ const genderChartSeries = props.chartData?.gender?.series || [];
 
         <div class="py-12 bg-gray-50 min-h-screen">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8 space-y-8">
-                
+                <!-- SMS gateway status: red banner while degraded, plus usage counters -->
+                <div v-if="smsHealth" class="px-4 sm:px-0">
+                    <SmsHealthCard :health="smsHealth" :can-retry="$page.props.auth.user?.role === 'super_admin'" />
+                </div>
+
                 <!-- Overview Header -->
                 <div class="flex items-center justify-between">
                     <div>

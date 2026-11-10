@@ -316,6 +316,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/admin/sms-settings/test', [\App\Http\Controllers\Admin\SmsSettingsController::class, 'test'])
             ->middleware('throttle:5,1')
             ->name('admin.sms-settings.test');
+        Route::post('/admin/sms-settings/retry', [\App\Http\Controllers\Admin\SmsSettingsController::class, 'retry'])->name('admin.sms-settings.retry');
     });
 
     Route::get('/admin/kushwaha-pride', [\App\Http\Controllers\Admin\KushwahaPrideProfileController::class, 'index'])->name('admin.pride.index');

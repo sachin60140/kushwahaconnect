@@ -34,9 +34,14 @@ class FormOtpController extends Controller
         try {
             $this->otp->send($mobile, OtpService::PURPOSE_FORM, $request->ip());
         } catch (OtpException $e) {
+            // This failure may have put SMS into degraded mode: OTP is no longer required,
+            // so the form can switch to the "SMS unavailable" note without a reload.
+            $degraded = ! VerifiedMobiles::enforced() && \App\Services\Sms\SmsHealth::isDegraded();
+
             return response()->json([
-                'message' => MobileVerificationController::errorKey($e),
+                'message' => $degraded ? 'otp_field_degraded' : MobileVerificationController::errorKey($e),
                 'retry_after' => $e->retryAfter,
+                'degraded' => $degraded,
             ], 422);
         }
 

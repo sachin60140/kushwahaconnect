@@ -77,6 +77,7 @@ class SmartPingSms implements SmsSender
         } catch (Throwable $e) {
             $error = self::stripQuery($e->getMessage());
             Log::warning('SmartPing request failed.', ['to' => self::mask($to), 'error' => $error]);
+            SmsHealth::record(false, connectionError: true);
 
             return self::result(false, description: 'Could not reach SmartPing: '.$error);
         }
@@ -88,6 +89,9 @@ class SmartPingSms implements SmsSender
         $transactionId = is_array($body) && isset($body['transactionId']) && is_scalar($body['transactionId']) ? (string) $body['transactionId'] : null;
 
         $ok = $response->successful() && ($state === 'SUBMIT_ACCEPTED' || $statusCode === 200);
+
+        // Gateway health and usage counters (fallback when SmartPing itself is failing).
+        SmsHealth::record($ok, $ok ? null : $statusCode, connectionError: ! $ok && $response->serverError());
 
         if ($ok) {
             // transactionId ties this send to SmartPing's delivery reports.

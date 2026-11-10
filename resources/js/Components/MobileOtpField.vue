@@ -28,6 +28,12 @@ const { __ } = useLanguage();
 const config = computed(() => page.props.mobileOtp ?? { required: false, verified: [], codeLength: 6 });
 const codeLength = computed(() => config.value.codeLength || 6);
 
+// Set when this visitor's own send just put SMS into degraded mode: OTP is no
+// longer required, so show the note at once instead of making them reload.
+const degradedNow = ref(false);
+const otpRequired = computed(() => config.value.required && !degradedNow.value);
+const showDegraded = computed(() => degradedNow.value || config.value.degraded);
+
 const normalize = (value) => {
     let digits = String(value ?? '').replace(/\D+/g, '');
     if (digits.length > 10) digits = digits.slice(-10);
@@ -98,6 +104,11 @@ const sendCode = async () => {
         expiresIn.value = data.expires_in ?? 600;
         startTimer();
     } catch (error) {
+        if (error?.response?.data?.degraded) {
+            degradedNow.value = true;
+            message.value = '';
+            return;
+        }
         message.value = errorText(error, 'otp_error_send_failed');
         const retry = error?.response?.data?.retry_after;
         if (retry) {
@@ -136,12 +147,12 @@ const onCodeInput = (event) => {
 const formatTime = (seconds) => `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
 
 // The server error is replaced by the live state once the number is verified.
-const serverError = computed(() => (props.error && !isVerified.value ? __(props.error) : ''));
+const serverError = computed(() => (props.error && !isVerified.value && !(degradedNow.value && props.error === 'otp_error_mobile_not_verified') ? __(props.error) : ''));
 </script>
 
 <template>
     <div class="mt-2 space-y-2">
-        <template v-if="config.required">
+        <template v-if="otpRequired">
             <p
                 v-if="isVerified"
                 class="inline-flex min-h-11 items-center gap-2 rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-sm font-bold text-green-800"
@@ -211,6 +222,13 @@ const serverError = computed(() => (props.error && !isVerified.value ? __(props.
                 <p v-if="message" class="text-sm font-semibold text-red-700" role="alert">{{ message }}</p>
             </div>
         </template>
+        <p
+            v-else-if="showDegraded"
+            class="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-900"
+            role="status"
+        >
+            {{ __('otp_field_degraded') }}
+        </p>
 
         <p v-if="serverError" class="text-sm font-semibold text-red-700">{{ serverError }}</p>
     </div>

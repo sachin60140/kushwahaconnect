@@ -50,6 +50,8 @@ class HandleInertiaRequests extends Middleware
             // Inline mobile OTP on forms: whether it is required, and this visitor's own verified numbers.
             'mobileOtp' => fn () => [
                 'required' => \App\Services\Otp\VerifiedMobiles::enforced(),
+                // SMS is on but the gateway is failing: forms say so instead of offering a Send button.
+                'degraded' => \App\Services\Sms\SmsConfig::configured() && \App\Services\Sms\SmsHealth::isDegraded(),
                 'verified' => \App\Services\Otp\VerifiedMobiles::forBrowser(),
                 'codeLength' => \App\Services\Otp\OtpService::LENGTH,
             ],

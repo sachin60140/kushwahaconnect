@@ -174,7 +174,9 @@ class AdminController extends Controller
         return Inertia::render('Admin/Dashboard', [
             'stats' => $stats,
             'recentActivity' => $recentActivity,
-            'chartData' => $chartData
+            'chartData' => $chartData,
+            // SMS usage card + red banner while the gateway is degraded.
+            'smsHealth' => \App\Services\Sms\SmsHealth::usage(),
         ]);
     }
 

@@ -4,6 +4,7 @@ namespace App\Services\Otp;
 
 use App\Services\Sms\SmartPingSms;
 use App\Services\Sms\SmsConfig;
+use App\Services\Sms\SmsHealth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
@@ -25,10 +26,13 @@ class VerifiedMobiles
     /** Is OTP verification currently required on forms and member pages? */
     public static function enforced(): bool
     {
-        $enforced = SmsConfig::configured();
+        $configured = SmsConfig::configured();
+        $enforced = $configured && ! SmsHealth::isDegraded();
 
         if (! $enforced && Cache::add('mobile-otp-not-enforced-warning', true, 3600)) {
-            Log::warning('Mobile OTP verification is NOT enforced: SMS is switched off or not configured in Admin → SMS Settings.');
+            Log::warning($configured
+                ? 'Mobile OTP verification is NOT enforced: the SMS gateway is degraded (see SMS Settings).'
+                : 'Mobile OTP verification is NOT enforced: SMS is switched off or not configured in Admin → SMS Settings.');
         }
 
         return $enforced;
