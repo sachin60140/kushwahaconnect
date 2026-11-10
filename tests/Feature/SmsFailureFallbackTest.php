@@ -31,7 +31,7 @@ class SmsFailureFallbackTest extends TestCase
 
         config([
             'services.sms.driver' => 'smartping',
-            'services.smartping.base_url' => 'https://sms.example.test/send',
+            'services.smartping.base_url' => 'https://pgapi.sparc.smartping.io/fe/api/v1/send',
             'services.smartping.username' => 'test-user',
             'services.smartping.password' => 'test-secret-pass',
             'services.smartping.sender_id' => 'TESTID',

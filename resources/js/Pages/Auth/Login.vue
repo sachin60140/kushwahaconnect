@@ -252,7 +252,7 @@ const primaryButton = 'w-full flex min-h-11 justify-center py-3.5 px-4 border bo
                     placeholder="Enter your email or mobile number"
                 />
 
-                <InputError class="mt-2" :message="form.errors.email" />
+                <InputError class="mt-2" :message="form.errors.email ? __(form.errors.email) : ''" />
             </div>
 
             <div>

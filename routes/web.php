@@ -250,7 +250,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/admin/members', [AdminController::class, 'members'])->name('admin.members');
     Route::get('/admin/members/export', [AdminController::class, 'exportMembers'])->name('admin.members.export');
     Route::patch('/admin/members/{id}/status', [AdminController::class, 'updateMemberStatus'])->name('admin.members.status');
-    Route::patch('/admin/members/{id}/mobile', [AdminController::class, 'updateMemberMobile'])->name('admin.members.mobile');
+    // Changing a member's mobile decides who can sign in by OTP: super admins only.
+    Route::patch('/admin/members/{id}/mobile', [AdminController::class, 'updateMemberMobile'])->middleware('super_admin')->name('admin.members.mobile');
     Route::delete('/admin/members/{id}', [AdminController::class, 'deleteMember'])->name('admin.members.destroy');
     
     Route::get('/admin/matrimonial', [AdminController::class, 'matrimonial'])->name('admin.matrimonial');

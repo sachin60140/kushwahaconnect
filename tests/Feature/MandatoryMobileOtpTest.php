@@ -295,17 +295,29 @@ class MandatoryMobileOtpTest extends TestCase
         $this->actingAs($admin)->get(route('jobs.create'))->assertOk();
     }
 
-    public function test_changing_mobile_resets_verification_and_locks_member_pages(): void
+    public function test_account_settings_can_no_longer_change_the_mobile_without_otp(): void
     {
         $user = User::factory()->create(['mobile' => '9876577777', 'role' => 'user']);
         $user->forceFill(['mobile_verified_at' => now()])->save();
 
+        // PATCH /profile ignores 'mobile': only the community profile (with OTP) changes it.
         $this->actingAs($user)->patch(route('profile.update'), [
             'name' => $user->name,
             'email' => $user->email,
             'mobile' => '9876588888',
             'language_preference' => 'hi',
         ])->assertSessionHasNoErrors();
+
+        $this->assertSame('9876577777', $user->fresh()->mobile);
+        $this->assertNotNull($user->fresh()->mobile_verified_at);
+    }
+
+    public function test_changed_mobile_locks_member_pages_until_verified(): void
+    {
+        $user = User::factory()->create(['mobile' => '9876577777', 'role' => 'user']);
+        $user->forceFill(['mobile_verified_at' => now()])->save();
+
+        $user->update(['mobile' => '9876588888']);
 
         $this->assertNull($user->fresh()->mobile_verified_at);
         $this->actingAs($user->fresh())->get(route('user.member-profile.edit'))

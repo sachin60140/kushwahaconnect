@@ -33,6 +33,7 @@ class SmsHealth
     private const DEGRADED_KEY = 'sms-health:degraded';
     private const CONNECTION_FAILURES_KEY = 'sms-health:connection-failures';
     private const LAST_SUCCESS_KEY = 'sms-health:last-success';
+    private const CAP_HIT_KEY = 'sms-health:cap-hit';
 
     /**
      * Record what the gateway said for one send.
@@ -76,6 +77,24 @@ class SmsHealth
         }
     }
 
+    /**
+     * An SMS budget (platform-wide or the guest-form share) ran out. Shown on the
+     * health card for an hour; super admins are emailed once per bucket per hour.
+     */
+    public static function capReached(string $bucket): void
+    {
+        try {
+            Cache::put(self::CAP_HIT_KEY, ['bucket' => $bucket, 'at' => now()->toIso8601String()], now()->addHour());
+
+            if (Cache::add('sms-health:cap-alert:'.$bucket, true, now()->addHour())) {
+                Log::warning('SMS budget reached; further SMS refused until the window resets.', ['bucket' => $bucket]);
+                self::alertSuperAdmins(['reason' => 'cap', 'since' => now()->toIso8601String()]);
+            }
+        } catch (Throwable $e) {
+            Log::warning('SMS cap tracking failed.', ['error' => $e->getMessage()]);
+        }
+    }
+
     /** @return array{reason: string, since: string, until: string}|null */
     public static function degraded(): ?array
     {
@@ -107,7 +126,7 @@ class SmsHealth
     /**
      * Usage card data for the admin dashboard and SMS Settings.
      *
-     * @return array{status: string, sent_today: int, failed_today: int, sent_month: int, last_success_at: ?string, degraded: ?array}
+     * @return array{status: string, sent_today: int, failed_today: int, sent_month: int, last_success_at: ?string, degraded: ?array, cap_hit: ?array}
      */
     public static function usage(): array
     {
@@ -120,6 +139,8 @@ class SmsHealth
             'sent_month' => self::count('sent-month:'.now()->format('Y-m')),
             'last_success_at' => Cache::get(self::LAST_SUCCESS_KEY),
             'degraded' => $degraded ? [...$degraded, 'reason_key' => self::reasonKey($degraded['reason'])] : null,
+            // { bucket, at } while an SMS budget is exhausted (this hour).
+            'cap_hit' => Cache::get(self::CAP_HIT_KEY),
         ];
     }
 

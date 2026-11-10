@@ -1,1 +1,0 @@
-import{F as e,N as t,q as n,y as r}from"./app-BBgmmAHi.js";var i={class:`block text-sm font-black text-blue-950`},a={key:0},o={key:1},s={__name:`InputLabel`,props:{value:{type:String}},setup(s){return(c,l)=>(t(),r(`label`,i,[s.value?(t(),r(`span`,a,n(s.value),1)):(t(),r(`span`,o,[e(c.$slots,`default`)]))]))}};export{s as t};

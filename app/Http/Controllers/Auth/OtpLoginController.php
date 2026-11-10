@@ -61,11 +61,7 @@ class OtpLoginController extends Controller
 
         $mobile = $this->mobile($request);
 
-        $lookupKey = 'otp-login-lookup:'.$request->ip();
-        if (RateLimiter::tooManyAttempts($lookupKey, self::MAX_LOOKUPS_PER_IP_PER_HOUR)) {
-            throw ValidationException::withMessages(['mobile' => 'otp_error_rate_limited']);
-        }
-        RateLimiter::hit($lookupKey, 3600);
+        $this->takeLookup($request, 'mobile');
 
         // Only existing members can log in with OTP. Accounts are created through the
         // Join form; auto-creating users here would reserve the number and block the
@@ -102,14 +98,19 @@ class OtpLoginController extends Controller
             'otp.regex' => 'otp_error_code_format',
         ]);
 
-        $user = User::where('mobile', $mobile)->first();
+        $this->takeLookup($request, 'otp');
 
-        if (! $user) {
-            throw ValidationException::withMessages(['mobile' => 'otp_login_no_account']);
+        // Only the number this browser asked a code for can be checked. Anything else gets
+        // the same generic answer, never touches that member's code or attempt budget, and
+        // so cannot be used to find registered numbers or lock their owners out.
+        if ($mobile !== $request->session()->get(self::SESSION_KEY)) {
+            throw ValidationException::withMessages(['otp' => 'otp_error_invalid']);
         }
 
-        if ($user->status === 'blocked') {
-            throw ValidationException::withMessages(['mobile' => 'otp_login_blocked']);
+        $user = User::where('mobile', $mobile)->first();
+
+        if (! $user || $user->status === 'blocked') {
+            throw ValidationException::withMessages(['otp' => 'otp_error_invalid']);
         }
 
         try {
@@ -133,6 +134,18 @@ class OtpLoginController extends Controller
         $this->logLoginHistory($user->id, $request, 'success');
 
         return redirect()->intended(route('dashboard', absolute: false));
+    }
+
+    /** Per-IP budget for number lookups (code requests and code checks). */
+    private function takeLookup(Request $request, string $field): void
+    {
+        $key = 'otp-login-lookup:'.$request->ip();
+
+        if (RateLimiter::tooManyAttempts($key, self::MAX_LOOKUPS_PER_IP_PER_HOUR)) {
+            throw ValidationException::withMessages([$field => 'otp_error_rate_limited']);
+        }
+
+        RateLimiter::hit($key, 3600);
     }
 
     /** "Use a different number": forget the pending login number. */

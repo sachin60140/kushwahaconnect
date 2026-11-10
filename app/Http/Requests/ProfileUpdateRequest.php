@@ -26,12 +26,7 @@ class ProfileUpdateRequest extends FormRequest
                 'max:255',
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
-            'mobile' => [
-                'nullable',
-                'string',
-                'regex:/^[6-9]\d{9}$/',
-                Rule::unique(User::class)->ignore($this->user()->id),
-            ],
+            // No 'mobile' here: it is changed only on "My community profile", which needs an OTP.
             'language_preference' => ['required', 'string', Rule::in(['en', 'hi'])],
         ];
     }

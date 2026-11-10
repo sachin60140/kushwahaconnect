@@ -50,6 +50,11 @@ class MobileVerifyRemindersTest extends TestCase
         return User::factory()->create(['role' => 'admin']);
     }
 
+    private function superAdmin(): User
+    {
+        return User::factory()->create(['role' => 'super_admin']);
+    }
+
     public function test_dashboard_reminds_unverified_members(): void
     {
         $member = $this->member('9876500001', false);
@@ -140,7 +145,7 @@ class MobileVerifyRemindersTest extends TestCase
     {
         $member = $this->member('9876500001', true);
 
-        $this->actingAs($this->admin())
+        $this->actingAs($this->superAdmin())
             ->patch(route('admin.members.mobile', $member->id), ['mobile' => '9876500009'])
             ->assertSessionHasNoErrors()
             ->assertSessionHas('success', 'admin_mobile_updated');
@@ -156,11 +161,11 @@ class MobileVerifyRemindersTest extends TestCase
         $member = $this->member('9876500001', true);
         $this->member('9876500002', true);
 
-        $this->actingAs($this->admin())
+        $this->actingAs($this->superAdmin())
             ->patch(route('admin.members.mobile', $member->id), ['mobile' => '9876500002'])
             ->assertSessionHasErrors(['mobile' => 'admin_mobile_taken']);
 
-        $this->actingAs($this->admin())
+        $this->actingAs($this->superAdmin())
             ->patch(route('admin.members.mobile', $member->id), ['mobile' => '12345'])
             ->assertSessionHasErrors(['mobile' => 'otp_error_mobile_format']);
 
