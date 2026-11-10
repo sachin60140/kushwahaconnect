@@ -66,7 +66,7 @@ const copy = async (key, value) => {
                             <button
                                 v-if="['holder', 'number', 'ifsc'].includes(row.key)"
                                 type="button"
-                                class="shrink-0 rounded-sm border border-gray-200 px-1.5 py-0.5 text-[11px] font-bold text-gray-600 hover:bg-gray-50"
+                                class="inline-flex min-h-11 shrink-0 items-center rounded-sm border border-gray-200 px-3 py-0.5 text-[11px] md:min-h-0 md:px-1.5 font-bold text-gray-600 hover:bg-gray-50"
                                 @click="copy(row.key, row.value)"
                             >
                                 {{ copied === row.key ? (isHindi ? 'कॉपी हुआ' : 'Copied') : (isHindi ? 'कॉपी' : 'Copy') }}
@@ -84,11 +84,11 @@ const copy = async (key, value) => {
                 <p v-if="req.upi_qr_url" class="mt-1 text-xs text-gray-500">{{ isHindi ? 'किसी भी UPI ऐप से स्कैन करें' : 'Scan with any UPI app' }}</p>
                 <div v-if="req.upi_id" class="mt-3 flex items-center justify-center gap-2">
                     <span class="font-mono text-sm font-bold text-gray-900 break-all">{{ req.upi_id }}</span>
-                    <button type="button" class="shrink-0 rounded-sm border border-gray-200 px-1.5 py-0.5 text-[11px] font-bold text-gray-600 hover:bg-gray-50" @click="copy('upi', req.upi_id)">
+                    <button type="button" class="inline-flex min-h-11 shrink-0 items-center rounded-sm border border-gray-200 px-3 py-0.5 text-[11px] md:min-h-0 md:px-1.5 font-bold text-gray-600 hover:bg-gray-50" @click="copy('upi', req.upi_id)">
                         {{ copied === 'upi' ? (isHindi ? 'कॉपी हुआ' : 'Copied') : (isHindi ? 'कॉपी' : 'Copy') }}
                     </button>
                 </div>
-                <a v-if="upiLink" :href="upiLink" class="mt-3 inline-flex items-center justify-center rounded-lg bg-green-700 px-4 py-2 text-sm font-bold text-white hover:bg-green-800">
+                <a v-if="upiLink" :href="upiLink" class="mt-3 inline-flex min-h-11 items-center justify-center rounded-lg bg-green-700 px-4 py-2 text-sm font-bold text-white hover:bg-green-800">
                     {{ isHindi ? 'UPI ऐप से भुगतान करें' : 'Pay with UPI app' }}
                 </a>
             </div>

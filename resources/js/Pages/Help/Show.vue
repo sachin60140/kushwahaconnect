@@ -6,6 +6,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import HelpShareButtons from '@/Components/HelpShareButtons.vue';
 import HelpDonationBox from '@/Components/HelpDonationBox.vue';
 import { toWhatsAppNumber } from '@/composables/useWhatsAppWelcome';
+import { useLanguage } from '@/composables/useLanguage';
+import { HELP_CATEGORIES, HELP_URGENCIES, optionLabel } from '@/utils/optionLabels';
 
 const props = defineProps({
     helpRequest: Object,
@@ -13,7 +15,7 @@ const props = defineProps({
 
 const page = usePage();
 const user = computed(() => page.props.auth.user);
-const isHindi = computed(() => (page.props.locale || 'hi') === 'hi');
+const { __ } = useLanguage();
 
 const location = computed(() =>
     [props.helpRequest.city, props.helpRequest.district, props.helpRequest.state]
@@ -42,12 +44,12 @@ const urgencyClasses = computed(() => ({
             <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                 <div>
                     <p class="text-sm font-black uppercase tracking-[0.18em]" :class="user ? 'text-orange-500' : 'text-orange-300'">
-                        {{ isHindi ? 'मदद की अपील' : 'Help Request' }}
+                        {{ __('help_show_eyebrow') }}
                     </p>
                     <h1 class="mt-1 text-2xl font-black sm:text-3xl" :class="user ? 'text-blue-950' : 'text-white'">{{ helpRequest.title }}</h1>
                 </div>
                 <Link :href="route('help.index')" class="kc-btn-secondary shrink-0">
-                    {{ isHindi ? '← सभी अनुरोध' : '← All requests' }}
+                    {{ __('help_show_all_requests') }}
                 </Link>
             </div>
         </template>
@@ -64,10 +66,10 @@ const urgencyClasses = computed(() => ({
                 >
                     <div class="p-6 sm:p-8">
                         <div class="flex flex-wrap items-center gap-2 mb-4">
-                            <span class="px-3 py-1 text-xs font-bold rounded-full bg-gray-100 text-gray-800">{{ helpRequest.category }}</span>
-                            <span class="px-3 py-1 text-xs font-bold rounded-full" :class="urgencyClasses">{{ helpRequest.urgency }}</span>
+                            <span class="px-3 py-1 text-xs font-bold rounded-full bg-gray-100 text-gray-800">{{ optionLabel(__, HELP_CATEGORIES, helpRequest.category) }}</span>
+                            <span class="px-3 py-1 text-xs font-bold rounded-full" :class="urgencyClasses">{{ optionLabel(__, HELP_URGENCIES, helpRequest.urgency) }}</span>
                             <span v-if="helpRequest.status === 'Resolved'" class="px-3 py-1 text-xs font-bold rounded-full bg-blue-100 text-blue-800">
-                                {{ isHindi ? 'हल हो गया' : 'Resolved' }}
+                                {{ __('help_show_resolved') }}
                             </span>
                         </div>
 
@@ -78,7 +80,7 @@ const urgencyClasses = computed(() => ({
                         <!-- Supporting documents / photos -->
                         <section v-if="helpRequest.documents?.length" class="mt-6">
                             <h2 class="text-sm font-black text-gray-900 mb-3">
-                                {{ isHindi ? 'दस्तावेज़ और फ़ोटो' : 'Documents & photos' }}
+                                {{ __('help_show_documents') }}
                                 <span class="font-medium text-gray-500">({{ helpRequest.documents.length }})</span>
                             </h2>
                             <div v-if="images.length" class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-3">
@@ -88,9 +90,9 @@ const urgencyClasses = computed(() => ({
                             </div>
                             <ul v-if="files.length" class="divide-y divide-gray-100 rounded-lg border border-gray-200">
                                 <li v-for="doc in files" :key="doc.id">
-                                    <a :href="doc.url" target="_blank" rel="noopener" class="flex items-center justify-between gap-3 px-3 py-2 text-sm hover:bg-gray-50">
+                                    <a :href="doc.url" target="_blank" rel="noopener" class="flex min-h-11 items-center justify-between gap-3 px-3 py-2 text-sm hover:bg-gray-50">
                                         <span class="min-w-0 truncate font-medium text-indigo-700">📄 {{ doc.original_name }}</span>
-                                        <span class="shrink-0 text-xs font-bold text-gray-500">{{ isHindi ? 'खोलें' : 'Open' }} ↗</span>
+                                        <span class="shrink-0 text-xs font-bold text-gray-500">{{ __('help_show_open') }} ↗</span>
                                     </a>
                                 </li>
                             </ul>
@@ -100,18 +102,18 @@ const urgencyClasses = computed(() => ({
 
                         <div class="mt-6 pt-5 border-t border-gray-100 flex flex-wrap items-center justify-between gap-2">
                             <p class="font-semibold text-gray-900 text-sm">
-                                {{ isHindi ? 'अनुरोधकर्ता:' : 'Requested by:' }}
+                                {{ __('help_requested_by') }}
                                 <span class="text-green-700">{{ helpRequest.name }}</span>
                             </p>
                             <span class="text-xs font-medium text-gray-500">{{ new Date(helpRequest.created_at).toLocaleDateString() }}</span>
                         </div>
 
                         <div class="mt-4 flex gap-3">
-                            <a :href="`tel:${helpRequest.mobile}`" class="flex-1 text-center bg-gray-50 border border-gray-200 text-gray-700 hover:bg-green-50 hover:text-green-700 hover:border-green-200 text-sm font-bold py-2.5 px-4 rounded-lg transition-colors">
-                                📞 {{ isHindi ? 'कॉल करें' : 'Call' }}
+                            <a :href="`tel:${helpRequest.mobile}`" class="flex min-h-11 flex-1 items-center justify-center text-center bg-gray-50 border border-gray-200 text-gray-700 hover:bg-green-50 hover:text-green-700 hover:border-green-200 text-sm font-bold py-2.5 px-4 rounded-lg transition-colors">
+                                📞 {{ __('common_call') }}
                             </a>
-                            <a v-if="whatsappNumber" :href="`https://wa.me/${whatsappNumber}`" target="_blank" rel="noopener noreferrer" class="flex-1 text-center bg-green-500 text-white hover:bg-green-600 text-sm font-bold py-2.5 px-4 rounded-lg shadow-xs transition-colors">
-                                {{ isHindi ? 'WhatsApp पर संपर्क' : 'WhatsApp' }}
+                            <a v-if="whatsappNumber" :href="`https://wa.me/${whatsappNumber}`" target="_blank" rel="noopener noreferrer" class="flex min-h-11 flex-1 items-center justify-center text-center bg-green-500 text-white hover:bg-green-600 text-sm font-bold py-2.5 px-4 rounded-lg shadow-xs transition-colors">
+                                {{ __('help_show_whatsapp') }}
                             </a>
                         </div>
 

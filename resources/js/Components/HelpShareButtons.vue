@@ -149,7 +149,7 @@ const nativeShare = async () => {
                 :title="`${isHindi ? 'शेयर करें' : 'Share on'} ${target.label}`"
                 :aria-label="`${isHindi ? 'शेयर करें' : 'Share on'} ${target.label}`"
                 class="inline-flex items-center justify-center gap-2 rounded-lg font-bold shadow-xs transition-colors"
-                :class="[target.classes, compact ? 'h-8 w-8' : 'px-4 py-2 text-sm']"
+                :class="[target.classes, compact ? 'h-11 w-11 md:h-8 md:w-8' : 'min-h-11 px-4 py-2 text-sm md:min-h-0']"
             >
                 <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path :d="target.path" /></svg>
                 <span v-if="!compact">{{ target.label }}</span>
@@ -161,7 +161,7 @@ const nativeShare = async () => {
                 :title="isHindi ? 'लिंक कॉपी करें' : 'Copy link'"
                 :aria-label="isHindi ? 'लिंक कॉपी करें' : 'Copy link'"
                 class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white font-bold text-gray-700 shadow-xs transition-colors hover:bg-gray-50"
-                :class="compact ? 'h-8 px-2 text-xs' : 'px-4 py-2 text-sm'"
+                :class="compact ? 'h-11 px-3 text-xs md:h-8 md:px-2' : 'min-h-11 px-4 py-2 text-sm md:min-h-0'"
             >
                 <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.8 10.2a4 4 0 0 0-5.6 0l-4 4a4 4 0 1 0 5.6 5.6l1.1-1.1m-.7-4.9a4 4 0 0 0 5.6 0l4-4a4 4 0 1 0-5.6-5.6l-1.1 1.1" /></svg>
                 <span v-if="copied">{{ isHindi ? 'कॉपी हुआ' : 'Copied' }}</span>
@@ -173,7 +173,7 @@ const nativeShare = async () => {
                 type="button"
                 @click="nativeShare"
                 class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white font-bold text-gray-700 shadow-xs transition-colors hover:bg-gray-50"
-                :class="compact ? 'h-8 px-2 text-xs' : 'px-4 py-2 text-sm'"
+                :class="compact ? 'h-11 px-3 text-xs md:h-8 md:px-2' : 'min-h-11 px-4 py-2 text-sm md:min-h-0'"
             >
                 {{ isHindi ? 'अन्य' : 'More' }}
             </button>
