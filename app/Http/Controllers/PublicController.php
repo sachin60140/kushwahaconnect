@@ -133,7 +133,16 @@ class PublicController extends Controller
         // Auto-login the user
         Auth::login($user);
 
-        return redirect()->route('dashboard')->with('success', 'Registration completed successfully. Your profile is approved.');
+        // Send the first mobile verification code right away. Joining never fails
+        // because of SMS: the member can resend from the verification page.
+        try {
+            app(\App\Services\Otp\OtpService::class)->send($user->mobile, \App\Services\Otp\OtpService::PURPOSE_VERIFY, $request->ip());
+            $status = 'otp_join_sent';
+        } catch (\App\Services\Otp\OtpException) {
+            $status = 'otp_join_send_later';
+        }
+
+        return redirect()->route('mobile.verify.show')->with('status', $status);
     }
 
     public function matrimonial()

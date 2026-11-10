@@ -60,7 +60,7 @@ class RegistrationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
+        $response->assertRedirect(route('mobile.verify.show', absolute: false));
 
         $this->assertDatabaseHas('users', [
             'name' => 'Test User',
@@ -109,7 +109,7 @@ class RegistrationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
+        $response->assertRedirect(route('mobile.verify.show', absolute: false));
 
         $this->assertDatabaseHas('users', [
             'name' => 'No Email User',

@@ -3,18 +3,20 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Models\LoginHistory;
+use App\Models\User;
+use App\Services\Otp\OtpException;
+use App\Services\Otp\OtpService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\RateLimiter;
 
 class OtpLoginController extends Controller
 {
-    private const MAX_VERIFY_ATTEMPTS = 5;
+    public function __construct(private OtpService $otp)
+    {
+    }
 
     /**
      * Generate and send OTP to the given mobile number.
@@ -24,18 +26,10 @@ class OtpLoginController extends Controller
         $request->validate([
             'mobile' => ['required', 'string', 'regex:/^[6-9]\d{9}$/'],
         ], [
-            'mobile.regex' => 'Please enter a valid 10-digit Indian mobile number.'
+            'mobile.regex' => 'Please enter a valid 10-digit Indian mobile number.',
         ]);
 
         $mobile = $request->mobile;
-
-        // Rate limiting: max 3 requests per minute per IP
-        if (RateLimiter::tooManyAttempts('send-otp:'.$request->ip(), 3)) {
-            $seconds = RateLimiter::availableIn('send-otp:'.$request->ip());
-            return back()->withErrors(['mobile' => "Too many attempts. Please try again in {$seconds} seconds."]);
-        }
-
-        RateLimiter::hit('send-otp:'.$request->ip(), 60);
 
         // Only existing members can log in with OTP. Accounts are created through the
         // Join form; auto-creating users here would reserve the number and block the
@@ -52,21 +46,13 @@ class OtpLoginController extends Controller
             return back()->withErrors(['mobile' => 'This account has been blocked by the administrator.']);
         }
 
-        $otp = app()->environment('local', 'testing') ? '123456' : (string) random_int(100000, 999999);
-
-        $user->update([
-            'otp_code' => $otp,
-            'otp_expires_at' => Carbon::now()->addMinutes(10),
-        ]);
-
-        RateLimiter::clear($this->verifyThrottleKey($mobile));
-
-        // No SMS gateway is integrated yet. Never write real OTPs to production logs.
-        if (app()->environment('local', 'testing')) {
-            Log::info("OTP for mobile {$mobile} is {$otp}");
+        try {
+            $this->otp->send($mobile, OtpService::PURPOSE_LOGIN, $request->ip());
+        } catch (OtpException $e) {
+            throw ValidationException::withMessages(['mobile' => self::message($e)]);
         }
 
-        return back()->with('status', 'OTP sent successfully to ' . $mobile);
+        return back()->with('status', 'otp_sent');
     }
 
     /**
@@ -79,17 +65,9 @@ class OtpLoginController extends Controller
             'otp' => ['required', 'string', 'size:6'],
         ]);
 
-        $throttleKey = $this->verifyThrottleKey($request->mobile);
-
-        if (RateLimiter::tooManyAttempts($throttleKey, self::MAX_VERIFY_ATTEMPTS)) {
-            throw ValidationException::withMessages([
-                'otp' => 'Too many incorrect attempts. Please request a new OTP.',
-            ]);
-        }
-
         $user = User::where('mobile', $request->mobile)->first();
 
-        if (!$user) {
+        if (! $user) {
             throw ValidationException::withMessages([
                 'mobile' => 'No account found with this mobile number.',
             ]);
@@ -101,34 +79,18 @@ class OtpLoginController extends Controller
             ]);
         }
 
-        if (!$user->otp_code || !hash_equals((string) $user->otp_code, (string) $request->otp)) {
-            RateLimiter::hit($throttleKey, 600);
-
-            // Burn the OTP once the attempt budget is spent so it can't be brute-forced.
-            if (RateLimiter::tooManyAttempts($throttleKey, self::MAX_VERIFY_ATTEMPTS)) {
-                $user->update(['otp_code' => null, 'otp_expires_at' => null]);
-            }
-
+        try {
+            $this->otp->verify($user->mobile, OtpService::PURPOSE_LOGIN, (string) $request->otp);
+        } catch (OtpException $e) {
             $this->logLoginHistory($user->id, $request, 'failed');
-            throw ValidationException::withMessages([
-                'otp' => 'The provided OTP is incorrect.',
-            ]);
+
+            throw ValidationException::withMessages(['otp' => self::message($e)]);
         }
 
-        if (!$user->otp_expires_at || Carbon::now()->greaterThan($user->otp_expires_at)) {
-            throw ValidationException::withMessages([
-                'otp' => 'The provided OTP has expired. Please request a new one.',
-            ]);
+        // Receiving the code proves the member holds this number.
+        if (! $user->mobile_verified_at) {
+            $user->forceFill(['mobile_verified_at' => Carbon::now()])->save();
         }
-
-        RateLimiter::clear($throttleKey);
-
-        // OTP is correct and valid
-        $user->update([
-            'otp_code' => null,
-            'otp_expires_at' => null,
-            'mobile_verified_at' => $user->mobile_verified_at ?? Carbon::now(),
-        ]);
 
         Auth::login($user, $request->boolean('remember'));
 
@@ -139,9 +101,15 @@ class OtpLoginController extends Controller
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
-    private function verifyThrottleKey(string $mobile): string
+    private static function message(OtpException $e): string
     {
-        return 'verify-otp:'.$mobile;
+        return match ($e->reason) {
+            OtpService::COOLDOWN, OtpService::RATE_LIMITED => "Too many attempts. Please try again in {$e->retryAfter} seconds.",
+            OtpService::SEND_FAILED => 'We could not send the OTP right now. Please try again later.',
+            OtpService::EXPIRED => 'The provided OTP has expired. Please request a new one.',
+            OtpService::TOO_MANY_ATTEMPTS => 'Too many incorrect attempts. Please request a new OTP.',
+            default => 'The provided OTP is incorrect.',
+        };
     }
 
     protected function logLoginHistory($userId, Request $request, $status)

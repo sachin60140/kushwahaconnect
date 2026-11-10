@@ -19,16 +19,22 @@ class User extends Authenticatable
         'roles',
         'status',
         'language_preference',
-        'otp_code',
-        'otp_expires_at',
-        'mobile_verified_at',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
-        'otp_code',
     ];
+
+    protected static function booted(): void
+    {
+        // A changed number has not been verified yet.
+        static::saving(function (User $user) {
+            if ($user->exists && $user->isDirty('mobile') && ! $user->isDirty('mobile_verified_at')) {
+                $user->mobile_verified_at = null;
+            }
+        });
+    }
 
     public function shortlists()
     {
@@ -87,7 +93,6 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'mobile_verified_at' => 'datetime',
-            'otp_expires_at' => 'datetime',
             'password' => 'hashed',
             'roles' => 'array',
         ];

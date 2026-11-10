@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Services\Sms\LogSms;
+use App\Services\Sms\SmartPingSms;
+use App\Services\Sms\SmsConfig;
+use App\Services\Sms\SmsSender;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -15,7 +19,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Resolved per use so changes in Admin → SMS Settings apply immediately.
+        $this->app->bind(SmsSender::class, function () {
+            $config = SmsConfig::resolve();
+
+            return $config['enabled'] ? new SmartPingSms($config) : new LogSms;
+        });
     }
 
     /**

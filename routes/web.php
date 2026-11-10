@@ -299,6 +299,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/settings', [\App\Http\Controllers\SettingsController::class, 'index'])->name('admin.settings.index');
     Route::post('/admin/settings', [\App\Http\Controllers\SettingsController::class, 'update'])->name('admin.settings.update');
 
+    Route::middleware('super_admin')->group(function () {
+        Route::get('/admin/sms-settings', [\App\Http\Controllers\Admin\SmsSettingsController::class, 'show'])->name('admin.sms-settings.show');
+        Route::post('/admin/sms-settings', [\App\Http\Controllers\Admin\SmsSettingsController::class, 'update'])->name('admin.sms-settings.update');
+        Route::post('/admin/sms-settings/test', [\App\Http\Controllers\Admin\SmsSettingsController::class, 'test'])
+            ->middleware('throttle:5,1')
+            ->name('admin.sms-settings.test');
+    });
+
     Route::get('/admin/kushwaha-pride', [\App\Http\Controllers\Admin\KushwahaPrideProfileController::class, 'index'])->name('admin.pride.index');
     Route::get('/admin/kushwaha-pride/create', [\App\Http\Controllers\Admin\KushwahaPrideProfileController::class, 'create'])->name('admin.pride.create');
     Route::post('/admin/kushwaha-pride', [\App\Http\Controllers\Admin\KushwahaPrideProfileController::class, 'store'])->name('admin.pride.store');

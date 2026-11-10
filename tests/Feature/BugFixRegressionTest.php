@@ -154,20 +154,25 @@ class BugFixRegressionTest extends TestCase
             ->assertSessionHasErrors('mobile');
         $this->assertDatabaseMissing('users', ['mobile' => '9123456789']);
 
-        $user = User::factory()->create(['mobile' => '9123456780']);
+        $sms = new \App\Services\Sms\FakeSms;
+        $this->app->instance(\App\Services\Sms\SmsSender::class, $sms);
+
+        User::factory()->create(['mobile' => '9123456780']);
         $this->post(route('login.otp.generate'), ['mobile' => '9123456780'])
             ->assertSessionHasNoErrors();
+        $code = $sms->lastCodeTo('9123456780');
+        $wrong = $code === '000000' ? '111111' : '000000';
 
         for ($i = 0; $i < 5; $i++) {
-            $this->post(route('login.otp.verify'), ['mobile' => '9123456780', 'otp' => '000000'])
+            $this->post(route('login.otp.verify'), ['mobile' => '9123456780', 'otp' => $wrong])
                 ->assertSessionHasErrors('otp');
         }
 
         // Even the correct code is refused once the attempt budget is spent.
-        $this->post(route('login.otp.verify'), ['mobile' => '9123456780', 'otp' => '123456'])
+        $this->post(route('login.otp.verify'), ['mobile' => '9123456780', 'otp' => $code])
             ->assertSessionHasErrors('otp');
         $this->assertGuest();
-        $this->assertNull($user->fresh()->otp_code);
+        $this->assertDatabaseMissing('mobile_otps', ['mobile' => '9123456780']);
     }
 
     public function test_community_profile_rejects_mobile_used_by_another_account_and_keeps_rejection(): void

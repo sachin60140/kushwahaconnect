@@ -2,6 +2,9 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { usePage } from '@inertiajs/vue3';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { __ } = useLanguage();
 
 const props = defineProps({
     businessListings: {
@@ -50,7 +53,18 @@ const formatDate = (date) => {
 
         <div class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8 space-y-6">
-                
+
+                <!-- Mobile verification reminder -->
+                <div v-if="user.mobile && !user.mobile_verified_at" class="mx-4 flex flex-col gap-3 rounded-xl border border-orange-200 bg-orange-50 p-4 sm:mx-0 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <p class="text-base font-bold text-orange-900">{{ __('otp_banner_title') }}</p>
+                        <p class="mt-1 text-sm text-orange-800">{{ __('otp_banner_text') }}</p>
+                    </div>
+                    <Link :href="route('mobile.verify.show')" class="flex min-h-11 shrink-0 items-center justify-center rounded-xl bg-orange-600 px-5 py-3 text-base font-bold text-white hover:bg-orange-500">
+                        {{ __('otp_banner_cta') }}
+                    </Link>
+                </div>
+
                 <!-- Welcome & Status Banner -->
                 <div class="overflow-hidden bg-white shadow-xs sm:rounded-lg">
                     <div class="p-6 text-gray-900 flex flex-col md:flex-row justify-between items-center">
