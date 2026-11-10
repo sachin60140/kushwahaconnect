@@ -5,6 +5,9 @@ import WhatsAppWelcomeLink from '@/Components/WhatsAppWelcomeLink.vue';
 import { useWhatsAppWelcome } from '@/composables/useWhatsAppWelcome';
 import { Head, Link, useForm, router, usePage } from '@inertiajs/vue3';
 import { ref, computed, watch } from 'vue';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { __ } = useLanguage();
 
 const { memberLink } = useWhatsAppWelcome();
 const whatsappOptOut = (member) => (member.allow_whatsapp === false ? 'Member has turned off WhatsApp contact' : '');
@@ -12,7 +15,9 @@ const whatsappOptOut = (member) => (member.allow_whatsapp === false ? 'Member ha
 const props = defineProps({
     members: Object,
     states: Array,
-    filters: Object
+    filters: Object,
+    // Members whose account mobile is not verified by OTP yet.
+    unverifiedMobileCount: { type: Number, default: 0 },
 });
 
 const page = usePage();
@@ -60,7 +65,8 @@ const filterForm = useForm({
     search: props.filters.search || '',
     status: props.filters.status || '',
     state_id: props.filters.state_id || '',
-    district_id: props.filters.district_id || ''
+    district_id: props.filters.district_id || '',
+    mobile: props.filters.mobile || ''
 });
 
 const availableDistricts = computed(() => {
@@ -85,6 +91,7 @@ const resetFilters = () => {
     filterForm.status = '';
     filterForm.state_id = '';
     filterForm.district_id = '';
+    filterForm.mobile = '';
     applyFilters();
 };
 
@@ -97,7 +104,33 @@ const openViewModal = (member) => {
     showModal.value = true;
 };
 
+const showUnverified = () => {
+    filterForm.mobile = 'unverified';
+    applyFilters();
+};
+
+// Admin correction of a member's mobile (clears its verification on the server).
+const mobileForm = useForm({ mobile: '' });
+const editingMobile = ref(false);
+
+const startMobileEdit = () => {
+    mobileForm.mobile = selectedMember.value?.mobile || '';
+    mobileForm.clearErrors();
+    editingMobile.value = true;
+};
+
+const saveMobile = () => {
+    mobileForm.patch(route('admin.members.mobile', selectedMember.value.id), {
+        preserveScroll: true,
+        onSuccess: () => {
+            editingMobile.value = false;
+            closeModal();
+        },
+    });
+};
+
 const closeModal = () => {
+    editingMobile.value = false;
     showModal.value = false;
     setTimeout(() => {
         selectedMember.value = null;
@@ -126,7 +159,7 @@ const closeModal = () => {
                     v-if="page.props.flash?.success || statusMessage"
                     class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-bold text-green-800"
                 >
-                    {{ statusMessage || page.props.flash.success }}
+                    {{ statusMessage || __(page.props.flash.success) }}
                 </div>
 
                 <div
@@ -138,7 +171,7 @@ const closeModal = () => {
 
                 <!-- Filters -->
                 <div class="bg-white p-6 shadow-xs sm:rounded-xl border border-gray-100">
-                    <form @submit.prevent="applyFilters" class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+                    <form @submit.prevent="applyFilters" class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
                         <div class="md:col-span-2">
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Search</label>
                             <input v-model="filterForm.search" type="text" placeholder="Name, Email, Mobile" class="w-full border-gray-300 rounded-lg shadow-xs focus:ring-green-500 focus:border-green-500 py-2.5 px-3">
@@ -170,12 +203,29 @@ const closeModal = () => {
                                 </option>
                             </select>
                         </div>
-                        <div class="md:col-span-5 flex justify-end space-x-3 mt-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">{{ __('admin_mobile_filter') }}</label>
+                            <select v-model="filterForm.mobile" class="w-full border-gray-300 rounded-lg shadow-xs focus:ring-green-500 focus:border-green-500 py-2.5 px-3">
+                                <option value="">{{ __('admin_mobile_filter_all') }}</option>
+                                <option value="unverified">{{ __('admin_mobile_filter_unverified') }} ({{ unverifiedMobileCount }})</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-6 flex justify-end space-x-3 mt-4">
                             <button type="button" @click="resetFilters" class="px-5 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors">Reset</button>
                             <button type="submit" class="px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors shadow-xs">Apply Filters</button>
                         </div>
                     </form>
                 </div>
+
+                <button
+                    v-if="unverifiedMobileCount > 0 && filterForm.mobile !== 'unverified'"
+                    type="button"
+                    class="flex min-h-11 w-full items-center justify-between gap-3 rounded-xl border border-orange-200 bg-orange-50 px-4 py-3 text-left text-sm font-bold text-orange-900 hover:bg-orange-100"
+                    @click="showUnverified"
+                >
+                    <span>{{ __('admin_mobile_unverified_count').replace(':count', unverifiedMobileCount) }}</span>
+                    <span aria-hidden="true">→</span>
+                </button>
 
                 <!-- Table -->
                 <div class="bg-white overflow-hidden shadow-xs sm:rounded-xl border border-gray-100">
@@ -198,6 +248,13 @@ const closeModal = () => {
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="font-medium text-gray-700">{{ member.mobile }}</div>
+                                        <span
+                                            v-if="member.has_account"
+                                            class="mt-1 inline-block rounded-sm px-2 py-0.5 text-xs font-bold"
+                                            :class="member.mobile_verified ? 'bg-green-100 text-green-800' : 'bg-orange-100 text-orange-800'"
+                                        >
+                                            {{ member.mobile_verified ? __('admin_mobile_verified') : __('admin_mobile_not_verified') }}
+                                        </span>
                                         <div class="text-xs text-gray-500">{{ member.email || 'N/A' }}</div>
                                     </td>
                                     <td class="px-6 py-4">
@@ -216,6 +273,12 @@ const closeModal = () => {
                                     </td>
                                     <td class="px-6 py-4 text-right space-x-4 whitespace-nowrap">
                                         <WhatsAppWelcomeLink :href="memberLink(member)" :disabled-reason="whatsappOptOut(member)" />
+                                        <WhatsAppWelcomeLink
+                                            v-if="member.verify_reminder_link"
+                                            :href="member.verify_reminder_link"
+                                            :label="__('admin_mobile_reminder')"
+                                            :title="__('admin_mobile_reminder')"
+                                        />
                                         <button @click="openViewModal(member)" class="text-indigo-600 hover:text-indigo-900 font-bold transition-colors">View Details</button>
                                         <template v-if="member.status !== 'approved'">
                                             <button
@@ -305,7 +368,27 @@ const closeModal = () => {
                             Contact Details
                         </h4>
                         <dl class="space-y-3 text-sm">
-                            <div class="flex justify-between"><dt class="text-gray-500">Mobile</dt> <dd class="font-bold text-gray-900">{{ selectedMember.mobile }}</dd></div>
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <dt class="text-gray-500">Mobile</dt>
+                                <dd class="font-bold text-gray-900">
+                                    {{ selectedMember.mobile }}
+                                    <span v-if="selectedMember.has_account" class="ml-1 text-xs" :class="selectedMember.mobile_verified ? 'text-green-700' : 'text-orange-700'">
+                                        {{ selectedMember.mobile_verified ? __('admin_mobile_verified') : __('admin_mobile_not_verified') }}
+                                    </span>
+                                </dd>
+                            </div>
+                            <div v-if="!editingMobile" class="flex justify-end">
+                                <button type="button" class="min-h-11 text-sm font-bold text-indigo-600 hover:underline" @click="startMobileEdit">{{ __('admin_mobile_edit') }}</button>
+                            </div>
+                            <form v-else class="space-y-2" @submit.prevent="saveMobile">
+                                <input v-model="mobileForm.mobile" type="tel" inputmode="numeric" maxlength="10" class="block min-h-11 w-full rounded-lg border-gray-300 text-base" aria-label="Mobile" />
+                                <p v-if="mobileForm.errors.mobile" class="text-sm font-semibold text-red-700">{{ __(mobileForm.errors.mobile) }}</p>
+                                <p class="text-xs text-gray-500">{{ __('admin_mobile_edit_hint') }}</p>
+                                <div class="flex gap-2">
+                                    <button type="submit" :disabled="mobileForm.processing" class="min-h-11 rounded-lg bg-indigo-600 px-4 font-bold text-white disabled:opacity-60">{{ __('admin_mobile_save') }}</button>
+                                    <button type="button" class="min-h-11 rounded-lg bg-gray-100 px-4 font-bold text-gray-700" @click="editingMobile = false">{{ __('admin_mobile_cancel') }}</button>
+                                </div>
+                            </form>
                             <div class="flex justify-between" v-if="selectedMember.whatsapp"><dt class="text-gray-500">WhatsApp</dt> <dd class="font-bold text-gray-900">{{ selectedMember.whatsapp }}</dd></div>
                             <div class="flex justify-between" v-if="selectedMember.email"><dt class="text-gray-500">Email</dt> <dd class="font-bold text-gray-900 truncate ml-4">{{ selectedMember.email }}</dd></div>
                         </dl>

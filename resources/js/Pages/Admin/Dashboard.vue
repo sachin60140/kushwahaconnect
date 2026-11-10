@@ -3,6 +3,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import ApexChart from 'vue3-apexcharts';
 import SmsHealthCard from '@/Components/SmsHealthCard.vue';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { __ } = useLanguage();
 
 const props = defineProps({
     stats: Object,
@@ -156,6 +159,17 @@ const genderChartSeries = props.chartData?.gender?.series || [];
                 <!-- SMS gateway status: red banner while degraded, plus usage counters -->
                 <div v-if="smsHealth" class="px-4 sm:px-0">
                     <SmsHealthCard :health="smsHealth" :can-retry="$page.props.auth.user?.role === 'super_admin'" />
+                </div>
+
+                <!-- Members who still need to verify their mobile by OTP -->
+                <div v-if="stats.unverified_mobiles > 0" class="px-4 sm:px-0">
+                    <Link
+                        :href="route('admin.members', { mobile: 'unverified' })"
+                        class="flex min-h-11 items-center justify-between gap-3 rounded-xl border border-orange-200 bg-orange-50 px-4 py-3 text-sm font-bold text-orange-900 hover:bg-orange-100"
+                    >
+                        <span>{{ __('admin_mobile_unverified_count').replace(':count', stats.unverified_mobiles) }}</span>
+                        <span aria-hidden="true">→</span>
+                    </Link>
                 </div>
 
                 <!-- Overview Header -->
