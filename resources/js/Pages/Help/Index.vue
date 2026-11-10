@@ -129,7 +129,16 @@ const submitSearch = () => {
                             <p class="text-sm font-medium text-gray-500 mb-4">{{ req.city }}, {{ req.state }}</p>
                             
                             <p class="text-gray-700 text-sm mb-4 flex-1 whitespace-pre-line leading-relaxed">{{ req.description }}</p>
-                            
+
+                            <div v-if="req.documents_count || req.bank_account_number || req.upi_id || req.upi_qr_url" class="flex flex-wrap gap-2 text-xs font-bold">
+                                <Link v-if="req.documents_count" :href="route('help.show', req.id)" class="rounded-full bg-blue-50 px-2.5 py-1 text-blue-700 hover:bg-blue-100">
+                                    📎 {{ req.documents_count }} {{ req.documents_count > 1 ? 'documents' : 'document' }}
+                                </Link>
+                                <Link v-if="req.bank_account_number || req.upi_id || req.upi_qr_url" :href="route('help.show', req.id)" class="rounded-full bg-green-50 px-2.5 py-1 text-green-700 hover:bg-green-100">
+                                    💳 Bank/UPI details
+                                </Link>
+                            </div>
+
                             <div class="mt-4 pt-4 border-t border-gray-100">
                                 <div class="flex items-center justify-between mb-4">
                                     <h4 class="font-semibold text-gray-900 text-sm">Requested by: <span class="text-green-700">{{ req.name }}</span></h4>

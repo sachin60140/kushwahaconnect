@@ -4,6 +4,7 @@ import { computed } from 'vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import HelpShareButtons from '@/Components/HelpShareButtons.vue';
+import HelpDonationBox from '@/Components/HelpDonationBox.vue';
 import { toWhatsAppNumber } from '@/composables/useWhatsAppWelcome';
 
 const props = defineProps({
@@ -22,6 +23,9 @@ const location = computed(() =>
 );
 
 const whatsappNumber = computed(() => toWhatsAppNumber(props.helpRequest.whatsapp));
+
+const images = computed(() => (props.helpRequest.documents || []).filter((doc) => doc.is_image));
+const files = computed(() => (props.helpRequest.documents || []).filter((doc) => !doc.is_image));
 
 const urgencyClasses = computed(() => ({
     'bg-red-100 text-red-800 border border-red-200': props.helpRequest.urgency === 'Emergency',
@@ -70,6 +74,29 @@ const urgencyClasses = computed(() => ({
                         <p v-if="location" class="text-sm font-medium text-gray-500 mb-4">📍 {{ location }}</p>
 
                         <p class="text-gray-800 leading-relaxed whitespace-pre-line">{{ helpRequest.description }}</p>
+
+                        <!-- Supporting documents / photos -->
+                        <section v-if="helpRequest.documents?.length" class="mt-6">
+                            <h2 class="text-sm font-black text-gray-900 mb-3">
+                                {{ isHindi ? 'दस्तावेज़ और फ़ोटो' : 'Documents & photos' }}
+                                <span class="font-medium text-gray-500">({{ helpRequest.documents.length }})</span>
+                            </h2>
+                            <div v-if="images.length" class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-3">
+                                <a v-for="doc in images" :key="doc.id" :href="doc.url" target="_blank" rel="noopener" class="group block overflow-hidden rounded-lg border border-gray-200 bg-gray-50">
+                                    <img :src="doc.url" :alt="doc.original_name" loading="lazy" class="h-32 w-full object-cover transition group-hover:scale-105">
+                                </a>
+                            </div>
+                            <ul v-if="files.length" class="divide-y divide-gray-100 rounded-lg border border-gray-200">
+                                <li v-for="doc in files" :key="doc.id">
+                                    <a :href="doc.url" target="_blank" rel="noopener" class="flex items-center justify-between gap-3 px-3 py-2 text-sm hover:bg-gray-50">
+                                        <span class="min-w-0 truncate font-medium text-indigo-700">📄 {{ doc.original_name }}</span>
+                                        <span class="shrink-0 text-xs font-bold text-gray-500">{{ isHindi ? 'खोलें' : 'Open' }} ↗</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </section>
+
+                        <HelpDonationBox :help-request="helpRequest" class="mt-6" />
 
                         <div class="mt-6 pt-5 border-t border-gray-100 flex flex-wrap items-center justify-between gap-2">
                             <p class="font-semibold text-gray-900 text-sm">

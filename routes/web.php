@@ -154,6 +154,8 @@ Route::get('/help-each-other', [\App\Http\Controllers\HelpController::class, 'in
 Route::get('/help-each-other/request', [\App\Http\Controllers\HelpController::class, 'create'])->name('help.create');
 Route::get('/help-each-other/{id}', [\App\Http\Controllers\HelpController::class, 'show'])->whereNumber('id')->name('help.show');
 Route::get('/help-each-other/{id}/preview.png', [\App\Http\Controllers\HelpController::class, 'preview'])->whereNumber('id')->name('help.preview');
+Route::get('/help-each-other/{id}/documents/{document}', [\App\Http\Controllers\HelpController::class, 'document'])->whereNumber(['id', 'document'])->name('help.document');
+Route::get('/help-each-other/{id}/upi-qr', [\App\Http\Controllers\HelpController::class, 'upiQr'])->whereNumber('id')->name('help.upi-qr');
 Route::post('/help-each-other', [\App\Http\Controllers\HelpController::class, 'store'])->name('help.store');
 
 Route::get('/volunteer-directory', [\App\Http\Controllers\VolunteerController::class, 'index'])->name('volunteer.index');
@@ -277,6 +279,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/help-requests', [\App\Http\Controllers\AdminHelpController::class, 'index'])->name('admin.help-requests.index');
     Route::get('/admin/help-requests/create', [\App\Http\Controllers\AdminHelpController::class, 'create'])->name('admin.help-requests.create');
     Route::post('/admin/help-requests', [\App\Http\Controllers\AdminHelpController::class, 'store'])->name('admin.help-requests.store');
+    Route::get('/admin/help-requests/{id}/edit', [\App\Http\Controllers\AdminHelpController::class, 'edit'])->whereNumber('id')->name('admin.help-requests.edit');
+    // POST (not PUT) so file uploads work as multipart form data.
+    Route::post('/admin/help-requests/{id}', [\App\Http\Controllers\AdminHelpController::class, 'update'])->whereNumber('id')->name('admin.help-requests.update');
     Route::patch('/admin/help-requests/{id}/status', [\App\Http\Controllers\AdminHelpController::class, 'updateStatus'])->name('admin.help-requests.status');
     Route::delete('/admin/help-requests/{id}', [\App\Http\Controllers\AdminHelpController::class, 'destroy'])->name('admin.help-requests.destroy');
 

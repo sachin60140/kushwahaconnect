@@ -96,6 +96,11 @@ const filterByStatus = () => {
                                         <div class="mt-2 text-sm text-gray-600 line-clamp-2 max-w-xs" :title="req.description">{{ req.description }}</div>
                                         <div v-if="req.is_public" class="mt-1 text-xs font-semibold text-green-600">Public Request</div>
                                         <div v-else class="mt-1 text-xs font-semibold text-gray-500">Private Request</div>
+                                        <div class="mt-1 flex flex-wrap gap-1 text-[11px] font-bold">
+                                            <span v-if="req.documents_count" class="rounded-sm bg-blue-50 px-1.5 py-0.5 text-blue-700">📎 {{ req.documents_count }} document{{ req.documents_count > 1 ? 's' : '' }}</span>
+                                            <span v-if="req.bank_account_number" class="rounded-sm bg-green-50 px-1.5 py-0.5 text-green-700">Bank details</span>
+                                            <span v-if="req.upi_id || req.upi_qr_url" class="rounded-sm bg-green-50 px-1.5 py-0.5 text-green-700">UPI</span>
+                                        </div>
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-900">
                                         <div class="font-medium">{{ req.name }}</div>
@@ -121,6 +126,7 @@ const filterByStatus = () => {
                                         </select>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-3">
+                                        <Link :href="route('admin.help-requests.edit', req.id)" class="text-indigo-600 hover:text-indigo-900 font-bold">Edit</Link>
                                         <a v-if="isLive(req)" :href="route('help.show', req.id)" target="_blank" rel="noopener" class="text-green-700 hover:text-green-900 font-bold">View / Share</a>
                                         <button @click="destroy(req.id)" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-sm">Delete</button>
                                     </td>

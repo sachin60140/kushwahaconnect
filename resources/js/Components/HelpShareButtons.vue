@@ -43,6 +43,8 @@ const excerpt = computed(() => {
 // Full appeal (WhatsApp, Telegram, copy): headline, place, story, call to action.
 const message = computed(() => {
     const req = props.helpRequest;
+    // Point to the page for payment details instead of copying account numbers into shares.
+    const hasPayment = !!(req.bank_account_number || req.upi_id || req.upi_qr_url);
     const lines = isHindi.value
         ? [
             `🚨 मदद की अपील (${urgencyLabel.value}) — ${req.title}`,
@@ -50,6 +52,7 @@ const message = computed(() => {
             '',
             excerpt.value,
             '',
+            hasPayment ? '💳 सीधे सहायता के लिए बैंक/UPI विवरण लिंक पर उपलब्ध है।' : null,
             'कृपया मदद करें और इसे ज़्यादा से ज़्यादा लोगों तक शेयर करें 🙏',
         ]
         : [
@@ -58,6 +61,7 @@ const message = computed(() => {
             '',
             excerpt.value,
             '',
+            hasPayment ? '💳 Bank/UPI details for direct support are on the page.' : null,
             'Please help and share this as widely as you can 🙏',
         ];
 
