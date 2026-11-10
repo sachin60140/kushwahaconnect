@@ -238,3 +238,17 @@ layer(base);
         background-color: #ffedd5;
     }
 }
+
+/*
+  iOS Safari zooms the page when a focused field's text is under 16px.
+  On phones and tablets, keep form fields at 16px (overrides sm:text-sm etc.).
+*/
+@layer utilities {
+    @media (max-width: 1023px) {
+        input:not([type='checkbox']):not([type='radio']):not([type='file']):not([type='range']),
+        select,
+        textarea {
+            font-size: 16px;
+        }
+    }
+}

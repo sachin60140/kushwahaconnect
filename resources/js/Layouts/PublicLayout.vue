@@ -132,7 +132,7 @@ const navLinks = computed(() => [
                 </div>
             </nav>
 
-            <div v-show="isMobileMenuOpen" class="border-t border-slate-200 bg-white lg:hidden">
+            <div v-show="isMobileMenuOpen" class="max-h-[65vh] overflow-y-auto overscroll-contain border-t border-slate-200 bg-white pb-6 lg:hidden">
                 <div class="mx-auto max-w-7xl space-y-1 px-4 py-4">
                     <Link
                         v-for="link in navLinks"
@@ -203,7 +203,7 @@ const navLinks = computed(() => [
                             :href="link.href"
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="rounded-full bg-white/10 px-3 py-2 text-xs font-bold text-white transition hover:bg-orange-500"
+                            class="inline-flex min-h-11 items-center rounded-full bg-white/10 px-4 text-xs font-bold text-white transition hover:bg-orange-500"
                         >
                             {{ link.label }}
                         </a>
@@ -212,23 +212,23 @@ const navLinks = computed(() => [
 
                 <div>
                     <h3 class="text-base font-black text-orange-300">{{ __('footer_quick_links') }}</h3>
-                    <ul class="mt-4 space-y-3 text-sm text-blue-100">
-                        <li><Link :href="route('join')" class="hover:text-white">{{ __('menu_join') }}</Link></li>
-                        <li><Link :href="route('pride.index')" class="hover:text-white">{{ __('menu_pride') }}</Link></li>
-                        <li><Link :href="route('representatives.index')" class="hover:text-white">{{ __('menu_representatives') }}</Link></li>
-                        <li><Link :href="route('directory')" class="hover:text-white">{{ __('menu_directory') }}</Link></li>
-                        <li><Link :href="route('businesses.index')" class="hover:text-white">{{ __('menu_businesses') }}</Link></li>
-                        <li><Link :href="route('matrimonial')" class="hover:text-white">{{ __('menu_matrimonial') }}</Link></li>
+                    <ul class="mt-2 text-sm text-blue-100 lg:mt-4 lg:space-y-3">
+                        <li><Link :href="route('join')" class="inline-flex min-h-11 items-center hover:text-white lg:min-h-0">{{ __('menu_join') }}</Link></li>
+                        <li><Link :href="route('pride.index')" class="inline-flex min-h-11 items-center hover:text-white lg:min-h-0">{{ __('menu_pride') }}</Link></li>
+                        <li><Link :href="route('representatives.index')" class="inline-flex min-h-11 items-center hover:text-white lg:min-h-0">{{ __('menu_representatives') }}</Link></li>
+                        <li><Link :href="route('directory')" class="inline-flex min-h-11 items-center hover:text-white lg:min-h-0">{{ __('menu_directory') }}</Link></li>
+                        <li><Link :href="route('businesses.index')" class="inline-flex min-h-11 items-center hover:text-white lg:min-h-0">{{ __('menu_businesses') }}</Link></li>
+                        <li><Link :href="route('matrimonial')" class="inline-flex min-h-11 items-center hover:text-white lg:min-h-0">{{ __('menu_matrimonial') }}</Link></li>
                     </ul>
                 </div>
 
                 <div>
                     <h3 class="text-base font-black text-orange-300">{{ __('footer_support_links') }}</h3>
-                    <ul class="mt-4 space-y-3 text-sm text-blue-100">
-                        <li><Link :href="route('help.index')" class="hover:text-white">{{ __('menu_help') }}</Link></li>
-                        <li><Link :href="route('privacy')" class="hover:text-white">{{ __('footer_privacy') }}</Link></li>
-                        <li><Link :href="route('terms')" class="hover:text-white">{{ __('footer_terms') }}</Link></li>
-                        <li><Link :href="route('data-deletion')" class="hover:text-white">{{ __('footer_deletion') }}</Link></li>
+                    <ul class="mt-2 text-sm text-blue-100 lg:mt-4 lg:space-y-3">
+                        <li><Link :href="route('help.index')" class="inline-flex min-h-11 items-center hover:text-white lg:min-h-0">{{ __('menu_help') }}</Link></li>
+                        <li><Link :href="route('privacy')" class="inline-flex min-h-11 items-center hover:text-white lg:min-h-0">{{ __('footer_privacy') }}</Link></li>
+                        <li><Link :href="route('terms')" class="inline-flex min-h-11 items-center hover:text-white lg:min-h-0">{{ __('footer_terms') }}</Link></li>
+                        <li><Link :href="route('data-deletion')" class="inline-flex min-h-11 items-center hover:text-white lg:min-h-0">{{ __('footer_deletion') }}</Link></li>
                     </ul>
                 </div>
 
@@ -237,7 +237,7 @@ const navLinks = computed(() => [
                     <div class="mt-4 space-y-2 text-sm text-blue-100">
                         <p v-if="settings.contact_email">{{ settings.contact_email }}</p>
                         <p v-if="settings.contact_mobile">{{ settings.contact_mobile }}</p>
-                        <Link href="/contact" class="inline-flex font-bold text-white hover:text-orange-300">{{ __('menu_contact') }}</Link>
+                        <Link href="/contact" class="inline-flex min-h-11 items-center font-bold text-white hover:text-orange-300">{{ __('menu_contact') }}</Link>
                     </div>
 
                     <div class="mt-6">

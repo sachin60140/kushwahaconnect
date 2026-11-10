@@ -10,19 +10,21 @@ const props = defineProps({
 });
 
 const { __ } = useLanguage();
-const activeTab = ref('news');
-
-const tabs = [
+const allTabs = [
     { key: 'news', label: 'tab_news' },
     { key: 'success_story', label: 'tab_success' },
     { key: 'update', label: 'tab_updates' },
 ];
 
+// Only offer tabs that have something to show; the section hides when all are empty.
+const tabs = computed(() => allTabs.filter((tab) => (props.updates[tab.key] || []).length));
+const activeTab = ref(tabs.value[0]?.key || 'news');
+
 const activeItems = computed(() => props.updates[activeTab.value] || []);
 </script>
 
 <template>
-    <section class="bg-[#fffaf0] px-4 py-16 sm:px-6 lg:px-8">
+    <section v-if="tabs.length" class="bg-[#fffaf0] px-4 py-16 sm:px-6 lg:px-8">
         <div class="mx-auto max-w-7xl">
             <div class="mx-auto max-w-3xl text-center">
                 <h2 class="text-3xl font-black tracking-tight text-blue-950 sm:text-4xl">{{ __('updates_title') }}</h2>
