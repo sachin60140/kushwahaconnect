@@ -16,11 +16,16 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    // MemberProfile::checklistFor(): { missing: [field, ...], percent }
+    profileChecklist: {
+        type: Object,
+        default: () => ({ missing: [], percent: 100 }),
+    },
 });
 
 const user = usePage().props.auth.user;
 
-const profileCompletion = user.status === 'profile_incomplete' ? 30 : 100;
+const profileCompletion = props.profileChecklist.percent;
 const statusColor = user.status === 'approved' ? 'bg-green-100 text-green-800' : 
                     user.status === 'pending_approval' ? 'bg-yellow-100 text-yellow-800' : 
                     user.status === 'blocked' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800';
@@ -94,7 +99,7 @@ const formatDate = (date) => {
                     <div class="md:col-span-2 space-y-6">
                         
                         <!-- Profile Completion Alert -->
-                        <div v-if="profileCompletion < 100" class="bg-orange-50 border-l-4 border-orange-500 p-4 shadow-xs rounded-r-lg">
+                        <div v-if="profileChecklist.missing.length" class="bg-orange-50 border-l-4 border-orange-500 p-4 shadow-xs rounded-r-lg" data-testid="profile-checklist">
                             <div class="flex items-center">
                                 <div class="shrink-0">
                                     <svg class="h-5 w-5 text-orange-400" viewBox="0 0 20 20" fill="currentColor">
@@ -102,16 +107,22 @@ const formatDate = (date) => {
                                     </svg>
                                 </div>
                                 <div class="ml-3">
-                                    <h3 class="text-sm font-medium text-orange-800">Complete your profile</h3>
-                                    <div class="mt-2 text-sm text-orange-700">
-                                        <p>Your profile is only {{ profileCompletion }}% complete. To unlock all community features, please add your details.</p>
+                                    <h3 class="text-base font-bold text-orange-900">{{ __('profile_checklist_title') }}</h3>
+                                    <div class="mt-2 text-sm text-orange-800">
+                                        <p>{{ __('profile_checklist_intro').replace(':percent', profileCompletion) }}</p>
+                                        <ul class="mt-2 grid grid-cols-1 gap-1 sm:grid-cols-2">
+                                            <li v-for="field in profileChecklist.missing" :key="field" class="flex items-center gap-2">
+                                                <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-orange-500" aria-hidden="true"></span>
+                                                {{ __(`profile_field_${field}`) }}
+                                            </li>
+                                        </ul>
                                     </div>
                                     <div class="mt-4">
                                         <div class="w-full bg-orange-200 rounded-full h-2.5 mb-2">
                                             <div class="bg-orange-500 h-2.5 rounded-full" :style="`width: ${profileCompletion}%`"></div>
                                         </div>
-                                        <Link :href="route('user.member-profile.edit')" class="text-sm font-bold text-orange-700 hover:text-orange-600 underline">
-                                            Complete Community Profile &rarr;
+                                        <Link :href="route('user.member-profile.edit')" class="inline-flex min-h-11 items-center text-base font-bold text-orange-700 hover:text-orange-600 underline">
+                                            {{ __('profile_checklist_cta') }} &rarr;
                                         </Link>
                                     </div>
                                 </div>

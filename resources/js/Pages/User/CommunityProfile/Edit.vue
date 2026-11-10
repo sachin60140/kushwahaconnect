@@ -39,7 +39,11 @@ const form = useForm({
     // Stored as 0/1 (no model casts); checkboxes need real booleans to render checked.
     volunteer_interest: Boolean(props.profile.volunteer_interest),
     join_district_team: Boolean(props.profile.join_district_team),
+    // New photo file (optional); the saved one is shown as a preview.
+    profile_photo: null,
 });
+
+const currentPhotoUrl = props.profile.profile_photo ? `/storage/${props.profile.profile_photo}` : null;
 
 const availableDistricts = ref(props.districts.filter(d => d.state_id === form.state_id));
 
@@ -51,7 +55,8 @@ watch(() => form.state_id, (newStateId) => {
 });
 
 const submit = () => {
-    form.post(route('user.member-profile.update'));
+    // forceFormData so an optional photo upload is sent as multipart.
+    form.post(route('user.member-profile.update'), { forceFormData: true });
 };
 </script>
 
@@ -80,6 +85,14 @@ const submit = () => {
                             <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
                                 <h4 class="font-semibold text-gray-800 mb-4 border-b pb-2">Personal Information</h4>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="md:col-span-2 flex items-center gap-4">
+                                        <img v-if="currentPhotoUrl" :src="currentPhotoUrl" alt="" class="h-16 w-16 shrink-0 rounded-full object-cover" />
+                                        <div class="min-w-0 flex-1">
+                                            <InputLabel for="profile_photo" value="Profile Photo (Max 2MB)" />
+                                            <input id="profile_photo" type="file" accept="image/jpeg,image/png,image/jpg" class="mt-1 block min-h-11 w-full rounded-md border border-gray-300 bg-white p-2 text-base" @input="form.profile_photo = $event.target.files[0]" />
+                                            <InputError class="mt-2" :message="form.errors.profile_photo" />
+                                        </div>
+                                    </div>
                                     <div>
                                         <InputLabel for="full_name" value="Full Name *" />
                                         <TextInput id="full_name" type="text" class="mt-1 block w-full" v-model="form.full_name" required />

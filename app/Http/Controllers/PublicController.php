@@ -70,6 +70,12 @@ class PublicController extends Controller
 
     public function storeJoin(Request $request)
     {
+        // Quick sign-up: name, mobile (OTP), gender, state, district and consent.
+        // Everything else is added later from "My community profile".
+        // A password is optional while members can sign in with mobile OTP; when SMS is
+        // off or failing (no OTP login) it is required, or the member could not sign in again.
+        $passwordRequired = ! \App\Services\Otp\VerifiedMobiles::enforced();
+
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
             'father_husband_name' => 'nullable|string|max:255',
@@ -80,9 +86,9 @@ class PublicController extends Controller
             'email' => ['nullable', 'email', 'max:255', Rule::unique(User::class, 'email')],
             'state_id' => 'required|exists:states,id',
             'district_id' => 'required|exists:districts,id',
-            'city_village' => 'required|string|max:255',
-            'pin_code' => 'required|string|max:20',
-            'current_address' => 'required|string',
+            'city_village' => 'nullable|string|max:255',
+            'pin_code' => 'nullable|string|max:20',
+            'current_address' => 'nullable|string',
             'native_place' => 'nullable|string|max:255',
             'education' => 'nullable|string|max:255',
             'occupation' => 'nullable|string|max:255',
@@ -103,7 +109,7 @@ class PublicController extends Controller
             'allow_whatsapp' => 'boolean',
             'consent' => 'accepted',
             'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => [$passwordRequired ? 'required' : 'nullable', 'confirmed', Rules\Password::defaults()],
         ]);
 
         if ($request->hasFile('profile_photo')) {
@@ -115,7 +121,8 @@ class PublicController extends Controller
                 'name' => $validated['full_name'],
                 'email' => $validated['email'] ?? null,
                 'mobile' => $validated['mobile'],
-                'password' => Hash::make($validated['password']),
+                // No password chosen: an unguessable one; the member signs in with mobile OTP.
+                'password' => Hash::make(filled($validated['password'] ?? null) ? $validated['password'] : \Illuminate\Support\Str::random(64)),
                 'status' => 'approved',
             ]);
 

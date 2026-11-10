@@ -1,55 +1,40 @@
 <script setup>
+// Quick sign-up: name, mobile (+ OTP), gender, state, district and consent.
+// Everything else (photo, address, DOB, WhatsApp, ...) is added later from
+// "My community profile"; the dashboard lists what is still missing.
 import MobileOtpField from '@/Components/MobileOtpField.vue';
-import { useForm } from '@inertiajs/vue3';
+import { useForm, usePage } from '@inertiajs/vue3';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import SeoMeta from '@/Components/SeoMeta.vue';
 import { useLanguage } from '@/composables/useLanguage';
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import axios from 'axios';
 
-const props = defineProps({
-    states: Array
+defineProps({
+    states: Array,
 });
 
-const { __ } = useLanguage();
+const { __, locale } = useLanguage();
+const page = usePage();
+
+// Without SMS there is no OTP login, so a password is needed to sign in again.
+const passwordRequired = computed(() => !page.props.mobileOtp?.required);
 
 const form = useForm({
-    profile_photo: null,
     full_name: '',
-    father_husband_name: '',
     gender: '',
-    dob: '',
     mobile: '',
-    whatsapp: '',
-    email: '',
     state_id: '',
     district_id: '',
-    city_village: '',
-    pin_code: '',
-    current_address: '',
-    native_place: '',
-    education: '',
-    occupation: '',
-    employment_type: '',
-    company_name: '',
-    skills: '',
-    gotra: '',
-    social_work_interest: '',
-    volunteer_interest: false,
-    join_district_team: false,
-    facebook: '',
-    instagram: '',
-    linkedin: '',
-    youtube: '',
-    twitter: '',
+    email: '',
     is_public: false,
-    show_mobile: false,
-    allow_whatsapp: true,
     consent: false,
     password: '',
-    password_confirmation: ''
+    password_confirmation: '',
 });
 
+const showMore = ref(false);
+const showPassword = ref(false);
 const districts = ref([]);
 const errorSummary = ref(null);
 
@@ -62,6 +47,14 @@ watch(() => form.state_id, async (newStateId) => {
     }
 });
 
+// Reveal optional sections that came back with errors.
+watch(() => form.errors, (errors) => {
+    if (errors.email) showMore.value = true;
+    if (errors.password || errors.password_confirmation) showPassword.value = true;
+});
+
+const placeName = (item) => (locale.value === 'hi' && item.name_hi ? item.name_hi : item.name_en);
+
 const submit = () => {
     form.post(route('join.store'), {
         preserveScroll: true,
@@ -73,196 +66,157 @@ const submit = () => {
         },
     });
 };
+
+const inputClass = 'block min-h-11 w-full rounded-lg border-gray-300 px-3 py-2 text-base shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200';
+const labelClass = 'mb-1 block text-base font-semibold text-gray-800';
+const errorClass = 'mt-1 text-sm font-semibold text-red-600';
 </script>
 
 <template>
-    <SeoMeta 
-        title="Join the Community" 
+    <SeoMeta
+        title="Join the Community"
         description="Register and become a member of the KushwahaConnect community. Connect, network, and grow together."
     />
     <PublicLayout :show-flash="false">
         <template #header>
             <div class="max-w-3xl">
                 <p class="text-sm font-black uppercase tracking-[0.22em] text-orange-300">Join Community</p>
-                <h1 class="mt-3 text-4xl font-black tracking-tight text-white">Join Kushwaha Community</h1>
-                <p class="mt-4 text-lg leading-8 text-blue-100">Create your community profile and connect with members, opportunities, support, and updates.</p>
+                <h1 class="mt-3 text-4xl font-black tracking-tight text-white">{{ __('join_title') }}</h1>
+                <p class="mt-4 text-lg leading-8 text-blue-100">{{ __('join_intro') }}</p>
             </div>
         </template>
 
-        <div class="py-12 bg-gray-50">
-            <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+        <div class="bg-gray-50 py-8 sm:py-12">
+            <div class="mx-auto max-w-2xl sm:px-6 lg:px-8">
                 <div class="kc-surface overflow-hidden">
-                    <div class="px-6 py-8 md:p-10 border-b border-gray-200 bg-linear-to-r from-orange-50 to-white">
-                        <h2 class="text-3xl font-black text-blue-950 mb-2">Create Community Profile</h2>
-                        <p class="text-gray-600 text-lg">Connect with community members, get updates, and support social initiatives.</p>
+                    <div class="border-b border-gray-200 bg-linear-to-r from-orange-50 to-white px-4 py-6 sm:px-8">
+                        <h2 class="text-2xl font-black text-blue-950 sm:text-3xl">{{ __('join_card_title') }}</h2>
+                        <p class="mt-1 text-base text-gray-600">{{ __('join_card_intro') }}</p>
                     </div>
 
-                    <div v-if="$page.props.flash?.success" class="m-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 rounded-sm shadow-xs">
-                        {{ $page.props.flash.success }}
+                    <div v-if="$page.props.flash?.success" class="m-4 rounded-sm border-l-4 border-green-500 bg-green-50 p-4 text-green-700 shadow-xs">
+                        {{ __($page.props.flash.success) }}
                     </div>
 
-                    <form @submit.prevent="submit" class="p-6 md:p-10 space-y-8">
+                    <form class="space-y-5 px-4 py-6 sm:px-8" @submit.prevent="submit">
                         <div
                             v-if="Object.keys(form.errors).length"
                             ref="errorSummary"
                             class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700"
+                            role="alert"
                         >
-                            <p class="font-bold">Please fix the highlighted details and submit again.</p>
+                            <p class="font-bold">{{ __('join_fix_errors') }}</p>
                             <ul class="mt-2 list-disc space-y-1 pl-5 text-sm">
                                 <li v-for="(message, field) in form.errors" :key="field">{{ __(message) }}</li>
                             </ul>
                         </div>
 
-                        <!-- Personal Info -->
                         <div>
-                            <h3 class="text-xl font-bold text-gray-800 border-b pb-2 mb-4">Personal Information</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div class="col-span-1 md:col-span-2">
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Profile Photo (Max 2MB)</label>
-                                    <input type="file" @input="form.profile_photo = $event.target.files[0]" accept="image/jpeg,image/png,image/jpg" class="w-full border border-gray-300 rounded-lg shadow-xs p-2 bg-white focus:border-orange-500 focus:ring-3 focus:ring-orange-200">
-                                    <div v-if="form.errors.profile_photo" class="text-red-500 text-sm mt-1">{{ form.errors.profile_photo }}</div>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
-                                    <input v-model="form.full_name" type="text" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200" required>
-                                    <div v-if="form.errors.full_name" class="text-red-500 text-sm mt-1">{{ form.errors.full_name }}</div>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Father/Husband Name</label>
-                                    <input v-model="form.father_husband_name" type="text" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200">
-                                    <div v-if="form.errors.father_husband_name" class="text-red-500 text-sm mt-1">{{ form.errors.father_husband_name }}</div>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Gender *</label>
-                                    <select v-model="form.gender" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200" required>
-                                        <option value="">Select Gender</option>
-                                        <option value="Male">Male</option>
-                                        <option value="Female">Female</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-                                    <div v-if="form.errors.gender" class="text-red-500 text-sm mt-1">{{ form.errors.gender }}</div>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
-                                    <input v-model="form.dob" type="date" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200">
-                                    <div v-if="form.errors.dob" class="text-red-500 text-sm mt-1">{{ form.errors.dob }}</div>
-                                </div>
-                            </div>
+                            <label for="join-name" :class="labelClass">{{ __('join_full_name') }} *</label>
+                            <input id="join-name" v-model="form.full_name" type="text" autocomplete="name" required :class="inputClass">
+                            <p v-if="form.errors.full_name" :class="errorClass">{{ __(form.errors.full_name) }}</p>
                         </div>
 
-                        <!-- Contact Info -->
                         <div>
-                            <h3 class="text-xl font-bold text-gray-800 border-b pb-2 mb-4">Contact Information</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Mobile Number *</label>
-                                    <input v-model="form.mobile" type="text" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200" required>
-                                    <MobileOtpField :mobile="form.mobile" :error="form.errors.mobile" id-prefix="join-mobile-otp" />
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">WhatsApp Number</label>
-                                    <input v-model="form.whatsapp" type="text" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200">
-                                    <div v-if="form.errors.whatsapp" class="text-red-500 text-sm mt-1">{{ form.errors.whatsapp }}</div>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                    <input v-model="form.email" type="email" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200">
-                                    <div v-if="form.errors.email" class="text-red-500 text-sm mt-1">{{ form.errors.email }}</div>
-                                </div>
-                            </div>
+                            <label for="join-mobile" :class="labelClass">{{ __('join_mobile') }} *</label>
+                            <input id="join-mobile" v-model="form.mobile" type="tel" inputmode="numeric" autocomplete="tel-national" required :class="inputClass">
+                            <MobileOtpField :mobile="form.mobile" :error="form.errors.mobile" id-prefix="join-mobile-otp" />
                         </div>
 
-                        <!-- Location -->
                         <div>
-                            <h3 class="text-xl font-bold text-gray-800 border-b pb-2 mb-4">Location</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">State *</label>
-                                    <select v-model="form.state_id" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200" required>
-                                        <option value="">Select State</option>
-                                        <option v-for="state in states" :key="state.id" :value="state.id">{{ state.name_en }} ({{ state.name_hi }})</option>
-                                    </select>
-                                    <div v-if="form.errors.state_id" class="text-red-500 text-sm mt-1">{{ form.errors.state_id }}</div>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">District *</label>
-                                    <select v-model="form.district_id" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200" required>
-                                        <option value="">Select District</option>
-                                        <option v-for="district in districts" :key="district.id" :value="district.id">{{ district.name_en }} ({{ district.name_hi }})</option>
-                                    </select>
-                                    <div v-if="form.errors.district_id" class="text-red-500 text-sm mt-1">{{ form.errors.district_id }}</div>
-                                </div>
-                                <div class="col-span-1 md:col-span-2">
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">City/Village *</label>
-                                    <input v-model="form.city_village" type="text" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200" required>
-                                    <div v-if="form.errors.city_village" class="text-red-500 text-sm mt-1">{{ form.errors.city_village }}</div>
-                                </div>
-                                <div class="col-span-1 md:col-span-2">
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Current Address *</label>
-                                    <textarea v-model="form.current_address" rows="3" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200" required></textarea>
-                                    <div v-if="form.errors.current_address" class="text-red-500 text-sm mt-1">{{ form.errors.current_address }}</div>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Pin Code *</label>
-                                    <input v-model="form.pin_code" type="text" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200" required>
-                                    <div v-if="form.errors.pin_code" class="text-red-500 text-sm mt-1">{{ form.errors.pin_code }}</div>
-                                </div>
+                            <span :class="labelClass">{{ __('join_gender') }} *</span>
+                            <div class="grid grid-cols-3 gap-2" role="radiogroup">
+                                <label
+                                    v-for="option in ['Male', 'Female', 'Other']"
+                                    :key="option"
+                                    class="flex min-h-11 cursor-pointer items-center justify-center rounded-lg border px-2 text-base font-semibold"
+                                    :class="form.gender === option ? 'border-orange-500 bg-orange-50 text-orange-800' : 'border-gray-300 bg-white text-gray-700'"
+                                >
+                                    <input v-model="form.gender" type="radio" name="gender" :value="option" class="sr-only" required>
+                                    {{ __(`join_gender_${option.toLowerCase()}`) }}
+                                </label>
+                            </div>
+                            <p v-if="form.errors.gender" :class="errorClass">{{ __(form.errors.gender) }}</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                            <div>
+                                <label for="join-state" :class="labelClass">{{ __('join_state') }} *</label>
+                                <select id="join-state" v-model="form.state_id" required :class="inputClass">
+                                    <option value="">{{ __('join_select') }}</option>
+                                    <option v-for="state in states" :key="state.id" :value="state.id">{{ placeName(state) }}</option>
+                                </select>
+                                <p v-if="form.errors.state_id" :class="errorClass">{{ __(form.errors.state_id) }}</p>
+                            </div>
+                            <div>
+                                <label for="join-district" :class="labelClass">{{ __('join_district') }} *</label>
+                                <select id="join-district" v-model="form.district_id" required :disabled="!form.state_id" :class="[inputClass, 'disabled:bg-gray-100']">
+                                    <option value="">{{ __('join_select') }}</option>
+                                    <option v-for="district in districts" :key="district.id" :value="district.id">{{ placeName(district) }}</option>
+                                </select>
+                                <p v-if="form.errors.district_id" :class="errorClass">{{ __(form.errors.district_id) }}</p>
                             </div>
                         </div>
 
-                            <!-- Account Security -->
-                            <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-xs">
-                                <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Account Security</h3>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Password *</label>
-                                        <input type="password" v-model="form.password" required class="block w-full rounded-lg border-gray-300 shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200">
-                                        <p class="text-xs text-red-500 mt-1" v-if="form.errors.password">{{ form.errors.password }}</p>
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Confirm Password *</label>
-                                        <input type="password" v-model="form.password_confirmation" required class="block w-full rounded-lg border-gray-300 shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200">
-                                        <p class="text-xs text-red-500 mt-1" v-if="form.errors.password_confirmation">{{ form.errors.password_confirmation }}</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Professional Info -->
+                        <!-- Optional: email -->
                         <div>
-                            <h3 class="text-xl font-bold text-gray-800 border-b pb-2 mb-4">Professional & Social</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Education</label>
-                                    <input v-model="form.education" type="text" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200">
-                                    <div v-if="form.errors.education" class="text-red-500 text-sm mt-1">{{ form.errors.education }}</div>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Occupation</label>
-                                    <input v-model="form.occupation" type="text" class="w-full border-gray-300 rounded-lg shadow-xs focus:border-orange-500 focus:ring-3 focus:ring-orange-200">
-                                    <div v-if="form.errors.occupation" class="text-red-500 text-sm mt-1">{{ form.errors.occupation }}</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Privacy & Consent -->
-                        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 space-y-4">
-                            <h3 class="text-lg font-bold text-gray-800">Privacy & Consent</h3>
-                            <label class="flex items-start">
-                                <input v-model="form.is_public" type="checkbox" class="mt-1 rounded-sm border-gray-300 text-orange-600 focus:ring-orange-500">
-                                <span class="ml-2 text-gray-700">Make my profile public (Visible to community members)</span>
-                            </label>
-                            <label class="flex items-start">
-                                <input v-model="form.consent" type="checkbox" class="mt-1 rounded-sm border-gray-300 text-orange-600 focus:ring-orange-500" required>
-                                <span class="ml-2 text-sm text-gray-600">I agree that KushwahaConnect.com may use my submitted information for community connection, updates, and social communication. My personal details will not be publicly displayed without my permission. *</span>
-                            </label>
-                            <div v-if="form.errors.consent" class="text-red-500 text-sm">{{ form.errors.consent }}</div>
-                        </div>
-
-                        <div class="flex items-center justify-end">
-                            <button type="submit" :disabled="form.processing" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-full shadow-sm transition disabled:opacity-50">
-                                {{ form.processing ? 'Submitting...' : 'Submit Details' }}
+                            <button
+                                v-if="!showMore"
+                                type="button"
+                                class="min-h-11 text-base font-bold text-orange-700 underline"
+                                @click="showMore = true"
+                            >
+                                + {{ __('join_more_details') }}
                             </button>
+                            <div v-else>
+                                <label for="join-email" :class="labelClass">{{ __('join_email') }}</label>
+                                <input id="join-email" v-model="form.email" type="email" autocomplete="email" :class="inputClass">
+                                <p v-if="form.errors.email" :class="errorClass">{{ __(form.errors.email) }}</p>
+                            </div>
                         </div>
+
+                        <!-- Password: optional while mobile OTP login is available -->
+                        <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
+                            <template v-if="!passwordRequired && !showPassword">
+                                <p class="text-sm text-gray-600">{{ __('join_password_optional_hint') }}</p>
+                                <button type="button" class="mt-1 min-h-11 text-base font-bold text-orange-700 underline" @click="showPassword = true">
+                                    + {{ __('join_set_password') }}
+                                </button>
+                            </template>
+                            <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <p v-if="passwordRequired" class="text-sm text-gray-600 sm:col-span-2">{{ __('join_password_required_hint') }}</p>
+                                <div>
+                                    <label for="join-password" :class="labelClass">{{ __('join_password') }}<template v-if="passwordRequired"> *</template></label>
+                                    <input id="join-password" v-model="form.password" type="password" autocomplete="new-password" :required="passwordRequired" :class="inputClass">
+                                    <p v-if="form.errors.password" :class="errorClass">{{ __(form.errors.password) }}</p>
+                                </div>
+                                <div>
+                                    <label for="join-password-confirm" :class="labelClass">{{ __('join_password_confirm') }}<template v-if="passwordRequired"> *</template></label>
+                                    <input id="join-password-confirm" v-model="form.password_confirmation" type="password" autocomplete="new-password" :required="passwordRequired || !!form.password" :class="inputClass">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <label class="flex min-h-11 items-start gap-3">
+                                <input v-model="form.is_public" type="checkbox" class="mt-1 h-5 w-5 rounded-sm border-gray-300 text-orange-600 focus:ring-orange-500">
+                                <span class="text-base text-gray-700">{{ __('join_is_public') }}</span>
+                            </label>
+                            <label class="flex min-h-11 items-start gap-3">
+                                <input v-model="form.consent" type="checkbox" required class="mt-1 h-5 w-5 rounded-sm border-gray-300 text-orange-600 focus:ring-orange-500">
+                                <span class="text-sm text-gray-600">{{ __('join_consent') }} *</span>
+                            </label>
+                            <p v-if="form.errors.consent" :class="errorClass">{{ __(form.errors.consent) }}</p>
+                        </div>
+
+                        <button
+                            type="submit"
+                            :disabled="form.processing"
+                            class="flex min-h-12 w-full items-center justify-center rounded-full bg-green-600 px-8 py-3 text-lg font-bold text-white shadow-sm transition hover:bg-green-700 disabled:opacity-50"
+                        >
+                            {{ form.processing ? __('join_submitting') : __('join_submit') }}
+                        </button>
+                        <p class="text-center text-sm text-gray-500">{{ __('join_later_hint') }}</p>
                     </form>
                 </div>
             </div>

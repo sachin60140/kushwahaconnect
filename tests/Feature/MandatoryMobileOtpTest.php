@@ -90,8 +90,8 @@ class MandatoryMobileOtpTest extends TestCase
 
                 return [
                     'full_name' => 'New Member', 'gender' => 'Male', 'mobile' => $mobile,
-                    'state_id' => $state->id, 'district_id' => $district->id, 'city_village' => 'Patna',
-                    'pin_code' => '800001', 'current_address' => 'Patna', 'consent' => '1',
+                    'state_id' => $state->id, 'district_id' => $district->id,
+                    'consent' => '1',
                     'password' => 'password', 'password_confirmation' => 'password',
                 ];
             })(),

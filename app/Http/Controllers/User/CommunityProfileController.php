@@ -69,12 +69,25 @@ class CommunityProfileController extends Controller
             'linkedin' => 'nullable|url',
             'twitter' => 'nullable|url',
             'youtube' => 'nullable|url',
+            // Join no longer asks for a photo, so members add it here.
+            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
+
+        unset($validated['profile_photo']);
 
         $profile = MemberProfile::updateOrCreate(
             ['user_id' => $request->user()->id],
             $validated
         );
+
+        if ($request->hasFile('profile_photo')) {
+            $previous = $profile->profile_photo;
+            $profile->profile_photo = \App\Support\ImageUpload::storeProfilePhoto($request->file('profile_photo'), 'profile_photos');
+
+            if ($previous) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($previous);
+            }
+        }
 
         // Profiles are auto-approved, but a re-save must not undo an admin's rejection.
         if ($profile->status !== 'rejected') {
