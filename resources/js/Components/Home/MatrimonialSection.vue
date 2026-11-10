@@ -15,11 +15,10 @@ const points = ['matrimonial_point_1', 'matrimonial_point_2', 'matrimonial_point
                 <div class="relative space-y-4">
                     <div class="rounded-3xl bg-white/12 p-5 backdrop-blur-sm">
                         <span class="rounded-full bg-orange-400 px-3 py-1 text-xs font-black text-blue-950">{{ __('verified') }}</span>
-                        <p class="mt-4 text-base font-black text-white">{{ __('matrimonial_title') }}</p>
-                        <p class="mt-1 text-sm font-semibold text-blue-100">{{ __('matrimonial_point_1') }}</p>
+                        <p class="mt-4 text-xl font-black text-white">{{ __('matrimonial_visual_reviewed') }}</p>
                     </div>
                     <div class="ml-auto max-w-xs rounded-3xl bg-white p-5 text-blue-950 shadow-xl">
-                        <p class="text-sm font-black">{{ __('matrimonial_desc') }}</p>
+                        <p class="text-base font-black">{{ __('matrimonial_visual_family') }}</p>
                         <div class="mt-4 grid grid-cols-3 gap-2">
                             <div class="flex h-14 items-center justify-center rounded-2xl bg-orange-100 text-xl" aria-hidden="true">♥</div>
                             <div class="flex h-14 items-center justify-center rounded-2xl bg-green-100 text-xl text-green-700" aria-hidden="true">✓</div>
@@ -27,7 +26,7 @@ const points = ['matrimonial_point_1', 'matrimonial_point_2', 'matrimonial_point
                         </div>
                     </div>
                     <div class="max-w-sm rounded-3xl bg-green-500/20 p-5 backdrop-blur-sm">
-                        <p class="text-sm font-bold text-green-50">{{ __('matrimonial_point_2') }}</p>
+                        <p class="text-base font-black text-green-50">{{ __('matrimonial_visual_private') }}</p>
                     </div>
                 </div>
             </div>

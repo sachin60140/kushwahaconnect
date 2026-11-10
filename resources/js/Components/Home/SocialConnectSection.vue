@@ -66,13 +66,13 @@ const icons = {
 };
 
 const links = computed(() => [
-    { label: __('social_whatsapp'), href: whatsappHref.value, color: 'from-green-500 to-green-700', icon: icons.whatsapp },
-    { label: __('social_facebook'), href: props.settings.facebook_url, color: 'from-blue-500 to-blue-800', icon: icons.facebook },
-    { label: __('social_instagram'), href: props.settings.instagram_url, color: 'from-orange-500 via-pink-500 to-purple-700', icon: icons.instagram },
-    { label: __('social_youtube'), href: props.settings.youtube_url, color: 'from-red-500 to-red-700', icon: icons.youtube },
-    { label: __('social_telegram'), href: props.settings.telegram_url, color: 'from-sky-400 to-sky-700', icon: icons.telegram },
-    { label: __('social_linkedin'), href: props.settings.linkedin_url, color: 'from-blue-600 to-blue-900', icon: icons.linkedin },
-    { label: __('social_x'), href: props.settings.x_url, color: 'from-slate-800 to-slate-950', icon: icons.x },
+    { label: __('social_whatsapp'), note: __('social_note_whatsapp'), href: whatsappHref.value, color: 'from-green-500 to-green-700', icon: icons.whatsapp },
+    { label: __('social_facebook'), note: __('social_note_facebook'), href: props.settings.facebook_url, color: 'from-blue-500 to-blue-800', icon: icons.facebook },
+    { label: __('social_instagram'), note: __('social_note_instagram'), href: props.settings.instagram_url, color: 'from-orange-500 via-pink-500 to-purple-700', icon: icons.instagram },
+    { label: __('social_youtube'), note: __('social_note_youtube'), href: props.settings.youtube_url, color: 'from-red-500 to-red-700', icon: icons.youtube },
+    { label: __('social_telegram'), note: __('social_note_telegram'), href: props.settings.telegram_url, color: 'from-sky-400 to-sky-700', icon: icons.telegram },
+    { label: __('social_linkedin'), note: __('social_note_linkedin'), href: props.settings.linkedin_url, color: 'from-blue-600 to-blue-900', icon: icons.linkedin },
+    { label: __('social_x'), note: __('social_note_x'), href: props.settings.x_url, color: 'from-slate-800 to-slate-950', icon: icons.x },
 ].filter((link) => link.href));
 </script>
 
@@ -108,7 +108,7 @@ const links = computed(() => [
                         </svg>
                     </span>
                     <span class="mt-5 block text-lg font-black text-blue-950 group-hover:text-orange-600">{{ link.label }}</span>
-                    <span class="mt-2 block text-sm font-bold text-slate-500">{{ __('btn_social') }}</span>
+                    <span class="mt-2 block text-sm font-bold text-slate-500">{{ link.note }}</span>
                 </a>
             </div>
 

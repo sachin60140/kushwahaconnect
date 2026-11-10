@@ -34,23 +34,13 @@ const expanded = ref(false);
                     loading="lazy"
                 >
                 <div v-else class="min-h-[360px] bg-[radial-gradient(circle_at_25%_20%,rgba(249,115,22,0.45),transparent_28%),linear-gradient(135deg,#071d49,#166534)] p-8 text-white">
-                    <div class="grid h-full grid-cols-2 gap-4">
-                        <div class="rounded-3xl bg-white/15 p-5 backdrop-blur-sm">
-                            <p class="text-sm font-bold text-orange-100">{{ __('why_education_title') }}</p>
-                            <p class="mt-3 text-xs leading-5 text-white/80">{{ __('why_education_desc') }}</p>
-                        </div>
-                        <div class="mt-12 rounded-3xl bg-white/15 p-5 backdrop-blur-sm">
-                            <p class="text-sm font-bold text-green-100">{{ __('why_business_title') }}</p>
-                            <p class="mt-3 text-xs leading-5 text-white/80">{{ __('why_business_desc') }}</p>
-                        </div>
-                        <div class="rounded-3xl bg-white/15 p-5 backdrop-blur-sm">
-                            <p class="text-sm font-bold text-blue-100">{{ __('why_connections_title') }}</p>
-                            <p class="mt-3 text-xs leading-5 text-white/80">{{ __('why_connections_desc') }}</p>
-                        </div>
-                        <div class="mt-12 rounded-3xl bg-white/15 p-5 backdrop-blur-sm">
-                            <p class="text-sm font-bold text-orange-100">{{ __('why_help_title') }}</p>
-                            <p class="mt-3 text-xs leading-5 text-white/80">{{ __('why_help_desc') }}</p>
-                        </div>
+                    <!-- Shown only when no About photo is uploaded: the community's core values. -->
+                    <p class="text-sm font-black uppercase tracking-[0.2em] text-orange-200">{{ __('about_values_caption') }}</p>
+                    <div class="mt-6 grid grid-cols-2 gap-4">
+                        <div class="flex min-h-28 items-center justify-center rounded-3xl bg-white/15 p-5 text-center text-2xl font-black text-orange-100 backdrop-blur-sm">{{ __('about_value_unity') }}</div>
+                        <div class="mt-10 flex min-h-28 items-center justify-center rounded-3xl bg-white/15 p-5 text-center text-2xl font-black text-green-100 backdrop-blur-sm">{{ __('about_value_education') }}</div>
+                        <div class="flex min-h-28 items-center justify-center rounded-3xl bg-white/15 p-5 text-center text-2xl font-black text-blue-100 backdrop-blur-sm">{{ __('about_value_cooperation') }}</div>
+                        <div class="mt-10 flex min-h-28 items-center justify-center rounded-3xl bg-white/15 p-5 text-center text-2xl font-black text-orange-100 backdrop-blur-sm">{{ __('about_value_respect') }}</div>
                     </div>
                 </div>
             </div>
@@ -84,9 +74,6 @@ const expanded = ref(false);
                 <div class="mt-8 grid gap-3 sm:flex">
                     <Link href="/about" class="inline-flex min-h-12 items-center justify-center rounded-full border border-blue-950/15 px-6 text-sm font-black text-blue-950 transition hover:border-blue-950 hover:bg-blue-50">
                         {{ __('btn_learn_more') }}
-                    </Link>
-                    <Link :href="route('join')" class="inline-flex min-h-12 items-center justify-center rounded-full bg-orange-500 px-6 text-sm font-black text-white shadow-xs transition hover:bg-orange-600">
-                        {{ __('btn_join') }}
                     </Link>
                 </div>
             </div>
