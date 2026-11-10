@@ -44,6 +44,7 @@ class AdminController extends Controller
             
             // Pending Approvals (Requires Action)
             'pending_members' => MemberProfile::where('status', 'pending')->count(),
+            'unverified_mobiles' => \App\Support\MobileVerifyReminder::unverifiedCount(),
             'pending_matrimonial' => MatrimonialProfile::where('status', 'pending')->count(),
             'pending_jobs' => \App\Models\JobPosting::where('status', 'pending')->count(),
             'pending_volunteers' => \App\Models\Volunteer::where('status', 'Pending')->count(),
@@ -183,7 +184,7 @@ class AdminController extends Controller
     // Members
     public function members(Request $request)
     {
-        $query = MemberProfile::with(['state', 'district'])->latest();
+        $query = MemberProfile::with(['state', 'district', 'user:id,mobile,mobile_verified_at'])->latest();
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -206,11 +207,60 @@ class AdminController extends Controller
             $query->where('district_id', $request->district_id);
         }
 
+        if ($request->input('mobile') === 'unverified') {
+            \App\Support\MobileVerifyReminder::scopeUnverified($query);
+        }
+
+        $members = $query->paginate(15)->withQueryString()->through(function (MemberProfile $member) {
+            $user = $member->user;
+            $member->setRelation('user', null);
+            $member->setAttribute('has_account', $user !== null);
+            $member->setAttribute('mobile_verified', (bool) $user?->mobile_verified_at);
+            $member->setAttribute('verify_reminder_link', $user && ! $user->mobile_verified_at
+                ? \App\Support\MobileVerifyReminder::whatsappLink($member->whatsapp, $user->mobile ?: $member->mobile, $member->full_name)
+                : null);
+
+            return $member;
+        });
+
         return Inertia::render('Admin/Members', [
-            'members' => $query->paginate(15)->withQueryString(),
+            'members' => $members,
             'states' => \App\Models\State::with('districts')->orderBy('name_en')->get(),
-            'filters' => $request->only(['search', 'status', 'state_id', 'district_id'])
+            'filters' => $request->only(['search', 'status', 'state_id', 'district_id', 'mobile']),
+            'unverifiedMobileCount' => \App\Support\MobileVerifyReminder::unverifiedCount(),
         ]);
+    }
+
+    /**
+     * Admin corrects a member's mobile number. The account number changes too,
+     * so its verification is cleared (User::booted()) and the member must verify again.
+     */
+    public function updateMemberMobile(Request $request, $id)
+    {
+        $member = MemberProfile::with('user')->findOrFail($id);
+
+        $validated = $request->validate([
+            'mobile' => [
+                'required', 'string', 'regex:/^[6-9]\d{9}$/',
+                \Illuminate\Validation\Rule::unique(\App\Models\User::class, 'mobile')->ignore($member->user_id),
+            ],
+        ], [
+            'mobile.regex' => 'otp_error_mobile_format',
+            'mobile.unique' => 'admin_mobile_taken',
+        ]);
+
+        DB::transaction(function () use ($member, $validated) {
+            $member->update(['mobile' => $validated['mobile']]);
+
+            if ($member->user && $member->user->mobile !== $validated['mobile']) {
+                $member->user->mobile = $validated['mobile'];
+                $member->user->save();
+            }
+        });
+
+        Log::info('Admin changed a member mobile number.', ['member_profile_id' => $member->id, 'admin_id' => $request->user()->id]);
+
+        return back()->with('success', 'admin_mobile_updated');
     }
 
     public function exportMembers()

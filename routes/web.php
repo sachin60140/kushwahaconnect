@@ -199,7 +199,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         if (in_array(auth()->user()->role, ['admin', 'super_admin'])) {
             return app(\App\Http\Controllers\AdminController::class)->dashboard();
         }
+        $user = auth()->user();
+
         return Inertia::render('Dashboard', [
+            // Reminder to verify the mobile once by OTP, shown only while SMS can deliver codes.
+            'mobileVerifyReminder' => $user->mobile && ! $user->mobile_verified_at && \App\Services\Otp\VerifiedMobiles::enforced(),
             'businessListings' => auth()->user()
                 ->businessListings()
                 ->latest()
@@ -244,6 +248,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/admin/members', [AdminController::class, 'members'])->name('admin.members');
     Route::get('/admin/members/export', [AdminController::class, 'exportMembers'])->name('admin.members.export');
     Route::patch('/admin/members/{id}/status', [AdminController::class, 'updateMemberStatus'])->name('admin.members.status');
+    Route::patch('/admin/members/{id}/mobile', [AdminController::class, 'updateMemberMobile'])->name('admin.members.mobile');
     Route::delete('/admin/members/{id}', [AdminController::class, 'deleteMember'])->name('admin.members.destroy');
     
     Route::get('/admin/matrimonial', [AdminController::class, 'matrimonial'])->name('admin.matrimonial');
