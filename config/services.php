@@ -35,4 +35,23 @@ return [
         ],
     ],
 
+    'sms' => [
+        // "log" writes messages to the log (local/testing only); "smartping" sends real SMS.
+        // Once a super admin saves Admin → SMS Settings, its on/off switch decides instead.
+        'driver' => env('SMS_DRIVER', 'log'),
+    ],
+
+    // Fallbacks for Admin → SMS Settings; values saved there take precedence.
+    'smartping' => [
+        'base_url' => env('SMARTPING_BASE_URL', 'https://pgapi.sparc.smartping.io/fe/api/v1/send'),
+        'username' => env('SMARTPING_USERNAME'),
+        'password' => env('SMARTPING_PASSWORD'),
+        'sender_id' => env('SMARTPING_SENDER_ID', 'INSARS'),
+        'dlt_content_id' => env('SMARTPING_DLT_CONTENT_ID', '1707177677498830200'),
+        'dlt_principal_entity_id' => env('SMARTPING_DLT_PRINCIPAL_ID', '1701166126846262605'),
+        // DLT-registered template: must be sent character for character; only {otp} changes.
+        'otp_message' => env('SMARTPING_OTP_MESSAGE', 'Hi! Your verification code is {otp}. It is valid for 10 minutes. Please keep it confidential. - Sars Infotech Pvt Ltd'),
+        'timeout' => (int) env('SMARTPING_TIMEOUT', 15),
+    ],
+
 ];

@@ -6,6 +6,7 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import AppVersionFooter from '@/Components/AppVersionFooter.vue';
 import FlashMessages from '@/Components/FlashMessages.vue';
 import { Link, usePage } from '@inertiajs/vue3';
+import { useLanguage } from '@/composables/useLanguage';
 
 defineProps({
     // Pages that render their own flash message pass :show-flash="false".
@@ -56,7 +57,17 @@ const adminLinks = [
     { name: 'Settings', route: 'admin.settings.index', active: 'admin.settings.*', icon: 'M10.3 4.3c.4-1.8 2.9-1.8 3.4 0a1.7 1.7 0 0 0 2.6 1.1c1.5-.9 3.3.8 2.4 2.4a1.7 1.7 0 0 0 1 2.5c1.8.5 1.8 3 0 3.4a1.7 1.7 0 0 0-1 2.6c.9 1.5-.9 3.3-2.4 2.4a1.7 1.7 0 0 0-2.6 1c-.5 1.8-3 1.8-3.4 0a1.7 1.7 0 0 0-2.6-1c-1.5.9-3.3-.9-2.4-2.4a1.7 1.7 0 0 0-1-2.6c-1.8-.4-1.8-2.9 0-3.4a1.7 1.7 0 0 0 1-2.5c-.9-1.6.9-3.3 2.4-2.4a1.7 1.7 0 0 0 2.6-1ZM15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z' },
 ];
 
-const links = computed(() => isAdmin.value ? adminLinks : userLinks);
+const { __ } = useLanguage();
+
+// Only super admins manage the SMS gateway credentials.
+const superAdminLinks = [
+    { name: __('sms_settings_nav'), route: 'admin.sms-settings.show', active: 'admin.sms-settings.*', icon: 'M7 8h10M7 12h6m-9 8 3.5-3.5H18a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v14Z' },
+];
+
+const links = computed(() => {
+    if (!isAdmin.value) return userLinks;
+    return user.value?.role === 'super_admin' ? [...adminLinks, ...superAdminLinks] : adminLinks;
+});
 
 const isActive = (link) => route().current(link.active);
 </script>

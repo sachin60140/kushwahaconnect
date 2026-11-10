@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
+use App\Http\Controllers\Auth\MobileVerificationController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
@@ -60,6 +61,15 @@ Route::middleware('auth')->group(function () {
     Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
 
     Route::put('password', [PasswordController::class, 'update'])->name('password.update');
+
+    // Mobile number verification by SMS OTP
+    Route::get('verify-mobile', [MobileVerificationController::class, 'show'])->name('mobile.verify.show');
+    Route::post('verify-mobile/send', [MobileVerificationController::class, 'send'])
+        ->middleware('throttle:10,1')
+        ->name('mobile.verify.send');
+    Route::post('verify-mobile', [MobileVerificationController::class, 'verify'])
+        ->middleware('throttle:20,1')
+        ->name('mobile.verify');
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
