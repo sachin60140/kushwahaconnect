@@ -6,6 +6,7 @@ import { useWhatsAppWelcome } from '@/composables/useWhatsAppWelcome';
 import { Head, Link, useForm, router, usePage } from '@inertiajs/vue3';
 import { ref, computed, watch } from 'vue';
 import { useLanguage } from '@/composables/useLanguage';
+import { routesExist } from '@/safeRoute';
 
 const { __ } = useLanguage();
 
@@ -26,7 +27,10 @@ const props = defineProps({
 
 const page = usePage();
 // Full member details / edit pages are for super admins only.
-const isSuperAdmin = computed(() => props.canViewDetails && page.props.auth?.user?.role === 'super_admin');
+// Hidden too when the server's (possibly stale) route list lacks the detail pages.
+const isSuperAdmin = computed(() => props.canViewDetails
+    && page.props.auth?.user?.role === 'super_admin'
+    && routesExist('admin.members.show', 'admin.members.edit'));
 const statusMessage = ref('');
 const statusError = ref('');
 const processingMemberId = ref(null);

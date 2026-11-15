@@ -5,6 +5,7 @@ import { createInertiaApp, router } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createApp, h } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
+import { makeSafeRoute } from './safeRoute';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 const privateAnalyticsPrefixes = [
@@ -84,10 +85,17 @@ createInertiaApp({
             import.meta.glob('./Pages/**/*.vue'),
         ),
     setup({ el, App, props, plugin }) {
-        const vueApp = createApp({ render: () => h(App, props) })
+        const app = createApp({ render: () => h(App, props) })
             .use(plugin)
-            .use(ZiggyVue)
-            .mount(el);
+            .use(ZiggyVue);
+
+        // A route name missing from the server's list must not blank the whole page.
+        app.config.globalProperties.route = makeSafeRoute(app.config.globalProperties.route);
+        if (typeof window.route === 'function') {
+            window.route = makeSafeRoute(window.route);
+        }
+
+        const vueApp = app.mount(el);
 
         queueMicrotask(() => trackGoogleAnalyticsPageView());
 
