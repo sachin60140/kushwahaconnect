@@ -229,6 +229,7 @@ class AdminController extends Controller
             'filters' => $request->only(['search', 'status', 'state_id', 'district_id', 'mobile']),
             'unverifiedMobileCount' => \App\Support\MobileVerifyReminder::unverifiedCount(),
             'canEditMobile' => $request->user()?->role === 'super_admin',
+            'canViewDetails' => $request->user()?->role === 'super_admin',
         ]);
     }
 
@@ -243,28 +244,14 @@ class AdminController extends Controller
 
         $member = MemberProfile::with('user')->findOrFail($id);
 
-        $request->merge(['mobile' => \App\Services\Otp\VerifiedMobiles::normalize((string) $request->input('mobile')) ?? $request->input('mobile')]);
+        // Same normalise + unique + clear-verification rules as the full member edit form.
+        \App\Support\AdminMemberMobile::normalizeRequest($request);
 
         $validated = $request->validate([
-            'mobile' => [
-                'required', 'string', 'regex:/^[6-9]\d{9}$/',
-                \Illuminate\Validation\Rule::unique(\App\Models\User::class, 'mobile')->ignore($member->user_id),
-            ],
-        ], [
-            'mobile.regex' => 'otp_error_mobile_format',
-            'mobile.unique' => 'admin_mobile_taken',
-        ]);
+            'mobile' => \App\Support\AdminMemberMobile::rules($member),
+        ], \App\Support\AdminMemberMobile::messages());
 
-        DB::transaction(function () use ($member, $validated) {
-            $member->update(['mobile' => $validated['mobile']]);
-
-            if ($member->user && $member->user->mobile !== $validated['mobile']) {
-                // A super admin's change is trusted for OTP login; verification is cleared
-                // (User::booted()) and set again by the member's next OTP login or verify.
-                $member->user->mobile = $validated['mobile'];
-                $member->user->save();
-            }
-        });
+        DB::transaction(fn () => \App\Support\AdminMemberMobile::apply($member, $validated['mobile']));
 
         Log::info('Admin changed a member mobile number.', ['member_profile_id' => $member->id, 'admin_id' => $request->user()->id]);
 
