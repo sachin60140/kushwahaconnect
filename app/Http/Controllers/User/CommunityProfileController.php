@@ -43,37 +43,11 @@ class CommunityProfileController extends Controller
         \App\Services\Otp\VerifiedMobiles::normalizeRequest($request);
 
         $validated = $request->validate([
-            'full_name' => 'required|string|max:255',
-            'father_husband_name' => 'nullable|string|max:255',
-            'gender' => 'required|string',
-            'dob' => 'nullable|date',
+            // Shared with the super admin member editor (Admin\MemberDetailsController).
+            ...MemberProfile::editorRules(),
             // Synced to users.mobile (unique) below, so validate uniqueness instead of failing with a 500.
             // A new number must be confirmed by OTP first (the account number may be re-submitted).
             'mobile' => ['required', 'string', 'regex:/^[6-9]\d{9}$/', Rule::unique(User::class, 'mobile')->ignore($request->user()->id), new VerifiedMobile($request->user()->mobile)],
-            'whatsapp' => 'nullable|string',
-            'email' => 'nullable|email|max:255',
-            'state_id' => 'nullable|exists:states,id',
-            'district_id' => 'nullable|exists:districts,id',
-            'city_village' => 'nullable|string|max:255',
-            'pin_code' => 'nullable|string|max:20',
-            'current_address' => 'nullable|string',
-            'native_place' => 'nullable|string',
-            'education' => 'nullable|string',
-            'occupation' => 'nullable|string',
-            'employment_type' => 'nullable|string',
-            'company_name' => 'nullable|string',
-            'skills' => 'nullable|string',
-            'gotra' => 'nullable|string',
-            'social_work_interest' => 'nullable|string',
-            'volunteer_interest' => 'boolean',
-            'join_district_team' => 'boolean',
-            'facebook' => 'nullable|url',
-            'instagram' => 'nullable|url',
-            'linkedin' => 'nullable|url',
-            'twitter' => 'nullable|url',
-            'youtube' => 'nullable|url',
-            // Join no longer asks for a photo, so members add it here.
-            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ], [
             'mobile.regex' => 'otp_error_mobile_format',
         ]);

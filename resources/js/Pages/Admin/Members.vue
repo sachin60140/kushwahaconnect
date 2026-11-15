@@ -20,9 +20,13 @@ const props = defineProps({
     unverifiedMobileCount: { type: Number, default: 0 },
     // Only super admins may change a member's mobile.
     canEditMobile: { type: Boolean, default: false },
+    // Super admins get View / Edit links to the full member pages.
+    canViewDetails: { type: Boolean, default: false },
 });
 
 const page = usePage();
+// Full member details / edit pages are for super admins only.
+const isSuperAdmin = computed(() => props.canViewDetails && page.props.auth?.user?.role === 'super_admin');
 const statusMessage = ref('');
 const statusError = ref('');
 const processingMemberId = ref(null);
@@ -282,6 +286,10 @@ const closeModal = () => {
                                             :title="__('admin_mobile_reminder')"
                                         />
                                         <button @click="openViewModal(member)" class="text-indigo-600 hover:text-indigo-900 font-bold transition-colors">View Details</button>
+                                        <template v-if="isSuperAdmin">
+                                            <Link :href="route('admin.members.show', member.id)" class="inline-flex min-h-11 items-center font-bold text-indigo-700 underline hover:text-indigo-900">{{ __('admin_member_view') }}</Link>
+                                            <Link :href="route('admin.members.edit', member.id)" class="inline-flex min-h-11 items-center font-bold text-orange-700 underline hover:text-orange-900">{{ __('admin_member_edit') }}</Link>
+                                        </template>
                                         <template v-if="member.status !== 'approved'">
                                             <button
                                                 @click="updateStatus(member.id, 'approved')"
