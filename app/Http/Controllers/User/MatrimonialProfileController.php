@@ -38,6 +38,10 @@ class MatrimonialProfileController extends Controller
     {
         $existing = MatrimonialProfile::where('user_id', $request->user()->id)->first();
 
+        // Store bare 10-digit numbers, as the public form does. A member's own save is
+        // never blocked as a duplicate: it only ever updates their single profile.
+        \App\Services\Otp\VerifiedMobiles::normalizeRequest($request);
+
         $validated = $request->validate([
             ...MatrimonialProfile::detailRules(),
             // A changed contact number must be confirmed by OTP; the saved one may be re-submitted.

@@ -1,0 +1,1 @@
+import{J as e,P as t,V as n,_ as r,b as i,f as a}from"./app-uf21FRhu.js";var o={class:`text-sm text-red-600`},s={__name:`InputError`,props:{message:{type:String}},setup(s){return(c,l)=>n((t(),i(`div`,null,[r(`p`,o,e(s.message),1)],512)),[[a,s.message]])}};export{s as t};

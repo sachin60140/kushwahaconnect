@@ -3,6 +3,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Modal from '@/Components/Modal.vue';
 import { Head, Link, useForm, router, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { __ } = useLanguage();
 
 const props = defineProps({
     profiles: Object,
@@ -201,6 +204,7 @@ const statusClass = (status) => ({
                                 <option value="pending">Pending</option>
                                 <option value="approved">Approved</option>
                                 <option value="rejected">Rejected</option>
+                                <option value="duplicates">{{ __('admin_mat_duplicates_only') }}</option>
                             </select>
                         </div>
                         <div class="flex justify-end space-x-3">
@@ -209,6 +213,8 @@ const statusClass = (status) => ({
                         </div>
                     </form>
                 </div>
+
+                <p v-if="filters.status === 'duplicates'" class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{{ __('admin_mat_duplicates_note') }}</p>
 
                 <!-- Table -->
                 <div class="bg-white overflow-hidden shadow-xs sm:rounded-xl border border-gray-100">
@@ -234,6 +240,7 @@ const statusClass = (status) => ({
                                             <div>
                                                 <div class="font-bold text-gray-900">{{ profile.full_name }}</div>
                                                 <div class="text-xs text-gray-500 font-medium">Profile for: {{ profile.profile_for }}</div>
+                                                <span v-if="profile.duplicate_count > 1" class="mt-1 mr-1 inline-block rounded-sm bg-red-50 px-1.5 py-0.5 text-[11px] font-bold text-red-700" :title="__('admin_mat_duplicate_hint')">{{ __('admin_mat_duplicate_badge') }} ({{ profile.duplicate_count }})</span>
                                                 <span v-if="!profile.biodata_url" class="mt-1 inline-block rounded-sm bg-orange-50 px-1.5 py-0.5 text-[11px] font-bold text-orange-700">No biodata</span>
                                             </div>
                                         </div>
