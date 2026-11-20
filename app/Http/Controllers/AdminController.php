@@ -304,7 +304,7 @@ class AdminController extends Controller
     // Matrimonial
     public function matrimonial(Request $request)
     {
-        $query = MatrimonialProfile::with('user:id,name,email,mobile')->latest();
+        $query = MatrimonialProfile::with('user:id,name,email,mobile');
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -316,11 +316,21 @@ class AdminController extends Controller
             });
         }
 
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
+        if ($request->input('status') === 'duplicates') {
+            // Same-person groups listed together (oldest first) so extras can be deleted.
+            $query->onlyDuplicates()->orderBy('mobile')->orderBy('created_at')->orderBy('id');
+        } else {
+            if ($request->filled('status')) {
+                $query->where('status', $request->status);
+            }
+
+            $query->latest();
         }
 
-        $profiles = $query->paginate(15)->withQueryString()->through(function (MatrimonialProfile $profile) {
+        $profiles = $query->paginate(15)->withQueryString();
+        $duplicateCounts = MatrimonialProfile::duplicateCounts($profiles->getCollection());
+
+        $profiles->through(function (MatrimonialProfile $profile) use ($duplicateCounts) {
             $profile->setAttribute(
                 'id_proof_url',
                 $profile->id_proof ? route('admin.matrimonial.id-proof', $profile->id) : null
@@ -329,6 +339,8 @@ class AdminController extends Controller
                 'biodata_url',
                 $profile->biodata ? route('matrimonial.biodata', $profile->id) : null
             );
+            // Profiles in this one's same-person group (itself included); 0 when unique.
+            $profile->setAttribute('duplicate_count', $duplicateCounts[$profile->id] ?? 0);
 
             return $profile;
         });

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\State;
 use App\Models\District;
+use App\Models\MatrimonialProfile;
 use App\Models\MemberProfile;
 use App\Models\ContactEnquiry;
 use App\Models\DataDeletionRequest;
@@ -14,6 +15,8 @@ use App\Models\User;
 use App\Support\ImageUpload;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -174,25 +177,44 @@ class PublicController extends Controller
 
     public function storeMatrimonial(Request $request)
     {
+        // A signed-in member keeps exactly one profile: send them to their own editor.
+        if ($request->user() && MatrimonialProfile::where('user_id', $request->user()->id)->exists()) {
+            return redirect()->route('user.matrimonial-profile.edit')->with('status', 'mat_already_have_profile');
+        }
+
+        // Bare 10-digit numbers, so "+91 99822 11163" and "9982211163" are the same person.
+        \App\Services\Otp\VerifiedMobiles::normalizeRequest($request);
+
         // Complete profile: same detail rules as the member's own profile page.
         $validated = $request->validate([
-            ...\App\Models\MatrimonialProfile::detailRules(),
-            'mobile' => ['required', 'string', 'max:20', new VerifiedMobile],
+            ...MatrimonialProfile::detailRules(),
+            'mobile' => ['required', 'string', 'regex:/^[6-9]\d{9}$/', new VerifiedMobile],
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'id_proof' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'consent' => 'accepted',
+        ], [
+            'mobile.regex' => 'otp_error_mobile_format',
         ]);
 
-        if ($request->hasFile('photo')) {
-            $validated['photo'] = ImageUpload::storeProfilePhoto($request->file('photo'), 'matrimonial_photos', 'local');
-        }
+        // Check-then-create under a per-number lock so two quick submissions cannot both pass.
+        Cache::lock('matrimonial-create:'.$validated['mobile'], 10)->block(10, function () use ($request, $validated) {
+            $duplicate = MatrimonialProfile::duplicateErrorFor($validated['mobile'], $validated['full_name'], $validated['profile_for']);
 
-        if ($request->hasFile('id_proof')) {
-            $validated['id_proof'] = $request->file('id_proof')->store('matrimonial_ids', 'local');
-        }
+            if ($duplicate !== null) {
+                throw ValidationException::withMessages(['mobile' => $duplicate]);
+            }
 
-        $validated['user_id'] = auth()->id();
-        \App\Models\MatrimonialProfile::create($validated);
+            if ($request->hasFile('photo')) {
+                $validated['photo'] = ImageUpload::storeProfilePhoto($request->file('photo'), 'matrimonial_photos', 'local');
+            }
+
+            if ($request->hasFile('id_proof')) {
+                $validated['id_proof'] = $request->file('id_proof')->store('matrimonial_ids', 'local');
+            }
+
+            $validated['user_id'] = auth()->id();
+            MatrimonialProfile::create($validated);
+        });
 
         return redirect()->back()->with('success', 'Matrimonial Profile submitted successfully.');
     }

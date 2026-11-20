@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -13,6 +14,51 @@ class MatrimonialProfile extends Model
     public const BIODATA_RULES = ['file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'];
 
     public const BIODATA_DIRECTORY = 'matrimonial_biodata';
+
+    /** Stored profile_for value when people register themselves (MAT_PROFILE_FOR in optionLabels.js). */
+    public const PROFILE_FOR_SELF = 'Self';
+
+    /** A new profile that duplicates one in these statuses is refused; rejected ones may re-apply. */
+    public const ACTIVE_STATUSES = ['pending', 'approved'];
+
+    /** Name as compared for duplicates: lower case, whitespace collapsed and trimmed. */
+    public static function comparableName(?string $name): string
+    {
+        return mb_strtolower(trim(preg_replace('/\s+/u', ' ', (string) $name)));
+    }
+
+    public static function isSelf(?string $profileFor): bool
+    {
+        return strcasecmp(trim((string) $profileFor), self::PROFILE_FOR_SELF) === 0;
+    }
+
+    /**
+     * Would a new profile duplicate a live (pending or approved) one for the same person?
+     * Same person = same mobile and same name, or a second "Self" profile on the same
+     * mobile. The same mobile with a different name is allowed (a parent registering two
+     * children). Returns the dictionary key of the error, or null when allowed.
+     *
+     * $mobile must already be normalised to bare 10 digits.
+     */
+    public static function duplicateErrorFor(string $mobile, string $fullName, ?string $profileFor): ?string
+    {
+        $live = static::query()
+            ->where('mobile', $mobile)
+            ->whereIn('status', self::ACTIVE_STATUSES)
+            ->get(['id', 'full_name', 'profile_for']);
+
+        $name = self::comparableName($fullName);
+
+        if ($live->contains(fn (self $p) => self::comparableName($p->full_name) === $name)) {
+            return 'mat_error_duplicate_profile';
+        }
+
+        if (self::isSelf($profileFor) && $live->contains(fn (self $p) => self::isSelf($p->profile_for))) {
+            return 'mat_error_duplicate_self';
+        }
+
+        return null;
+    }
 
     protected $guarded = ['id'];
     protected $appends = ['photo_url'];
@@ -80,6 +126,94 @@ class MatrimonialProfile extends Model
             'whatsapp' => ['nullable', 'string', 'max:20'],
             'email' => ['nullable', 'email', 'max:255'],
         ];
+    }
+
+    /**
+     * SQL for a name compared case-insensitively with spaces trimmed and runs of spaces
+     * collapsed (three REPLACE passes cover runs of up to 8). SQLite and MySQL alike.
+     */
+    private static function nameKeySql(string $column): string
+    {
+        return "LOWER(TRIM(REPLACE(REPLACE(REPLACE({$column}, '  ', ' '), '  ', ' '), '  ', ' ')))";
+    }
+
+    /** PHP twin of nameKeySql(), to look up the grouped rows (ASCII lower case, like SQLite). */
+    private static function nameKey(?string $name): string
+    {
+        return strtolower(trim(preg_replace('/ {2,}/', ' ', (string) $name), ' '));
+    }
+
+    /**
+     * Admin "Duplicates only" filter: profiles that share mobile + name (case and spacing ignored) with
+     * another profile, or "Self" profiles sharing a mobile with another "Self" profile.
+     * Correlated EXISTS subqueries: portable between SQLite (tests) and MySQL.
+     */
+    public function scopeOnlyDuplicates(Builder $query): Builder
+    {
+        return $query->where(function (Builder $q) {
+            $q->whereExists(function ($sub) {
+                $sub->selectRaw('1')->from('matrimonial_profiles as d')
+                    ->whereColumn('d.mobile', 'matrimonial_profiles.mobile')
+                    ->whereColumn('d.id', '!=', 'matrimonial_profiles.id')
+                    ->whereRaw(self::nameKeySql('d.full_name').' = '.self::nameKeySql('matrimonial_profiles.full_name'));
+            })->orWhere(function (Builder $self) {
+                $self->whereRaw('LOWER(TRIM(matrimonial_profiles.profile_for)) = ?', ['self'])
+                    ->whereExists(function ($sub) {
+                        $sub->selectRaw('1')->from('matrimonial_profiles as d')
+                            ->whereColumn('d.mobile', 'matrimonial_profiles.mobile')
+                            ->whereColumn('d.id', '!=', 'matrimonial_profiles.id')
+                            ->whereRaw('LOWER(TRIM(d.profile_for)) = ?', ['self']);
+                    });
+            });
+        });
+    }
+
+    /**
+     * Size of each listed profile's duplicate group (all statuses), keyed by id; profiles
+     * without a duplicate are left out. Two grouped queries limited to the listed mobiles.
+     *
+     * @param  iterable<self>  $profiles
+     * @return array<int, int>
+     */
+    public static function duplicateCounts(iterable $profiles): array
+    {
+        $profiles = collect($profiles);
+        $mobiles = $profiles->pluck('mobile')->filter()->unique()->values()->all();
+
+        if ($mobiles === []) {
+            return [];
+        }
+
+        $byName = static::query()
+            ->whereIn('mobile', $mobiles)
+            ->selectRaw('mobile, '.self::nameKeySql('full_name').' as name_key, COUNT(*) as total')
+            ->groupByRaw('mobile, '.self::nameKeySql('full_name'))
+            ->havingRaw('COUNT(*) > 1')
+            ->get()
+            ->mapWithKeys(fn ($row) => [$row->mobile."\0".$row->name_key => (int) $row->total]);
+
+        $selfByMobile = static::query()
+            ->whereIn('mobile', $mobiles)
+            ->whereRaw('LOWER(TRIM(profile_for)) = ?', ['self'])
+            ->selectRaw('mobile, COUNT(*) as total')
+            ->groupBy('mobile')
+            ->havingRaw('COUNT(*) > 1')
+            ->pluck('total', 'mobile');
+
+        $counts = [];
+
+        foreach ($profiles as $profile) {
+            $count = max(
+                $byName[$profile->mobile."\0".self::nameKey($profile->full_name)] ?? 0,
+                self::isSelf($profile->profile_for) ? (int) ($selfByMobile[$profile->mobile] ?? 0) : 0,
+            );
+
+            if ($count > 1) {
+                $counts[$profile->id] = $count;
+            }
+        }
+
+        return $counts;
     }
 
     public function getPhotoUrlAttribute()
